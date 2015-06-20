@@ -47,24 +47,33 @@ make -f makefile.unix
 
 (it will instruct you to make a BATA.conf file, so make the BATA.conf file and place in the .BATA/ folder.)
 
-### example BATA.conf:
+### example regular internet users' BATA.conf:
 
 rpcuser=BATAusername
+
 rpcpassword=BATAuserpass
 
 ### example for i2P users' BATA.conf:
 
 rpcuser=BATAusername
+
 rpcpassword=BATAuserpass
+
 i2p=1
+
 proxy=127.0.0.1:3643
+
 connect=batai2pnodeaddress.b32.i2p
 
 ### example for tor users' BATA.conf:
 
 rpcuser=BATAusername
+
 rpcpassword=BATAuserpass
+
 tor=1
+
 proxy=127.0.0.1:9050
+
 connect=batai2pnodeaddress.onion
 
