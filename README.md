@@ -37,7 +37,7 @@ https://bitcointalk.org/index.php?topic=1040956
 
 ### instructions for compile: 
 
-sudo apt-get git build-essential openssl libminiupnpc-dev libboost++-dev libboost-all-dev libssl-dev libminiupnpc8 libdb++-dev
+sudo apt-get install git build-essential openssl libminiupnpc-dev libboost++-dev libboost-all-dev libssl-dev libminiupnpc8 libdb++-dev
 
 git clone https://github.com/BTA-BATA/BATA-SOURCE bata && cd bata/src
 
