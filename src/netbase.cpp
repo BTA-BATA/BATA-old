@@ -620,7 +620,7 @@ bool CNetAddr::IsIPv4() const
 
 bool CNetAddr::IsIPv6() const
 {
-    return (!IsIPv4() && !IsTor());
+    return (!IsIPv4() && !IsTor() && !IsI2P());
 }
 
 bool CNetAddr::IsRFC1918() const
