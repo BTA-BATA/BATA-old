@@ -880,6 +880,12 @@ std::vector<unsigned char> CNetAddr::GetGroup() const
         nStartByte = 6;
         nBits = 4;
     }
+    else if (IsI2P())
+    {
+        nClass = NET_I2P;
+        nStartByte = 6;
+        nBits = 4;
+    }
     // for he.net, use /36 groups
     else if (GetByte(15) == 0x20 && GetByte(14) == 0x01 && GetByte(13) == 0x04 && GetByte(12) == 0x70)
         nBits = 36;
