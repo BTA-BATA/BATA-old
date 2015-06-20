@@ -27,4 +27,6 @@ git clone https://github.com/BTA-BATA/BATA-SOURCE bata && cd bata/src
 
 make -f makefile.unix
 
-./
+./BATAd -daemon
+
+(it will instruct you to make a BATA.conf file, so make the BATA.conf file and place in the .BATA/ folder.)
