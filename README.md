@@ -1,15 +1,15 @@
 ![BATA](https://github.com/justinvforvendetta/BATA-SOURCE/blob/master/bata.png)
 
-Coin Type: POW
-Hashing Algorithm: SCRYPT
-Difficulty Retargeting: Dark Gravity Wave
-Time Between Blocks  30
-Block Reward: 50
-Block Reward Halving Rate: 50000
-Premine: No
-Total Coins: 5,000,000
-rpc port: 5493
-net port: 5784
+-Coin Type: POW
+-Hashing Algorithm: SCRYPT
+-Difficulty Retargeting: Dark Gravity Wave
+-Time Between Blocks  30
+-Block Reward: 50
+-Block Reward Halving Rate: 50000
+-Premine: No
+-Total Coins: 5,000,000
+-rpc port: 5493
+-net port: 5784
 
 Website: http://www.bata.money/ - Coming Soon!
 Twitter: @BataCurrency
