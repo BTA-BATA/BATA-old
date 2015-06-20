@@ -1,25 +1,41 @@
 ![BATA](https://github.com/justinvforvendetta/BATA-SOURCE/blob/master/bata.png)
 
--Coin Type: POW
--Hashing Algorithm: SCRYPT
--Difficulty Retargeting: Dark Gravity Wave
--Time Between Blocks  30
--Block Reward: 50
--Block Reward Halving Rate: 50000
--Premine: No
--Total Coins: 5,000,000
--rpc port: 5493
--net port: 5784
+Coin Type: POW
+
+Hashing Algorithm: SCRYPT
+
+Difficulty Retargeting: Dark Gravity Wave
+
+Time Between Blocks  30
+
+Block Reward: 50
+
+Block Reward Halving Rate: 50000
+
+Premine: No
+
+Total Coins: 5,000,000
+
+rpc port: 5493
+
+net port: 5784
 
 Website: http://www.bata.money/ - Coming Soon!
+
 Twitter: @BataCurrency
+
 https://www.facebook.com/batacurrency
+
 http://cryptooz.com/group/bta-bata-community-group/stream
+
 https://cryptocointalk.com/topic/37776-pre-annbta-bata-scrypt-pow-modern-day-trade/
+
 https://www.altcoincalendar.info/coins/1614-BTA
+
 https://bitcointalk.org/index.php?topic=1040956
 
-instructions for compile: 
+
+### instructions for compile: 
 
 sudo apt-get git build-essential openssl libminiupnpc-dev libboost++-dev libboost-all-dev libssl-dev libminiupnpc8 libdb++-dev
 
