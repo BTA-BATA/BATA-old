@@ -17,7 +17,14 @@ https://www.facebook.com/batacurrency
 http://cryptooz.com/group/bta-bata-community-group/stream
 https://cryptocointalk.com/topic/37776-pre-annbta-bata-scrypt-pow-modern-day-trade/
 https://www.altcoincalendar.info/coins/1614-BTA
+https://bitcointalk.org/index.php?topic=1040956
 
 instructions for compile: 
 
 sudo apt-get git build-essential openssl libminiupnpc-dev libboost++-dev libboost-all-dev libssl-dev libminiupnpc8 libdb++-dev
+
+git clone https://github.com/BTA-BATA/BATA-SOURCE bata && cd bata/src
+
+make -f makefile.unix
+
+./
