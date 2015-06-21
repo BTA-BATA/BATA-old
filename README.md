@@ -54,6 +54,8 @@ rpcuser=BATAusername
 rpcpassword=BATAuserpass
 
 ### example for i2P users' BATA.conf:
+(you will need to download the latest i2p software)
+https://geti2p.net/en/download
 
 rpcuser=BATAusername
 
@@ -66,6 +68,8 @@ proxy=127.0.0.1:3643
 connect=lv4llpu75ydlfwxgx3ej5t6dpcnyi47px4wnluf7pyxpncd5trca.b32.i2p
 
 ### example for tor users' BATA.conf:
+(you will need to download tor software)
+http://www.softpedia.com/dyn-postdownload.php/71b643564f9a522d006160b023235a46/558695b8/db6e/0/1
 
 rpcuser=BATAusername
 
