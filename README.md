@@ -20,13 +20,13 @@ rpc port: 5493
 
 net port: 5784
 
-Website: http://www.bata.money/ - Coming Soon!
+Website: http://www.bata.money/ - Update Coming Soon!
 
-Twitter: @BataCurrency
+Twitter: @Bata_Money
 
 https://www.facebook.com/batacurrency
 
-http://cryptooz.com/group/bta-bata-community-group/stream
+
 
 https://cryptocointalk.com/topic/37776-pre-annbta-bata-scrypt-pow-modern-day-trade/
 
