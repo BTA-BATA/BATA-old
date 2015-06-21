@@ -75,7 +75,7 @@ tor=1
 
 proxy=127.0.0.1:9050
 
-connect=bataTORnodeaddress.onion
+connect=eoekwl6m56nus2a7.onion
 
 ### possible errors during compile:
 
