@@ -63,7 +63,7 @@ i2p=1
 
 proxy=127.0.0.1:3643
 
-connect=batai2Pnodeaddress.b32.i2p
+connect=lv4llpu75ydlfwxgx3ej5t6dpcnyi47px4wnluf7pyxpncd5trca.b32.i2p
 
 ### example for tor users' BATA.conf:
 
