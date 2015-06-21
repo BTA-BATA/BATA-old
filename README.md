@@ -6,11 +6,11 @@ Hashing Algorithm: SCRYPT
 
 Difficulty Retargeting: Dark Gravity Wave
 
-Time Between Blocks  30
+Time Between Blocks  90
 
-Block Reward: 50
+Block Reward: 25
 
-Block Reward Halving Rate: 50000
+Block Reward Halving Rate: 100000
 
 Premine: No
 
