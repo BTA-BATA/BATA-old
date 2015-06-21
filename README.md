@@ -77,3 +77,30 @@ proxy=127.0.0.1:9050
 
 connect=bataTORnodeaddress.onion
 
+### possible errors during compile:
+
+virtual memory exhausted: Cannot allocate memory
+
+make: *** [obj/bitcoinrpc.o] Error 1
+
+here, we just need to set up a swap file, because we ran out of memory:
+
+sudo fallocate -l 4G /swapfile
+
+sudo chmod 600 /swapfile
+
+sudo swapon /swapfile
+
+### Make the Swap File Permanent
+
+We have our swap file enabled, but when we reboot, the server will not automatically enable the file. We can change that though by modifying the fstab file.
+
+Edit the file with root privileges in your text editor:
+
+sudo nano /etc/fstab
+
+At the bottom of the file, you need to add a line that will tell the operating system to automatically use the file you created:
+
+/swapfile   none    swap    sw    0   0
+
+Save and close the file when you are finished.
