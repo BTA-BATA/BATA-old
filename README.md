@@ -20,7 +20,7 @@ rpc port: 5493
 
 net port: 5784
 
-Website: http://www.bata.io/ - Update Coming Soon!
+Website: http://www.bata.io
 
 Twitter: @Bata_Money
 
