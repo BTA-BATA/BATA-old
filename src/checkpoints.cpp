@@ -21,7 +21,6 @@ namespace Checkpoints
     // fast multicore CPU, it won't be much higher than 1.
     static const double fSigcheckVerificationFactor = 5.0;
 
-
     struct CCheckpointData {
         const MapCheckpoints *mapCheckpoints;
         int64 nTimeLastCheckpoint;
@@ -33,6 +32,7 @@ namespace Checkpoints
     // + Is surrounded by blocks with reasonable timestamps
     //   (no blocks before with a timestamp after, none after with
     //    timestamp before)
+    // + Contains no strange transactions
     static MapCheckpoints mapCheckpoints =
         boost::assign::map_list_of
                ( 0, uint256("0x721abe3814e15f1ab50514c8b7fffa7578c1f35aa915275ee91f4cb8d02be5c4"))
