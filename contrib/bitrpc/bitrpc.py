@@ -11,9 +11,9 @@ rpcpass = ""
 
 
 if rpcpass == "":
-    access = ServiceProxy("http://127.0.0.1:9332")
+    access = ServiceProxy("http://127.0.0.1:5493")
 else:
-    access = ServiceProxy("http://"+rpcuser+":"+rpcpass+"@127.0.0.1:9332")
+    access = ServiceProxy("http://"+rpcuser+":"+rpcpass+"@127.0.0.1:5493")
 cmd = sys.argv[1].lower()
 
 if cmd == "backupwallet":
@@ -36,11 +36,11 @@ elif cmd == "encryptwallet":
         print "\n---An error occurred---\n"
 
 elif cmd == "getaccount":
-    try:
-        addr = raw_input("Enter a Litecoin address: ")
-        print access.getaccount(addr)
-    except:
-        print "\n---An error occurred---\n"
+	try:
+		addr = raw_input("Enter a BATA address: ")
+		print access.getaccount(addr)
+	except:
+		print "\n---An error occurred---\n"
 
 elif cmd == "getaccountaddress":
     try:
@@ -138,15 +138,15 @@ elif cmd == "getreceivedbyaccount":
         print "\n---An error occurred---\n"
 
 elif cmd == "getreceivedbyaddress":
-    try:
-        addr = raw_input("Enter a Litecoin address (optional): ")
-        mc = raw_input("Minimum confirmations (optional): ")
-        try:
-            print access.getreceivedbyaddress(addr, mc)
-        except:
-            print access.getreceivedbyaddress()
-    except:
-        print "\n---An error occurred---\n"
+	try:
+		addr = raw_input("Enter a BATA address (optional): ")
+		mc = raw_input("Minimum confirmations (optional): ")
+		try:
+			print access.getreceivedbyaddress(addr, mc)
+		except:
+			print access.getreceivedbyaddress()
+	except:
+		print "\n---An error occurred---\n"
 
 elif cmd == "gettransaction":
     try:
