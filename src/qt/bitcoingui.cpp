@@ -67,6 +67,11 @@ BitcoinGUI::BitcoinGUI(QWidget *parent) :
 {
     restoreWindowGeometry();
     setWindowTitle(tr("BATA") + " - " + tr("Wallet"));
+
+// Main Wallet Background image MM - 20160925
+
+    setStyleSheet("QMainWindow { background-image: url(:images/bkg) }");
+
 #ifndef Q_OS_MAC
     QApplication::setWindowIcon(QIcon(":icons/bitcoin"));
     setWindowIcon(QIcon(":icons/bitcoin"));
