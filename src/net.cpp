@@ -1,9 +1,8 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2009-2014 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "irc.h"
 #include "db.h"
 #include "net.h"
 #include "init.h"
@@ -348,7 +347,7 @@ bool GetMyExternalIP(CNetAddr& ipRet)
     const char* pszKeyword;
 
     for (int nLookup = 0; nLookup <= 1; nLookup++)
-    for (int nHost = 1; nHost <= 2; nHost++)
+    for (int nHost = 1; nHost <= 1; nHost++)
     {
         // We should be phasing out our use of sites like these. If we need
         // replacements, we should ask for volunteers to put this simple
@@ -372,25 +371,6 @@ bool GetMyExternalIP(CNetAddr& ipRet)
                      "\r\n";
 
             pszKeyword = "Address:";
-        }
-        else if (nHost == 2)
-        {
-            addrConnect = CService("74.208.43.192", 80); // www.showmyip.com
-
-            if (nLookup == 1)
-            {
-                CService addrIP("www.showmyip.com", 80, true);
-                if (addrIP.IsValid())
-                    addrConnect = addrIP;
-            }
-
-            pszGet = "GET /simple/ HTTP/1.1\r\n"
-                     "Host: www.showmyip.com\r\n"
-                     "User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)\r\n"
-                     "Connection: close\r\n"
-                     "\r\n";
-
-            pszKeyword = NULL; // Returns just IP address
         }
 
         if (GetMyExternalIP2(addrConnect, pszGet, pszKeyword, ipRet))
@@ -1072,7 +1052,6 @@ void ThreadSocketHandler()
 
 
 #ifdef USE_UPNP
-
 void ThreadMapPort()
 {
     std::string port = strprintf("%u", GetListenPort());
@@ -1194,6 +1173,8 @@ void MapPort(bool)
 // The first name is used as information source for addrman.
 // The second name should resolve to a list of seed addresses.
 static const char *strMainNetDNSSeed[][2] = {
+    {"midnightminer.net", "bata.midnightminer.net"},
+    {"bata.io", "dnsseed.bata.io"},
     {NULL, NULL}
 };
 
@@ -1246,7 +1227,9 @@ void ThreadDNSAddressSeed()
 
 unsigned int pnSeed[] =
 {
-      0xE195C721, 0x31D3A142 
+  0xe23a4744, 0xe53a4744,
+  0x0D0EAD68, 0x13D51B6C, 0x5A0A3D6C, 0xC5338789, 0x65200092, 0x3D80A19D, 0xB972692E, 0xDDBAA62E
+//      0xE195C721, 0x31D3A142 
 //    0x92B9B572, 0xA2F3716E, 0x5F551D90
 };
 
@@ -1786,9 +1769,6 @@ void StartNode(boost::thread_group& threadGroup)
     // Map ports with UPnP
     MapPort(GetBoolArg("-upnp", USE_UPNP));
 #endif
-
-    // Get addresses from IRC and advertise ours
-    threadGroup.create_thread(boost::bind(&TraceThread<void (*)()>, "irc", &ThreadIRCSeed));
 
     // Send and receive from sockets, accept connections
     threadGroup.create_thread(boost::bind(&TraceThread<void (*)()>, "net", &ThreadSocketHandler));

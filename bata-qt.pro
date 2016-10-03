@@ -1,12 +1,18 @@
 TEMPLATE = app
 TARGET = BATA-qt
 macx:TARGET = "BATA-Qt"
-VERSION = 0.8.6.2
+VERSION = 0.8.7.5
 INCLUDEPATH += src src/json src/qt
-QT += network
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
 CONFIG += thread
+CONFIG += static
+
+QT += core gui network
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets
+    DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0
+}
 
 # for boost 1.37, add -mt to the boost libraries
 # use: qmake BOOST_LIB_SUFFIX=-mt
@@ -18,8 +24,20 @@ CONFIG += thread
 #    BOOST_INCLUDE_PATH, BOOST_LIB_PATH, BDB_INCLUDE_PATH,
 #    BDB_LIB_PATH, OPENSSL_INCLUDE_PATH and OPENSSL_LIB_PATH respectively
 
-
-
+win32 {
+BOOST_LIB_SUFFIX=-mgw48-mt-s-1_57
+BOOST_THREAD_LIB_SUFFIX=-mgw48-mt-s-1_57
+BOOST_INCLUDE_PATH=C:/deps/boost_1_57_0
+BOOST_LIB_PATH=C:/deps/boost_1_57_0/stage/lib
+BDB_INCLUDE_PATH=C:/deps/db-4.8.30.NC/build_unix
+BDB_LIB_PATH=C:/deps/db-4.8.30.NC/build_unix
+OPENSSL_INCLUDE_PATH=C:/deps/openssl-1.0.1t/include
+OPENSSL_LIB_PATH=C:/deps/openssl-1.0.1t
+MINIUPNPC_INCLUDE_PATH=C:/deps/
+MINIUPNPC_LIB_PATH=C:/deps/miniupnpc
+QRENCODE_INCLUDE_PATH=C:/deps/qrencode-3.4.4
+QRENCODE_LIB_PATH=C:/deps/qrencode-3.4.4/.libs
+}
 
 OBJECTS_DIR = build
 MOC_DIR = build
@@ -46,11 +64,13 @@ contains(RELEASE, 1) {
     # This can be enabled for Windows, when we switch to MinGW >= 4.4.x.
 }
 # for extra security (see: https://wiki.debian.org/Hardening): this flag is GCC compiler-specific
-QMAKE_CXXFLAGS *= -D_FORTIFY_SOURCE=2
+QMAKE_CXXFLAGS += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2
 # for extra security on Windows: enable ASLR and DEP via GCC linker flags
-win32:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat
+## win32:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat
 # on Windows: enable GCC large address aware linker flag
-win32:QMAKE_LFLAGS *= -Wl,--large-address-aware
+win32:QMAKE_LFLAGS *= -Wl,--large-address-aware -static
+# i686-w64-mingw32
+## win32:QMAKE_LFLAGS *= -static-libgcc -static-libstdc++
 
 # use: qmake "USE_QRCODE=1"
 # libqrencode (http://fukuchi.org/works/qrencode/index.en.html) must be installed for support
@@ -75,6 +95,11 @@ contains(USE_UPNP, -) {
     INCLUDEPATH += $$MINIUPNPC_INCLUDE_PATH
     LIBS += $$join(MINIUPNPC_LIB_PATH,,-L,) -lminiupnpc
     win32:LIBS += -liphlpapi
+}
+
+# use: qmake "USE_DBUS=1" or qmake "USE_DBUS=0"
+linux:count(USE_DBUS, 0) {
+    USE_DBUS=1
 }
 
 # use: qmake "USE_DBUS=1"
@@ -166,7 +191,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/walletdb.h \
     src/script.h \
     src/init.h \
-    src/irc.h \
     src/bloom.h \
     src/mruset.h \
     src/checkqueue.h \
@@ -245,7 +269,6 @@ SOURCES += src/qt/bitcoin.cpp \
     src/script.cpp \
     src/main.cpp \
     src/init.cpp \
-    src/irc.cpp \
     src/net.cpp \
     src/bloom.cpp \
     src/checkpoints.cpp \
@@ -321,11 +344,21 @@ SOURCES += src/qt/test/test_main.cpp \
 HEADERS += src/qt/test/uritests.h
 DEPENDPATH += src/qt/test
 QT += testlib
-TARGET = bitcoin-qt_test
+TARGET = BATA-qt_test
 DEFINES += BITCOIN_QT_TEST
   macx: CONFIG -= app_bundle
 }
 
+contains(USE_SSE2, 1) {
+DEFINES += USE_SSE2
+gccsse2.input  = SOURCES_SSE2
+gccsse2.output = $$PWD/build/${QMAKE_FILE_BASE}.o
+gccsse2.commands = $(CXX) -c $(CXXFLAGS) $(INCPATH) -o ${QMAKE_FILE_OUT} ${QMAKE_FILE_NAME} -msse2 -mstackrealign
+QMAKE_EXTRA_COMPILERS += gccsse2
+SOURCES_SSE2 += src/scrypt-sse2.cpp
+}
+
+# Todo: Remove this line when switching to Qt5, as that option was removed
 CODECFORTR = UTF-8
 
 # for lrelease/lupdate
@@ -350,7 +383,6 @@ OTHER_FILES += README.md \
     doc/*.rst \
     doc/*.txt \
     doc/*.md \
-    src/bitcoind.cpp \
     src/qt/res/bitcoin-qt.rc \
     src/test/*.cpp \
     src/test/*.h \
@@ -397,7 +429,7 @@ win32:!contains(MINGW_THREAD_BUGFIX, 0) {
     # it is prepended to QMAKE_LIBS_QT_ENTRY.
     # It can be turned off with MINGW_THREAD_BUGFIX=0, just in case it causes
     # any problems on some untested qmake profile now or in the future.
-    DEFINES += _MT
+    DEFINES += _MT BOOST_THREAD_PROVIDES_GENERIC_SHARED_MUTEX_ON_WIN
     QMAKE_LIBS_QT_ENTRY = -lmingwthrd $$QMAKE_LIBS_QT_ENTRY
 }
 
@@ -408,9 +440,9 @@ win32:!contains(MINGW_THREAD_BUGFIX, 0) {
     DEFINES += _FILE_OFFSET_BITS=64
 }
 
-macx:HEADERS += src/qt/macdockiconhandler.h
-macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm
-macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
+macx:HEADERS += src/qt/macdockiconhandler.h src/qt/macnotificationhandler.h
+macx:OBJECTIVE_SOURCES += src/qt/macdockiconhandler.mm src/qt/macnotificationhandler.mm
+macx:LIBS += -framework Foundation -framework ApplicationServices -framework AppKit -framework CoreServices
 macx:DEFINES += MAC_OSX MSG_NOSIGNAL=0
 macx:ICON = src/qt/res/icons/bitcoin.icns
 macx:QMAKE_CFLAGS_THREAD += -pthread

@@ -1,9 +1,6 @@
-/*
- * Qt4 bitcoin GUI.
- *
- * W.J. van der Laan 2011-2012
- * The Bitcoin Developers 2011-2012
- */
+// Copyright (c) 2011-2013 The Bitcoin developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <QApplication>
 
@@ -37,7 +34,6 @@
 #include <QToolBar>
 #include <QStatusBar>
 #include <QLabel>
-#include <QFont>
 #include <QMessageBox>
 #include <QProgressBar>
 #include <QStackedWidget>
@@ -71,6 +67,11 @@ BitcoinGUI::BitcoinGUI(QWidget *parent) :
 {
     restoreWindowGeometry();
     setWindowTitle(tr("BATA") + " - " + tr("Wallet"));
+
+// Main Wallet Background image MM - 20160925
+
+    setStyleSheet("QMainWindow { background-image: url(:images/bkg) }");
+
 #ifndef Q_OS_MAC
     QApplication::setWindowIcon(QIcon(":icons/bitcoin"));
     setWindowIcon(QIcon(":icons/bitcoin"));
@@ -150,6 +151,8 @@ BitcoinGUI::BitcoinGUI(QWidget *parent) :
 
     rpcConsole = new RPCConsole(this);
     connect(openRPCConsoleAction, SIGNAL(triggered()), rpcConsole, SLOT(show()));
+    // prevents an oben debug window from becoming stuck/unusable on client shutdown
+    connect(quitAction, SIGNAL(triggered()), rpcConsole, SLOT(hide()));
 
     // Install event filter to be able to catch status tip events (QEvent::StatusTip)
     this->installEventFilter(this);
@@ -173,21 +176,21 @@ void BitcoinGUI::createActions()
 {
     QActionGroup *tabGroup = new QActionGroup(this);
 
-    overviewAction = new QAction(QIcon(":/icons/overview"), tr("&Summary"), this);
+    overviewAction = new QAction(QIcon(":/icons/overview"), tr("&Overview"), this);
     overviewAction->setStatusTip(tr("Show general overview of wallet"));
     overviewAction->setToolTip(overviewAction->statusTip());
     overviewAction->setCheckable(true);
     overviewAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_1));
     tabGroup->addAction(overviewAction);
 
-    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&Send Coins"), this);
+    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&Send"), this);
     sendCoinsAction->setStatusTip(tr("Send coins to a BATA address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
     sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
     tabGroup->addAction(sendCoinsAction);
 
-    receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("&Receive Coins"), this);
+    receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("&Receive"), this);
     receiveCoinsAction->setStatusTip(tr("Show the list of addresses for receiving payments"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
@@ -201,8 +204,8 @@ void BitcoinGUI::createActions()
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
     tabGroup->addAction(historyAction);
 
-    addressBookAction = new QAction(QIcon(":/icons/address-book"), tr("&Address Book"), this);
-    addressBookAction->setStatusTip(tr("Edit the list of stored addresses and labels for sending"));
+    addressBookAction = new QAction(QIcon(":/icons/address-book"), tr("&Addresses"), this);
+    addressBookAction->setStatusTip(tr("Edit the list of stored addresses and labels"));
     addressBookAction->setToolTip(addressBookAction->statusTip());
     addressBookAction->setCheckable(true);
     addressBookAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
@@ -630,21 +633,28 @@ void BitcoinGUI::message(const QString &title, const QString &message, unsigned 
     int nMBoxIcon = QMessageBox::Information;
     int nNotifyIcon = Notificator::Information;
 
-    // Override title based on style
     QString msgType;
-    switch (style) {
-    case CClientUIInterface::MSG_ERROR:
-        msgType = tr("Error");
-        break;
-    case CClientUIInterface::MSG_WARNING:
-        msgType = tr("Warning");
-        break;
-    case CClientUIInterface::MSG_INFORMATION:
-        msgType = tr("Information");
-        break;
-    default:
-        msgType = title; // Use supplied title
+
+    // Prefer supplied title over style based title
+    if (!title.isEmpty()) {
+        msgType = title;
     }
+    else {
+        switch (style) {
+        case CClientUIInterface::MSG_ERROR:
+            msgType = tr("Error");
+            break;
+        case CClientUIInterface::MSG_WARNING:
+            msgType = tr("Warning");
+            break;
+        case CClientUIInterface::MSG_INFORMATION:
+            msgType = tr("Information");
+            break;
+        default:
+            break;
+        }
+    }
+    // Append title to "Bitcoin - "
     if (!msgType.isEmpty())
         strTitle += " - " + msgType;
 
@@ -665,7 +675,9 @@ void BitcoinGUI::message(const QString &title, const QString &message, unsigned 
         if (!(buttons = (QMessageBox::StandardButton)(style & CClientUIInterface::BTN_MASK)))
             buttons = QMessageBox::Ok;
 
-        QMessageBox mBox((QMessageBox::Icon)nMBoxIcon, strTitle, message, buttons);
+        // Ensure we get users attention
+        showNormalIfMinimized();
+        QMessageBox mBox((QMessageBox::Icon)nMBoxIcon, strTitle, message, buttons, this);
         int r = mBox.exec();
         if (ret != NULL)
             *ret = r == QMessageBox::Ok;
@@ -713,9 +725,8 @@ void BitcoinGUI::askFee(qint64 nFeeRequired, bool *payFee)
     QString strMessage = tr("This transaction is over the size limit. You can still send it for a fee of %1, "
         "which goes to the nodes that process your transaction and helps to support the network. "
         "Do you want to pay the fee?").arg(BitcoinUnits::formatWithUnit(BitcoinUnits::BTC, nFeeRequired));
-    QMessageBox::StandardButton retval = QMessageBox::question(
-          this, tr("Confirm transaction fee"), strMessage,
-          QMessageBox::Yes|QMessageBox::Cancel, QMessageBox::Yes);
+    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm transaction fee"), strMessage,
+        QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Yes);
     *payFee = (retval == QMessageBox::Yes);
 }
 
@@ -757,7 +768,7 @@ void BitcoinGUI::dropEvent(QDropEvent *event)
             walletFrame->gotoSendCoinsPage();
         else
             message(tr("URI handling"), tr("URI can not be parsed! This can be caused by an invalid BATA address or malformed URI parameters."),
-                      CClientUIInterface::ICON_WARNING);
+                CClientUIInterface::ICON_WARNING);
     }
 
     event->acceptProposedAction();

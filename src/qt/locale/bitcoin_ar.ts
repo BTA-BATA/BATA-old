@@ -349,7 +349,7 @@ This product includes software developed by the OpenSSL Project for use in the O
     </message>
     <message>
         <location line="+7"/>
-        <source>Edit the list of stored addresses and labels for sending</source>
+        <source>Edit the list of stored addresses and labels</source>
         <translation type="unfinished"/>
     </message>
     <message>

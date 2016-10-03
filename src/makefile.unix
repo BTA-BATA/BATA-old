@@ -95,7 +95,7 @@ LIBS+= \
 
     # -D_FORTIFY_SOURCE=2 does some checking for potentially exploitable code patterns in
     # the source such overflowing a statically defined buffer.
-    HARDENING+=-D_FORTIFY_SOURCE=2
+    HARDENING+=-U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2
 #
 
 
@@ -121,7 +121,6 @@ OBJS= \
     obj/key.o \
     obj/db.o \
     obj/init.o \
-    obj/irc.o \
     obj/keystore.o \
     obj/main.o \
     obj/net.o \
