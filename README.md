@@ -1,4 +1,4 @@
-![BATA](https://github.com/justinvforvendetta/BATA-SOURCE/blob/master/bata.png)
+![BATA](https://bata.money/images/bta_square.png)
 
 Coin Type: POW
 
