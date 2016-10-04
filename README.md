@@ -20,19 +20,33 @@ rpc port: 5493
 
 net port: 5784
 
-Website: http://www.bata.io
+Website: https://bata.io
+
+What is Bata [BTA]?
+
+Bata [BTA] is a currency that has been developed to replace trade tokens in traditional Barter Systems. As the "Sharing Economy" grows, so does the decentralized market.
+Bata aims to change way the way we trade, by introducing Barter on the Blockchain.
+
+Blockchain Explorer
+https://chainz.cryptoid.info/bta/
+
+Official Social Media
 
 Twitter: @Bata_Money
 
 https://www.facebook.com/batacurrency
 
+https://www.reddit.com/r/batamoney
 
+Forums:
+
+https://bitcointalk.org/index.php?topic=1040956
 
 https://cryptocointalk.com/topic/37776-pre-annbta-bata-scrypt-pow-modern-day-trade/
 
-https://www.altcoincalendar.info/coins/1614-BTA
+http://bitcoingarden.tk/forum/index.php?topic=3479.msg90749#msg90749
 
-https://bitcointalk.org/index.php?topic=1040956
+https://www.cryptocompare.com/coins/bta/forum
 
 
 ### instructions for compile: 
