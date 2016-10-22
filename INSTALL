@@ -1,9 +1,5 @@
 Building BATA
 
-See doc/readme-qt.rst for instructions on building BATA-Qt,
-the intended-for-end-users, nice-graphical-interface, reference
-implementation of BATA.
-
-See doc/build-*.txt for instructions on building BATAd,
+See doc/build-*.md for instructions on building bitcoind,
 the intended-for-services, no-graphical-interface, reference
 implementation of BATA.
