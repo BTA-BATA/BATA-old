@@ -22,17 +22,40 @@ net port: 5784
 
 Website: https://bata.io
 
-What is Bata [BTA]?
+Slack : https://bata-blockchain.signup.team/
 
-Bata [BTA] is a currency that has been developed to replace trade tokens in traditional Barter Systems. As the "Sharing Economy" grows, so does the decentralized market.
+Bootstrap available here:
+http://crypt.midnightminer.net/bootstraps/bata/bootstrap.zip
+
+Unzip the file into the same directory as the BATA-qt.exe
+Then with a shortcut or in the command prompt:
+BATA-qt.exe -loadblock=bootstrap.dat
+
+Seednode
+
+in your BATA.conf file just at this line
+addnode=68.71.58.226
+
+
+What is BATA (BTA)?
+
+
+The predecessor of barter trade dollars. Soon to release new POW/POS Hybrid.
+
+Bata (BTA) is a currency that has been developed to replace trade dollars in traditional Barter Systems. As the "Sharing Economy" grows, so does the decentralized market.
+
 Bata aims to change way the way we trade, by introducing Barter on the Blockchain.
+
+A Barter Currency has been re-invented on a blockchain, decentralized, secure and widely available in the form of BTA, replacing a Trade Dollar. Trade Dollars are just like cash and for that matter are based on regular currency, but in current Barter Systems they are controlled and issued by a central party.
+
+BTA is traded on multiple cryptocurrency exchanges right across the globe.
 
 Blockchain Explorer
 https://chainz.cryptoid.info/bta/
 
 Official Social Media
 
-Twitter: @Bata_Money
+https://twitter.com/Bata_Money
 
 https://www.facebook.com/batacurrency
 
