@@ -25,15 +25,19 @@ Website: https://bata.io
 Slack : https://bata-blockchain.signup.team/
 
 Bootstrap available here:
+
 http://crypt.midnightminer.net/bootstraps/bata/bootstrap.zip
 
 Unzip the file into the same directory as the BATA-qt.exe
+
 Then with a shortcut or in the command prompt:
+
 BATA-qt.exe -loadblock=bootstrap.dat
 
 Seednode
 
 in your BATA.conf file just at this line
+
 addnode=68.71.58.226
 
 
