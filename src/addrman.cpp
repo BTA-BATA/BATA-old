@@ -126,10 +126,10 @@ void CAddrMan::Delete(int nId)
     assert(info.nRefCount == 0);
 
     SwapRandom(info.nRandomPos, vRandom.size() - 1);
-                vRandom.pop_back();
-                mapAddr.erase(info);
+    vRandom.pop_back();
+    mapAddr.erase(info);
     mapInfo.erase(nId);
-                nNew--;
+    nNew--;
 }
 
 void CAddrMan::ClearNew(int nUBucket, int nUBucketPos)
@@ -143,7 +143,7 @@ void CAddrMan::ClearNew(int nUBucket, int nUBucketPos)
         vvNew[nUBucket][nUBucketPos] = -1;
         if (infoDelete.nRefCount == 0) {
             Delete(nIdDelete);
-            }
+        }
     }
 }
 
@@ -155,7 +155,7 @@ void CAddrMan::MakeTried(CAddrInfo& info, int nId)
         if (vvNew[bucket][pos] == nId) {
             vvNew[bucket][pos] = -1;
             info.nRefCount--;
-    }
+        }
     }
     nNew--;
 
@@ -177,14 +177,14 @@ void CAddrMan::MakeTried(CAddrInfo& info, int nId)
         vvTried[nKBucket][nKBucketPos] = -1;
         nTried--;
 
-    // find which new bucket it belongs to
+        // find which new bucket it belongs to
         int nUBucket = infoOld.GetNewBucket(nKey);
         int nUBucketPos = infoOld.GetBucketPosition(nKey, true, nUBucket);
         ClearNew(nUBucket, nUBucketPos);
         assert(vvNew[nUBucket][nUBucketPos] == -1);
 
         // Enter it into the new set again.
-    infoOld.nRefCount = 1;
+        infoOld.nRefCount = 1;
         vvNew[nUBucket][nUBucketPos] = nIdEvict;
         nNew++;
     }
@@ -301,7 +301,7 @@ bool CAddrMan::Add_(const CAddress& addr, const CNetAddr& source, int64_t nTimeP
         }
         if (fInsert) {
             ClearNew(nUBucket, nUBucketPos);
-        pinfo->nRefCount++;
+            pinfo->nRefCount++;
             vvNew[nUBucket][nUBucketPos] = nId;
         } else {
             if (pinfo->nRefCount == 0) {
@@ -420,7 +420,7 @@ int CAddrMan::Check_()
                  if (mapInfo[vvTried[n][i]].GetBucketPosition(nKey, false, n) != i)
                      return -18;
                  setTried.erase(vvTried[n][i]);
-    }
+             }
         }
     }
 

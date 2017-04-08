@@ -221,7 +221,7 @@ BitcoinAmountField::BitcoinAmountField(QWidget *parent) :
 
 void BitcoinAmountField::clear()
 {
-        amount->clear();
+    amount->clear();
     unit->setCurrentIndex(0);
 }
 

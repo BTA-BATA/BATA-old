@@ -64,6 +64,7 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
 		( 446000, uint256("0x6353453ab70c8f8d7c2a427848b31815b403954b35897fc171cdcb90efdc876c"))
 		( 550000, uint256("0xc3e04a21969b9b7c8b058336a752829de20f60381ab421dc65d8e7dc652fe47e"))
         ;
+
 static const Checkpoints::CCheckpointData data = {
         &mapCheckpoints,
         1474222586, // * UNIX timestamp of last checkpoint block
@@ -109,7 +110,7 @@ public:
         pchMessageStart[2] = 0xaf;
         pchMessageStart[3] = 0xeb;
         vAlertPubKey = ParseHex("040184710fa689ad5023690c80f3a49c8f13f8d45b8c857fbcbc8bc4a8e4d3eb4b10f4d4604fa08dce601aaf0f470216fe1b51850b4acf21b179c45070ac7b03a9");
-        nDefaultPort = 9333;
+        nDefaultPort = 5784;
         bnProofOfWorkLimit = ~uint256(0) >> 20;
         nSubsidyHalvingInterval = 100000;
         nEnforceBlockUpgradeMajority = 750;
@@ -134,7 +135,7 @@ public:
         CMutableTransaction txNew;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
-        txNew.vin[0].scriptSig = CScript() << 486604799 << CBigNum(4) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
+        txNew.vin[0].scriptSig = CScript() << 486604799 << CScriptNum(4) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
         txNew.vout[0].nValue = 88 * COIN;
         txNew.vout[0].scriptPubKey = CScript() << ParseHex("040184710fa689ad5023690c80f3a49c8f13f8d45b8c857fbcbc8bc4a8e4d3eb4b10f4d4604fa08dce601aaf0f470216fe1b51850b4acf21b179c45070ac7b03a9") << OP_CHECKSIG;
         genesis.vtx.push_back(txNew);
@@ -149,15 +150,16 @@ public:
         assert(hashGenesisBlock == uint256("0xb4bee36fd54a6176fd832f462641415c142d50e4b378f71c041870c2b1186bc8"));
         assert(genesis.hashMerkleRoot == uint256("0x3164764afd26106715d7e58de57468e236b167d639095be545459d2bcf94afe7"));
 
-        vSeeds.push_back(CDNSSeedData("midnightnet.net", "batadnsseed.midnightmniner.net"));
+        vSeeds.push_back(CDNSSeedData("midnightnet.net", "batadnsseed.midnightminer.net"));
         vSeeds.push_back(CDNSSeedData("bata.io", "batadnsseed.bata.io"));
 
-        base58Prefixes[PUBKEY_ADDRESS] = list_of(25);
-        base58Prefixes[SCRIPT_ADDRESS] = list_of(5)(85);
-        base58Prefixes[SCRIPT_ADDRESS2] = list_of(85);
-        base58Prefixes[SECRET_KEY] =     list_of(188);
-        base58Prefixes[EXT_PUBLIC_KEY] = list_of(0xA4)(0x0C)(0x86)(0xFA);
-        base58Prefixes[EXT_SECRET_KEY] = list_of(0xA4)(0x0B)(0x91)(0xBD);
+        base58Prefixes[PUBKEY_ADDRESS] = list_of(25);						// Bata addresses start with 'B'
+        base58Prefixes[SCRIPT_ADDRESS] = list_of(5);						// Bata script addresses start with '3'
+        base58Prefixes[SCRIPT_ADDRESS2] = list_of(85);						// Bata script addresses start with 'b'
+        base58Prefixes[SECRET_KEY] =     list_of(188);						// Bata private keys start with '2'
+        base58Prefixes[EXT_PUBLIC_KEY] = list_of(0xA4)(0x0C)(0x86)(0xFA);	// Bata BIP32 pubkeys start with 'bpub'
+        base58Prefixes[EXT_SECRET_KEY] = list_of(0xA4)(0x0B)(0x91)(0xBD);	// Bata BIP32 prvkeys start with 'bprv'
+		base58Prefixes[EXT_COIN_TYPE]  = list_of(0x8000000b);				// Bata BIP44 coin type is 'b'
 
         convertSeed6(vFixedSeeds, pnSeed6_main, ARRAYLEN(pnSeed6_main));
 
@@ -194,7 +196,7 @@ public:
         pchMessageStart[2] = 0xaf;
         pchMessageStart[3] = 0xc5;
         vAlertPubKey = ParseHex("0449623fc74489a947c4b15d579115591add020e53b3490bf47297dfa3762250625f8ecc2fb4fc59f69bdce8f7080f3167808276ed2c79d297054367566038aa82");
-        nDefaultPort = 19333;
+        nDefaultPort = 33813;
         nEnforceBlockUpgradeMajority = 51;
         nRejectBlockOutdatedMajority = 75;
         nToCheckBlockUpgradeMajority = 100;
@@ -204,16 +206,16 @@ public:
         nMaxTipAge = 0x7fffffff;
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
-        genesis.nTime = 1317798646;
-        genesis.nNonce = 385270584;
+        genesis.nTime = 1388880557;
+        genesis.nNonce = 387006691;
         hashGenesisBlock = genesis.GetHash();
-        assert(hashGenesisBlock == uint256("0xb78197f0e175697646db1f738edc1ffdcb30588ebe70e7e16026489076577061"));
+//        assert(hashGenesisBlock == uint256("0xb78197f0e175697646db1f738edc1ffdcb30588ebe70e7e16026489076577061"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("batatools.com", "testnet-seed.batatools.com"));
-        vSeeds.push_back(CDNSSeedData("xurious.com", "testnet-seed.BTA.xurious.com"));
-        vSeeds.push_back(CDNSSeedData("wemine-testnet.com", "dnsseed.wemine-testnet.com"));
+        vSeeds.push_back(CDNSSeedData("bata.io", "testnet-seed.bata.io"));
+        vSeeds.push_back(CDNSSeedData("midnightminer.net", "testnet-bata.midnightminer.net"));
+//        vSeeds.push_back(CDNSSeedData("wemine-testnet.com", "dnsseed.wemine-testnet.com"));
 
         base58Prefixes[PUBKEY_ADDRESS] = list_of(111);
         base58Prefixes[SCRIPT_ADDRESS] = list_of(196);
@@ -231,8 +233,8 @@ public:
         fMineBlocksOnDemand = false;
         fTestnetToBeDeprecatedFieldRPC = true;
 
-        // Bata: Testnet v2 enforced as of block 400k
-        nEnforceV2AfterHeight = 400000;
+        // Bata: v2 enforced using Bitcoin's supermajority rule
+        nEnforceV2AfterHeight = -1;
     }
     const Checkpoints::CCheckpointData& Checkpoints() const 
     {
@@ -266,8 +268,8 @@ public:
         genesis.nBits = 0x207fffff;
         genesis.nNonce = 0;
         hashGenesisBlock = genesis.GetHash();
-        nDefaultPort = 19444;
-        assert(hashGenesisBlock == uint256("0x530827f38f93b43ed12af0b3ad25a288dc02ed74d6d7857862df51fc56c416f9"));
+        nDefaultPort = 33814;
+//        assert(hashGenesisBlock == uint256("0x530827f38f93b43ed12af0b3ad25a288dc02ed74d6d7857862df51fc56c416f9"));
 
         vFixedSeeds.clear(); //! Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();  //! Regtest mode doesn't have any DNS seeds.
@@ -298,7 +300,7 @@ public:
     CUnitTestParams() {
         networkID = CBaseChainParams::UNITTEST;
         strNetworkID = "unittest";
-        nDefaultPort = 18445;
+        nDefaultPort = 33815;
         vFixedSeeds.clear(); //! Unit test mode doesn't have any fixed seeds.
         vSeeds.clear();  //! Unit test mode doesn't have any DNS seeds.
 

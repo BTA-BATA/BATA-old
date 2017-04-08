@@ -153,8 +153,8 @@ CAddress GetLocalAddress(const CNetAddr *paddrPeer)
     {
         ret = CAddress(addr);
     }
-        ret.nServices = nLocalServices;
-        ret.nTime = GetAdjustedTime();
+    ret.nServices = nLocalServices;
+    ret.nTime = GetAdjustedTime();
     return ret;
 }
 
@@ -238,8 +238,8 @@ void AdvertizeLocal(CNode *pnode)
             addrLocal.SetIP(pnode->addrLocal);
         }
         if (addrLocal.IsRoutable())
-            {
-                pnode->PushAddress(addrLocal);
+        {
+            pnode->PushAddress(addrLocal);
         }
     }
 }
@@ -429,7 +429,7 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest)
         addrman.Attempt(addrConnect);
     }
 
-        return NULL;
+    return NULL;
 }
 
 void CNode::CloseSocketDisconnect()
@@ -494,12 +494,12 @@ bool CNode::IsBanned(CNetAddr ip)
 
 bool CNode::Ban(const CNetAddr &addr) {
     int64_t banTime = GetTime()+GetArg("-bantime", 60*60*24);  // Default 24-hour ban
-        {
-            LOCK(cs_setBanned);
-            if (setBanned[addr] < banTime)
-                setBanned[addr] = banTime;
-        }
-        return true;
+    {
+        LOCK(cs_setBanned);
+        if (setBanned[addr] < banTime)
+            setBanned[addr] = banTime;
+    }
+    return true;
 }
 
 
@@ -852,48 +852,48 @@ void ThreadSocketHandler()
         BOOST_FOREACH(const ListenSocket& hListenSocket, vhListenSocket)
         {
             if (hListenSocket.socket != INVALID_SOCKET && FD_ISSET(hListenSocket.socket, &fdsetRecv))
-        {
-            struct sockaddr_storage sockaddr;
-            socklen_t len = sizeof(sockaddr);
+            {
+                struct sockaddr_storage sockaddr;
+                socklen_t len = sizeof(sockaddr);
                 SOCKET hSocket = accept(hListenSocket.socket, (struct sockaddr*)&sockaddr, &len);
-            CAddress addr;
-            int nInbound = 0;
+                CAddress addr;
+                int nInbound = 0;
 
-            if (hSocket != INVALID_SOCKET)
-                if (!addr.SetSockAddr((const struct sockaddr*)&sockaddr))
+                if (hSocket != INVALID_SOCKET)
+                    if (!addr.SetSockAddr((const struct sockaddr*)&sockaddr))
                         LogPrintf("Warning: Unknown socket family\n");
 
                 bool whitelisted = hListenSocket.whitelisted || CNode::IsWhitelistedRange(addr);
-            {
-                LOCK(cs_vNodes);
-                BOOST_FOREACH(CNode* pnode, vNodes)
-                    if (pnode->fInbound)
-                        nInbound++;
-            }
+                {
+                    LOCK(cs_vNodes);
+                    BOOST_FOREACH(CNode* pnode, vNodes)
+                        if (pnode->fInbound)
+                            nInbound++;
+                }
 
-            if (hSocket == INVALID_SOCKET)
-            {
-                int nErr = WSAGetLastError();
-                if (nErr != WSAEWOULDBLOCK)
+                if (hSocket == INVALID_SOCKET)
+                {
+                    int nErr = WSAGetLastError();
+                    if (nErr != WSAEWOULDBLOCK)
                         LogPrintf("socket error accept failed: %s\n", NetworkErrorString(nErr));
                 }
                 else if (!IsSelectableSocket(hSocket))
                 {
                     LogPrintf("connection from %s dropped: non-selectable socket\n", addr.ToString());
                     CloseSocket(hSocket);
-            }
-            else if (nInbound >= nMaxConnections - MAX_OUTBOUND_CONNECTIONS)
-            {
+                }
+                else if (nInbound >= nMaxConnections - MAX_OUTBOUND_CONNECTIONS)
+                {
                     LogPrint("net", "connection from %s dropped (full)\n", addr.ToString());
                     CloseSocket(hSocket);
                 }
                 else if (CNode::IsBanned(addr) && !whitelisted)
-            {
+                {
                     LogPrintf("connection from %s dropped (banned)\n", addr.ToString());
                     CloseSocket(hSocket);
-            }
-            else
-            {
+                }
+                else
+                {
                     // According to the internet TCP_NODELAY is not carried into accepted sockets
                     // on all platforms.  Set it again here just to be sure.
                     int set = 1;
@@ -903,16 +903,16 @@ void ThreadSocketHandler()
                     setsockopt(hSocket, IPPROTO_TCP, TCP_NODELAY, (void*)&set, sizeof(int));
 #endif
 
-                CNode* pnode = new CNode(hSocket, addr, "", true);
-                pnode->AddRef();
+                    CNode* pnode = new CNode(hSocket, addr, "", true);
+                    pnode->AddRef();
                     pnode->fWhitelisted = whitelisted;
 
-                {
-                    LOCK(cs_vNodes);
-                    vNodes.push_back(pnode);
+                    {
+                        LOCK(cs_vNodes);
+                        vNodes.push_back(pnode);
+                    }
                 }
             }
-        }
         }
 
         //
@@ -1075,7 +1075,7 @@ void ThreadMapPort()
             }
         }
 
-        string strDesc = "Litecoin " + FormatFullVersion();
+        string strDesc = "Bata " + FormatFullVersion();
 
         try {
             while (true) {
@@ -1573,7 +1573,7 @@ bool BindListenPort(const CService &addrBind, string& strError, bool fWhiteliste
     {
         int nErr = WSAGetLastError();
         if (nErr == WSAEADDRINUSE)
-            strError = strprintf(_("Unable to bind to %s on this computer. Litecoin Core is probably already running."), addrBind.ToString());
+            strError = strprintf(_("Unable to bind to %s on this computer. Bata Core is probably already running."), addrBind.ToString());
         else
             strError = strprintf(_("Unable to bind to %s on this computer (bind returned error %s)"), addrBind.ToString(), NetworkErrorString(nErr));
         LogPrintf("%s\n", strError);
@@ -1713,7 +1713,7 @@ bool StopNode()
 
     if (fAddressesInitialized)
     {
-    DumpAddresses();
+        DumpAddresses();
         fAddressesInitialized = false;
     }
 

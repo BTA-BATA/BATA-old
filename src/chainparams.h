@@ -35,9 +35,10 @@ public:
         PUBKEY_ADDRESS,
         SCRIPT_ADDRESS,
         SCRIPT_ADDRESS2,
-        SECRET_KEY,
-        EXT_PUBLIC_KEY,
-        EXT_SECRET_KEY,
+        SECRET_KEY,     // BIP16
+        EXT_PUBLIC_KEY, // BIP32
+        EXT_SECRET_KEY, // BIP32
+        EXT_COIN_TYPE,  // BIP44
 
         MAX_BASE58_TYPES
     };

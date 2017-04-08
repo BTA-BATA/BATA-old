@@ -718,23 +718,23 @@ public:
             if (fDebitCached)
                 debit += nDebitCached;
             else
-        {
+            {
                 nDebitCached = pwallet->GetDebit(*this, ISMINE_SPENDABLE);
                 fDebitCached = true;
                 debit += nDebitCached;
+            }
         }
-    }
         if(filter & ISMINE_WATCH_ONLY)
         {
             if(fWatchDebitCached)
                 debit += nWatchDebitCached;
             else
-    {
+            {
                 nWatchDebitCached = pwallet->GetDebit(*this, ISMINE_WATCH_ONLY);
                 fWatchDebitCached = true;
                 debit += nWatchDebitCached;
             }
-    }
+        }
         return debit;
     }
 
@@ -747,13 +747,13 @@ public:
         int64_t credit = 0;
         if (filter & ISMINE_SPENDABLE)
         {
-        // GetBalance can assume transactions in mapWallet won't change
+            // GetBalance can assume transactions in mapWallet won't change
             if (fCreditCached)
                 credit += nCreditCached;
             else
             {
                 nCreditCached = pwallet->GetCredit(*this, ISMINE_SPENDABLE);
-        fCreditCached = true;
+                fCreditCached = true;
                 credit += nCreditCached;
             }
         }

@@ -74,8 +74,8 @@ private:
     PeerTableModel *peerTableModel;
 
     int cachedNumBlocks;
-	bool cachedReindexing;
-	bool cachedImporting;
+    bool cachedReindexing;
+    bool cachedImporting;
 
     int numBlocksAtStartup;
 

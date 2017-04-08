@@ -187,7 +187,7 @@ struct secure_allocator : public std::allocator<T> {
     // MSVC8 default copy constructor is broken
     typedef std::allocator<T> base;
     typedef typename base::size_type size_type;
-    typedef typename base::difference_type  difference_type;
+    typedef typename base::difference_type difference_type;
     typedef typename base::pointer pointer;
     typedef typename base::const_pointer const_pointer;
     typedef typename base::reference reference;
@@ -233,7 +233,7 @@ struct zero_after_free_allocator : public std::allocator<T> {
     // MSVC8 default copy constructor is broken
     typedef std::allocator<T> base;
     typedef typename base::size_type size_type;
-    typedef typename base::difference_type  difference_type;
+    typedef typename base::difference_type difference_type;
     typedef typename base::pointer pointer;
     typedef typename base::const_pointer const_pointer;
     typedef typename base::reference reference;

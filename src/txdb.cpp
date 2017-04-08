@@ -29,11 +29,11 @@ CCoinsViewDB::CCoinsViewDB(size_t nCacheSize, bool fMemory, bool fWipe) : db(Get
 }
 
 bool CCoinsViewDB::GetCoins(const uint256 &txid, CCoins &coins) const {
-    return db.Read(make_pair('c', txid), coins); 
+    return db.Read(make_pair('c', txid), coins);
 }
 
 bool CCoinsViewDB::HaveCoins(const uint256 &txid) const {
-    return db.Exists(make_pair('c', txid)); 
+    return db.Exists(make_pair('c', txid));
 }
 
 uint256 CCoinsViewDB::GetBestBlock() const {
@@ -126,7 +126,7 @@ bool CCoinsViewDB::GetStats(CCoinsStats &stats) const {
                 ssKey >> txhash;
                 ss << txhash;
                 ss << VARINT(coins.nVersion);
-                ss << (coins.fCoinBase ? 'c' : 'n'); 
+                ss << (coins.fCoinBase ? 'c' : 'n');
                 ss << VARINT(coins.nHeight);
                 stats.nTransactions++;
                 for (unsigned int i=0; i<coins.vout.size(); i++) {
@@ -216,7 +216,7 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
                 // We use the sha256 hash for the block index for performance reasons, which is recorded for later use.
                 // CheckProofOfWork() uses the scrypt hash which is discarded after a block is accepted.
                 // While it is technically feasible to verify the PoW, doing so takes several minutes as it
-                // requires recomputing every PoW hash during every Litecoin startup.
+                // requires recomputing every PoW hash during every Bata startup.
                 // We opt instead to simply trust the data that is on your local disk.
                 //if (!CheckProofOfWork(pindexNew->GetBlockPoWHash(), pindexNew->nBits))
                 //    return error("LoadBlockIndex() : CheckProofOfWork failed: %s", pindexNew->ToString());

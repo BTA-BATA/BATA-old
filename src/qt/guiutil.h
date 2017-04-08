@@ -63,9 +63,9 @@ namespace GUIUtil
        @see  TransactionView::copyLabel, TransactionView::copyAmount, TransactionView::copyAddress
      */
     void copyEntryData(QAbstractItemView *view, int column, int role=Qt::EditRole);
-    
+
     void setClipboard(const QString& str);
-    
+
     /** Get save filename, mimics QFileDialog::getSaveFileName, except that it appends a default suffix
         when no suffix is provided by the user.
 
@@ -141,7 +141,7 @@ namespace GUIUtil
     {
         Q_OBJECT
 
-    public:
+        public:
             TableViewLastColumnResizingFixer(QTableView* table, int lastColMinimumWidth, int allColsMinimumWidth);
             void stretchColumnWidth(int column);
 
@@ -202,7 +202,7 @@ namespace GUIUtil
 #else
     typedef QProgressBar ProgressBar;
 #endif
-
+    
 } // namespace GUIUtil
 
 #endif // BITCOIN_QT_GUIUTIL_H

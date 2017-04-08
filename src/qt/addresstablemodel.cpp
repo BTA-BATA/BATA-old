@@ -370,18 +370,18 @@ QString AddressTableModel::addRow(const QString &type, const QString &label, con
         CPubKey newKey;
         if(!wallet->GetKeyFromPool(newKey))
         {
-        WalletModel::UnlockContext ctx(walletModel->requestUnlock());
-        if(!ctx.isValid())
-        {
-            // Unlock wallet failed or was cancelled
-            editStatus = WALLET_UNLOCK_FAILURE;
-            return QString();
-        }
+            WalletModel::UnlockContext ctx(walletModel->requestUnlock());
+            if(!ctx.isValid())
+            {
+                // Unlock wallet failed or was cancelled
+                editStatus = WALLET_UNLOCK_FAILURE;
+                return QString();
+            }
             if(!wallet->GetKeyFromPool(newKey))
-        {
-            editStatus = KEY_GENERATION_FAILURE;
-            return QString();
-        }
+            {
+                editStatus = KEY_GENERATION_FAILURE;
+                return QString();
+            }
         }
         strAddress = CBitcoinAddress(newKey.GetID()).ToString();
     }

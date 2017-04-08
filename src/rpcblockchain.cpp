@@ -74,7 +74,7 @@ Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool txDe
             txs.push_back(objTx);
         }
         else
-        txs.push_back(tx.GetHash().GetHex());
+            txs.push_back(tx.GetHash().GetHex());
     }
     result.push_back(Pair("tx", txs));
     result.push_back(Pair("time", block.GetBlockTime()));
@@ -158,7 +158,7 @@ Value getrawmempool(const Array& params, bool fHelp)
             "{                           (json object)\n"
             "  \"transactionid\" : {       (json object)\n"
             "    \"size\" : n,             (numeric) transaction size in bytes\n"
-            "    \"fee\" : n,              (numeric) transaction fee in litecoins\n"
+            "    \"fee\" : n,              (numeric) transaction fee in batas\n"
             "    \"time\" : n,             (numeric) local time transaction entered pool in seconds since 1 Jan 1970 GMT\n"
             "    \"height\" : n,           (numeric) block height when transaction entered pool\n"
             "    \"startingpriority\" : n, (numeric) priority when transaction entered pool\n"
@@ -207,14 +207,14 @@ Value getrawmempool(const Array& params, bool fHelp)
     }
     else
     {
-    vector<uint256> vtxid;
-    mempool.queryHashes(vtxid);
+        vector<uint256> vtxid;
+        mempool.queryHashes(vtxid);
 
-    Array a;
-    BOOST_FOREACH(const uint256& hash, vtxid)
-        a.push_back(hash.ToString());
+        Array a;
+        BOOST_FOREACH(const uint256& hash, vtxid)
+            a.push_back(hash.ToString());
 
-    return a;
+        return a;
     }
 }
 
@@ -362,8 +362,8 @@ Value gettxout(const Array& params, bool fHelp)
             "     \"hex\" : \"hex\",        (string) \n"
             "     \"reqSigs\" : n,          (numeric) Number of required signatures\n"
             "     \"type\" : \"pubkeyhash\", (string) The type, eg pubkeyhash\n"
-            "     \"addresses\" : [          (array of string) array of litecoin addresses\n"
-            "        \"litecoinaddress\"     (string) litecoin address\n"
+            "     \"addresses\" : [          (array of string) array of bata addresses\n"
+            "        \"bataaddress\"     (string) bata address\n"
             "        ,...\n"
             "     ]\n"
             "  },\n"

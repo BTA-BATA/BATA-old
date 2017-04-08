@@ -133,10 +133,10 @@ bool SendCoinsEntry::validate()
 
     // Sending a zero amount is invalid
     if (ui->payAmount->value(0) <= 0)
-        {
-            ui->payAmount->setValid(false);
-            retval = false;
-        }
+    {
+        ui->payAmount->setValid(false);
+        retval = false;
+    }
 
     // Reject dust outputs:
     if (retval && GUIUtil::isDust(ui->payTo->text(), ui->payAmount->value())) {

@@ -261,7 +261,7 @@ void BitcoinCore::initialize()
         qDebug() << __func__ << ": Running AppInit2 in thread";
         int rv = AppInit2(threadGroup);
         if(rv)
-    {
+        {
             /* Start a dummy RPC thread if no RPC thread is active yet
              * to handle timeouts.
              */
@@ -426,7 +426,7 @@ void BitcoinApplication::initializeResult(int retval)
         window->setClientModel(clientModel);
 
 #ifdef ENABLE_WALLET
-                if(pwalletMain)
+        if(pwalletMain)
         {
             walletModel = new WalletModel(pwalletMain, optionsModel);
 
@@ -435,22 +435,22 @@ void BitcoinApplication::initializeResult(int retval)
 
             connect(walletModel, SIGNAL(coinsSent(CWallet*,SendCoinsRecipient,QByteArray)),
                              paymentServer, SLOT(fetchPaymentACK(CWallet*,const SendCoinsRecipient&,QByteArray)));
-                }
+        }
 #endif
 
-                // If -min option passed, start window minimized.
+        // If -min option passed, start window minimized.
         if(GetBoolArg("-min", false))
-                {
+        {
             window->showMinimized();
-                }
-                else
-                {
+        }
+        else
+        {
             window->show();
-                }
+        }
         emit splashFinished(window);
 
 #ifdef ENABLE_WALLET
-                // Now that initialization/startup is done, process any command-line
+        // Now that initialization/startup is done, process any command-line
         // bitcoin: URIs or payment requests:
         connect(paymentServer, SIGNAL(receivedPaymentRequest(SendCoinsRecipient)),
                          window, SLOT(handlePaymentRequest(SendCoinsRecipient)));
@@ -458,7 +458,7 @@ void BitcoinApplication::initializeResult(int retval)
                          paymentServer, SLOT(handleURIOrFile(QString)));
         connect(paymentServer, SIGNAL(message(QString,QString,unsigned int)),
                          window, SLOT(message(QString,QString,unsigned int)));
-                QTimer::singleShot(100, paymentServer, SLOT(uiReady()));
+        QTimer::singleShot(100, paymentServer, SLOT(uiReady()));
 #endif
     } else {
         quit(); // Exit main loop
@@ -555,14 +555,14 @@ int main(int argc, char *argv[])
         QMessageBox::critical(0, QObject::tr("Bata Core"),
                               QObject::tr("Error: Specified data directory \"%1\" does not exist.").arg(QString::fromStdString(mapArgs["-datadir"])));
         return 1;
-            }
+    }
     try {
         ReadConfigFile(mapArgs, mapMultiArgs);
     } catch(std::exception &e) {
         QMessageBox::critical(0, QObject::tr("Bata Core"),
                               QObject::tr("Error: Cannot parse configuration file: %1. Only use key=value syntax.").arg(e.what()));
         return false;
-        }
+    }
 
     /// 7. Determine network (and switch to network specific options)
     // - Do not call Params() before this step

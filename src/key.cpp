@@ -20,7 +20,7 @@ class CSecp256k1Init {
 public:
     CSecp256k1Init() {
         secp256k1_start(SECP256K1_START_SIGN);
-        }
+    }
     ~CSecp256k1Init() {
         secp256k1_stop();
     }
@@ -131,7 +131,7 @@ bool CKey::Load(CPrivKey &privkey, CPubKey &vchPubKey, bool fSkipCheck=false) {
     fValid = true;
 
     if (fSkipCheck)
-    return true;
+        return true;
 
     return VerifyPubKey(vchPubKey);
 }

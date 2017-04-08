@@ -58,7 +58,7 @@ void OptionsModel::Init()
 
     // Display
     if (!settings.contains("nDisplayUnit"))
-        settings.setValue("nDisplayUnit", BitcoinUnits::BTC);
+        settings.setValue("nDisplayUnit", BitcoinUnits::BTA);
     nDisplayUnit = settings.value("nDisplayUnit").toInt();
 
     if (!settings.contains("strThirdPartyTxUrls"))
@@ -231,7 +231,7 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
         // default proxy
         case ProxyUse:
             if (settings.value("fUseProxy") != value) {
-            settings.setValue("fUseProxy", value.toBool());
+                settings.setValue("fUseProxy", value.toBool());
                 setRestartRequired(true);
             }
             break;
@@ -256,7 +256,7 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 QString strNewValue = strlIpPort.at(0) + ":" + value.toString();
                 settings.setValue("addrProxy", strNewValue);
                 setRestartRequired(true);
-        }
+            }
         }
         break;
 #ifdef ENABLE_WALLET
@@ -279,7 +279,7 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
             break;
         case Language:
             if (settings.value("language") != value) {
-            settings.setValue("language", value);
+                settings.setValue("language", value);
                 setRestartRequired(true);
             }
             break;
@@ -304,8 +304,8 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
             if (settings.value("fListen") != value) {
                 settings.setValue("fListen", value);
                 setRestartRequired(true);
-        }
-        break;
+            }
+            break;
         default:
             break;
         }

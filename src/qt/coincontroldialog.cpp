@@ -39,7 +39,7 @@ CoinControlDialog::CoinControlDialog(QWidget *parent) :
     model(0)
 {
     ui->setupUi(this);
-    
+
     // context menu actions
     QAction *copyAddressAction = new QAction(tr("Copy address"), this);
     QAction *copyLabelAction = new QAction(tr("Copy label"), this);
@@ -57,7 +57,7 @@ CoinControlDialog::CoinControlDialog(QWidget *parent) :
     contextMenu->addSeparator();
     contextMenu->addAction(lockAction);
     contextMenu->addAction(unlockAction);
-    
+
     // context menu signals
     connect(ui->treeWidget, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showMenu(QPoint)));
     connect(copyAddressAction, SIGNAL(triggered()), this, SLOT(copyAddress()));
@@ -145,7 +145,7 @@ CoinControlDialog::CoinControlDialog(QWidget *parent) :
 }
 
 CoinControlDialog::~CoinControlDialog()
-{    
+{
     QSettings settings;
     settings.setValue("nCoinControlMode", ui->radioListMode->isChecked());
     settings.setValue("nCoinControlSortColumn", sortColumn);
@@ -353,7 +353,7 @@ void CoinControlDialog::sortView(int column, Qt::SortOrder order)
 void CoinControlDialog::headerSectionClicked(int logicalIndex)
 {
     if (logicalIndex == COLUMN_CHECKBOX) // click on most left column -> do nothing
-    {      
+    {
         ui->treeWidget->header()->setSortIndicator(getMappedColumn(sortColumn), sortOrder);
     }
     else
@@ -390,10 +390,10 @@ void CoinControlDialog::radioListMode(bool checked)
 void CoinControlDialog::viewItemChanged(QTreeWidgetItem* item, int column)
 {
     if (column == COLUMN_CHECKBOX && item->text(COLUMN_TXHASH).length() == 64) // transaction hash is 64 characters (this means its a child node, so its not a parent node in tree mode)
-    { 
+    {
         COutPoint outpt(uint256(item->text(COLUMN_TXHASH).toStdString()), item->text(COLUMN_VOUT_INDEX).toUInt());
         
-        if (item->checkState(COLUMN_CHECKBOX) == Qt::Unchecked)              
+        if (item->checkState(COLUMN_CHECKBOX) == Qt::Unchecked)
             coinControl->UnSelect(outpt);
         else if (item->isDisabled()) // locked (this happens if "check all" through parent node)
             item->setCheckState(COLUMN_CHECKBOX, Qt::Unchecked);
@@ -434,7 +434,7 @@ QString CoinControlDialog::getPriorityLabel(double dPriority, double mempoolEsti
     else if (dPriority * 10 > dPriorityMedium)      return tr("low-medium");
     else if (dPriority * 100 > dPriorityMedium)     return tr("low");
     else if (dPriority * 1000 > dPriorityMedium)    return tr("lower");
-        else                                    return tr("lowest");
+    else                                            return tr("lowest");
 }
 
 // shows count of locked unspent outputs
@@ -445,7 +445,7 @@ void CoinControlDialog::updateLabelLocked()
     if (vOutpts.size() > 0)
     {
        ui->labelLocked->setText(tr("(%1 locked)").arg(vOutpts.size()));
-       ui->labelLocked->setVisible(true); 
+       ui->labelLocked->setVisible(true);
     }
     else ui->labelLocked->setVisible(false);
 }
@@ -475,7 +475,7 @@ void CoinControlDialog::updateLabels(WalletModel *model, QDialog* dialog)
             CTxOut txout(amount, (CScript)vector<unsigned char>(24, 0));
             txDummy.vout.push_back(txout);
             if (txout.IsDust(::minRelayTxFee))
-               fDust = true; 
+               fDust = true;
         }
     }
 
@@ -606,7 +606,7 @@ void CoinControlDialog::updateLabels(WalletModel *model, QDialog* dialog)
     dialog->findChild<QLabel *>("labelCoinControlChange")       ->setEnabled(nPayAmount > 0);
     
     // stats
-    l1->setText(QString::number(nQuantity));                                 // Quantity        
+    l1->setText(QString::number(nQuantity));                                 // Quantity
     l2->setText(BitcoinUnits::formatWithUnit(nDisplayUnit, nAmount));        // Amount
     l3->setText(BitcoinUnits::formatWithUnit(nDisplayUnit, nPayFee));        // Fee
     l4->setText(BitcoinUnits::formatWithUnit(nDisplayUnit, nAfterFee));      // After Fee
@@ -753,7 +753,7 @@ void CoinControlDialog::updateView()
                 QString sLabel = model->getAddressTableModel()->labelForAddress(sAddress);
                 if (sLabel.isEmpty())
                     sLabel = tr("(no label)");
-                itemOutput->setText(COLUMN_LABEL, sLabel); 
+                itemOutput->setText(COLUMN_LABEL, sLabel);
             }
 
             // amount
@@ -781,7 +781,7 @@ void CoinControlDialog::updateView()
             // vout index
             itemOutput->setText(COLUMN_VOUT_INDEX, QString::number(out.i));
             
-             // disable locked coins     
+             // disable locked coins
             if (model->isLockedCoin(txhash, out.i))
             {
                 COutPoint outpt(txhash, out.i);

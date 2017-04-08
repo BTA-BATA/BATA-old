@@ -51,7 +51,6 @@ class CNetAddr
         explicit CNetAddr(const std::string &strIp, bool fAllowLookup = false);
         void Init();
         void SetIP(const CNetAddr& ip);
-        bool SetSpecial(const std::string &strName); // for Tor and I2P addresses
 
         /**
          * Set raw IPv4 or IPv6 address (in network byte order)
@@ -60,6 +59,7 @@ class CNetAddr
         void SetRaw(Network network, const uint8_t *data);
 
 //        bool SetSpecial(const std::string &strName); // for Tor addresses
+        bool SetSpecial(const std::string &strName); // for Tor and I2P addresses
         bool IsIPv4() const;    // IPv4 mapped address (::FFFF:0:0/96, 0.0.0.0/0)
         bool IsIPv6() const;    // IPv6 address (not mapped IPv4, not Tor/I2P)
         bool IsRFC1918() const; // IPv4 private networks (10.0.0.0/8, 192.168.0.0/16, 172.16.0.0/12)
@@ -101,7 +101,7 @@ class CNetAddr
 
         template <typename Stream, typename Operation>
         inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-             READWRITE(FLATDATA(ip));
+            READWRITE(FLATDATA(ip));
         }
 
         friend class CSubNet;
@@ -165,9 +165,9 @@ class CService : public CNetAddr
 
         template <typename Stream, typename Operation>
         inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
-             READWRITE(FLATDATA(ip));
-             unsigned short portN = htons(port);
-             READWRITE(portN);
+            READWRITE(FLATDATA(ip));
+            unsigned short portN = htons(port);
+            READWRITE(portN);
             if (ser_action.ForRead())
                  port = ntohs(portN);
         }

@@ -62,9 +62,9 @@ QString BitcoinUnits::description(int unit)
 {
     switch(unit)
     {
-    case BTA: return QString("Batas");
-    case mBTA: return QString("Milli-Batas (1 / 1" THIN_SP_UTF8 "000)");
-    case uBTA: return QString("Micro-Batas (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+    case BTA: return QString("Bata");
+    case mBTA: return QString("Milli-Bata (1 / 1" THIN_SP_UTF8 "000)");
+    case uBTA: return QString("Micro-Bata (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
     default: return QString("???");
     }
 }
@@ -125,7 +125,7 @@ QString BitcoinUnits::format(int unit, const CAmount& nIn, bool fPlus, Separator
 // TODO: Review all remaining calls to BitcoinUnits::formatWithUnit to
 // TODO: determine whether the output is used in a plain text context
 // TODO: or an HTML context (and replace with
-// TODO: BatacoinUnits::formatHtmlWithUnit in the latter case). Hopefully
+// TODO: BataUnits::formatHtmlWithUnit in the latter case). Hopefully
 // TODO: there aren't instances where the result could be used in
 // TODO: either context.
 
