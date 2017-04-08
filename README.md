@@ -84,7 +84,7 @@ connect=lv4llpu75ydlfwxgx3ej5t6dpcnyi47px4wnluf7pyxpncd5trca.b32.i2p
 
 ### example for tor users' BATA.conf:
 (you will need to download tor software)
-http://www.softpedia.com/dyn-postdownload.php/71b643564f9a522d006160b023235a46/558695b8/db6e/0/1
+https://www.torproject.org/download/
 
 rpcuser=BATAusername
 
