@@ -22,7 +22,7 @@ net port: 5784
 
 ### Website: https://bata.io
 
-### LinkedIn: https://www.linkedin.com/company-beta/6448507
+### LinkedIn: https://www.linkedin.com/company/bata-money
 
 ### Slack : https://bata-blockchain.signup.team/
 
