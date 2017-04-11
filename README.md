@@ -20,13 +20,13 @@ rpc port: 5493
 
 net port: 5784
 
-Website: https://bata.io
+### Website: https://bata.io
 
-Slack : https://bata-blockchain.signup.team/
+### LinkedIn: https://www.linkedin.com/company-beta/6448507
 
-Bootstrap available here:
+### Slack : https://bata-blockchain.signup.team/
 
-http://crypt.midnightminer.net/bootstraps/bata/bootstrap.zip
+### Bootstrap: http://crypt.midnightminer.net/bootstraps/bata/bootstrap.zip
 
 Unzip the file into the same directory as the BATA-qt.exe
 
@@ -34,14 +34,17 @@ Then with a shortcut or in the command prompt:
 
 BATA-qt.exe -loadblock=bootstrap.dat
 
-Seednode
+### Seednode
 
 in your BATA.conf file just at this line
 
 addnode=68.71.58.226
 
 
-What is BATA (BTA)?
+### For Developments visit: https://bata.io/development
+
+
+### What is BATA (BTA)?
 
 
 The predecessor of barter trade dollars. Soon to release new POW/POS Hybrid.
@@ -54,10 +57,13 @@ A Barter Currency has been re-invented on a blockchain, decentralized, secure an
 
 BTA is traded on multiple cryptocurrency exchanges right across the globe.
 
-Blockchain Explorer
-https://chainz.cryptoid.info/bta/
+### Blockchain Explorers
 
-Official Social Media
+https://chainz.cryptoid.info/bta/
+http://bata.midnightminer.net/
+
+
+### Official Social Media
 
 https://twitter.com/Bata_Money
 
@@ -65,7 +71,7 @@ https://www.facebook.com/batacurrency
 
 https://www.reddit.com/r/batamoney
 
-Forums:
+### Forums:
 
 https://bitcointalk.org/index.php?topic=1040956
 
