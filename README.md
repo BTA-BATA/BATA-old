@@ -40,6 +40,8 @@ in your BATA.conf file just at this line
 
 addnode=68.71.58.226
 
+(Create in AppData\Roaming\BATA)
+
 
 ### For Developments visit: https://bata.io/development
 
