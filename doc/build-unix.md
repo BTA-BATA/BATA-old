@@ -99,20 +99,38 @@ are installed. Either Qt 4 or Qt 5 are necessary to build the GUI.
 If both Qt 4 and Qt 5 are installed, Qt 4 will be used. Pass `--with-gui=qt5` to configure to choose Qt5.
 To build without GUI pass `--without-gui`.
 
-To build with Qt 4 you need the following:
-
-    sudo apt-get install libqt4-dev libprotobuf-dev protobuf-compiler
-
-For Qt 5 you need the following:
+To build with Qt 5 (recommended) you need the following:
 
     sudo apt-get install libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler
+
+Alternatively, to build with Qt 4 you need the following:
+
+    sudo apt-get install libqt4-dev libprotobuf-dev protobuf-compiler
 
 libqrencode (optional) can be installed with:
 
     sudo apt-get install libqrencode-dev
 
-Once these are installed, they will be found by configure and a bata-qt executable will be
+Once these are installed, they will be found by configure and a litecoin-qt executable will be
 built by default.
+
+Dependency Build Instructions: Fedora
+-------------------------------------
+Build requirements:
+
+    sudo dnf install gcc-c++ libtool make autoconf automake openssl-devel libevent-devel boost-devel libdb4-devel libdb4-cxx-devel
+
+Optional:
+
+    sudo dnf install miniupnpc-devel
+
+To build with Qt 5 (recommended) you need the following:
+
+    sudo dnf install qt5-qttools-devel qt5-qtbase-devel protobuf-devel
+
+libqrencode (optional) can be installed with:
+
+    sudo dnf install qrencode-devel
 
 Notes
 -----
@@ -159,7 +177,7 @@ tar -xzvf db-4.8.30.NC.tar.gz
 
 # Build the library and install to our prefix
 cd db-4.8.30.NC/build_unix/
-#  Note: Do a static build so that it can be embedded into the exectuable, instead of having to find a .so at runtime
+#  Note: Do a static build so that it can be embedded into the executable, instead of having to find a .so at runtime
 ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX
 make install
 
@@ -195,12 +213,12 @@ Hardening enables the following features:
 
 * Position Independent Executable
     Build position independent code to take advantage of Address Space Layout Randomization
-    offered by some kernels. An attacker who is able to cause execution of code at an arbitrary
-    memory location is thwarted if he doesn't know where anything useful is located.
+    offered by some kernels. Attackers who can cause execution of code at an arbitrary memory
+    location are thwarted if they don't know where anything useful is located.
     The stack and heap are randomly located by default but this allows the code section to be
     randomly located as well.
 
-    On an Amd64 processor where a library was not compiled with -fPIC, this will cause an error
+    On an AMD64 processor where a library was not compiled with -fPIC, this will cause an error
     such as: "relocation R_X86_64_32 against `......' can not be used when making a shared object;"
 
     To test that you have built PIE executable, install scanelf, part of paxutils, and use:
@@ -239,3 +257,50 @@ In this case there is no dependency on Berkeley DB 4.8.
 Mining is also possible in disable-wallet mode, but only using the `getblocktemplate` RPC
 call not `getwork`.
 
+Additional Configure Flags
+--------------------------
+A list of additional configure flags can be displayed with:
+
+    ./configure --help
+
+
+Setup and Build Example: Arch Linux
+-----------------------------------
+This example lists the steps necessary to setup and build a command line only, non-wallet distribution of the latest changes on Arch Linux:
+
+    pacman -S git base-devel boost libevent python
+    git clone https://github.com/litecoin-project/litecoin.git
+    cd litecoin/
+    ./autogen.sh
+    ./configure --disable-wallet --without-gui --without-miniupnpc
+    make check
+
+Note:
+Enabling wallet support requires either compiling against a Berkeley DB newer than 4.8 (package `db`) using `--with-incompatible-bdb`,
+or building and depending on a local version of Berkeley DB 4.8. The readily available Arch Linux packages are currently built using
+`--with-incompatible-bdb` according to the [PKGBUILD](https://projects.archlinux.org/svntogit/community.git/tree/bitcoin/trunk/PKGBUILD).
+As mentioned above, when maintaining portability of the wallet between the standard Litecoin Core distributions and independently built
+node software is desired, Berkeley DB 4.8 must be used.
+
+
+ARM Cross-compilation
+-------------------
+These steps can be performed on, for example, an Ubuntu VM. The depends system
+will also work on other Linux distributions, however the commands for
+installing the toolchain will be different.
+
+Make sure you install the build requirements mentioned above.
+Then, install the toolchain and curl:
+
+    sudo apt-get install g++-arm-linux-gnueabihf curl
+
+To build executables for ARM:
+
+    cd depends
+    make HOST=arm-linux-gnueabihf NO_QT=1
+    cd ..
+    ./configure --prefix=$PWD/depends/arm-linux-gnueabihf --enable-glibc-back-compat --enable-reduce-exports LDFLAGS=-static-libstdc++
+    make
+
+
+For further documentation on the depends system see [README.md](../depends/README.md) in the depends directory.
