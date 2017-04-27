@@ -315,7 +315,7 @@ RES_IMAGES = \
   qt/res/images/splash.png \
   qt/res/images/splash_testnet.png
 
-RES_MOVIES = $(wildcard qt/res/movies/spinner-*.png)
+RES_MOVIES = $(wildcard $(srcdir)qt/res/movies/spinner-*.png)
 
 BITCOIN_RC = qt/res/bitcoin-qt-res.rc
 
