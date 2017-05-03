@@ -28,6 +28,10 @@ SendCoinsEntry::SendCoinsEntry(QWidget *parent) :
 #endif
 #if QT_VERSION >= 0x040700
     ui->addAsLabel->setPlaceholderText(tr("Enter a label for this address to add it to your address book"));
+<<<<<<< HEAD
+=======
+    ui->payTo->setPlaceholderText(tr("Enter a BATA address (e.g. B9BiqLLWuBmHy5P1MGuqyeSj9JNG211DTz)"));
+>>>>>>> upstream/0.10
 #endif
 
     // normal bitcoin address field

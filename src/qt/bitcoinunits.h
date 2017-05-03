@@ -2,10 +2,15 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+<<<<<<< HEAD
 #ifndef BITCOIN_QT_BITCOINUNITS_H
 #define BITCOIN_QT_BITCOINUNITS_H
 
 #include "amount.h"
+=======
+#ifndef BITCOINUNITS_H
+#define BITCOINUNITS_H
+>>>>>>> upstream/0.10
 
 #include <QAbstractListModel>
 #include <QString>

@@ -286,8 +286,14 @@ Value listunspent(const Array& params, bool fHelp)
         entry.push_back(Pair("scriptPubKey", HexStr(pk.begin(), pk.end())));
         if (pk.IsPayToScriptHash()) {
             CTxDestination address;
+<<<<<<< HEAD
             if (ExtractDestination(pk, address)) {
                 const CScriptID& hash = boost::get<CScriptID>(address);
+=======
+            if (ExtractDestination(pk, address))
+            {
+                const CScriptID& hash = boost::get<const CScriptID&>(address);
+>>>>>>> upstream/0.10
                 CScript redeemScript;
                 if (pwalletMain->GetCScript(hash, redeemScript))
                     entry.push_back(Pair("redeemScript", HexStr(redeemScript.begin(), redeemScript.end())));
@@ -705,6 +711,7 @@ Value sendrawtransaction(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
+<<<<<<< HEAD
             "sendrawtransaction \"hexstring\" ( allowhighfees )\n"
             "\nSubmits raw transaction (serialized, hex-encoded) to local node and network.\n"
             "\nAlso see createrawtransaction and signrawtransaction calls.\n"
@@ -725,10 +732,27 @@ Value sendrawtransaction(const Array& params, bool fHelp)
         );
 
     RPCTypeCheck(params, list_of(str_type)(bool_type));
+=======
+            "sendrawtransaction <hex string> [allowhighfees=false]\n"
+            "Submits raw transaction (serialized, hex-encoded) to local node and network.");
+>>>>>>> upstream/0.10
 
     // parse hex string from parameter
     CTransaction tx;
+<<<<<<< HEAD
     if (!DecodeHexTx(tx, params[0].get_str()))
+=======
+
+    bool fOverrideFees = false;
+    if (params.size() > 1)
+        fOverrideFees = params[1].get_bool();
+
+    // deserialize binary data stream
+    try {
+        ssData >> tx;
+    }
+    catch (std::exception &e) {
+>>>>>>> upstream/0.10
         throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX decode failed");
     uint256 hashTx = tx.GetHash();
 
@@ -737,6 +761,7 @@ Value sendrawtransaction(const Array& params, bool fHelp)
         fOverrideFees = params[1].get_bool();
 
     CCoinsViewCache &view = *pcoinsTip;
+<<<<<<< HEAD
     const CCoins* existingCoins = view.AccessCoins(hashTx);
     bool fHaveMempool = mempool.exists(hashTx);
     bool fHaveChain = existingCoins && existingCoins->nHeight < 1000000000;
@@ -748,6 +773,16 @@ Value sendrawtransaction(const Array& params, bool fHelp)
                 throw JSONRPCError(RPC_TRANSACTION_REJECTED, strprintf("%i: %s", state.GetRejectCode(), state.GetRejectReason()));
             else
                 throw JSONRPCError(RPC_TRANSACTION_ERROR, state.GetRejectReason());
+=======
+    CCoins existingCoins;
+    {
+        fHave = view.GetCoins(hashTx, existingCoins);
+        if (!fHave) {
+            // push to local node
+            CValidationState state;
+            if (!tx.AcceptToMemoryPool(state, true, false, NULL, !fOverrideFees))
+                throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX rejected"); // TODO: report validation state
+>>>>>>> upstream/0.10
         }
     } else if (fHaveChain) {
         throw JSONRPCError(RPC_TRANSACTION_ALREADY_IN_CHAIN, "transaction already in block chain");
@@ -755,4 +790,28 @@ Value sendrawtransaction(const Array& params, bool fHelp)
     RelayTransaction(tx);
 
     return hashTx.GetHex();
+}
+
+Value getnormalizedtxid(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 1)
+        throw runtime_error(
+            "getnormalizedtxid <hex string>\n"
+            "Return the normalized transaction ID.");
+
+    // parse hex string from parameter
+    vector<unsigned char> txData(ParseHexV(params[0], "parameter"));
+    CDataStream ssData(txData, SER_NETWORK, PROTOCOL_VERSION);
+    CTransaction tx;
+
+    // deserialize binary data stream
+    try {
+        ssData >> tx;
+    }
+    catch (std::exception &e) {
+        throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "TX decode failed");
+    }
+    uint256 hashNormalized = tx.GetNormalizedHash();
+
+    return hashNormalized.GetHex();
 }

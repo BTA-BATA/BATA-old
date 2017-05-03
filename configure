@@ -731,7 +731,6 @@ QT_TEST_LIBS
 QT_TEST_CFLAGS
 QT_LIBS
 QT_CFLAGS
-QT_TRANSLATION_DIR
 BDB_LIBS
 BDB_CPPFLAGS
 LIBMEMENV
@@ -892,10 +891,17 @@ PACKAGE_VERSION
 PACKAGE_TARNAME
 PACKAGE_NAME
 PATH_SEPARATOR
-SHELL'
+SHELL
+QT_TRANSLATION_DIR'
 ac_subst_files=''
 ac_user_opts='
 enable_option_checking
+with_qt_incdir
+with_qt_libdir
+with_qt_plugindir
+with_qt_translationdir
+with_qt_bindir
+with_qtdbus
 enable_silent_rules
 enable_maintainer_mode
 enable_dependency_tracking
@@ -926,13 +932,6 @@ with_libs
 with_daemon
 enable_largefile
 with_incompatible_bdb
-with_gui
-with_qt_incdir
-with_qt_libdir
-with_qt_plugindir
-with_qt_translationdir
-with_qt_bindir
-with_qtdbus
 with_boost
 with_boost_libdir
 with_boost_system
@@ -1650,6 +1649,19 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-qt-incdir=INC_DIR
+                          specify qt include path (overridden by pkgconfig)
+  --with-qt-libdir=LIB_DIR
+                          specify qt lib path (overridden by pkgconfig)
+  --with-qt-plugindir=PLUGIN_DIR
+                          specify qt plugin path (overridden by pkgconfig)
+  --with-qt-translationdir=PLUGIN_DIR
+                          specify qt translation path (overridden by
+                          pkgconfig)
+  --with-qt-bindir=BIN_DIR
+                          specify qt bin path
+  --with-qtdbus           enable DBus support (default is yes if qt is enabled
+                          and QtDBus is found)
   --with-pic[=PKGS]       try to use only PIC/non-PIC objects [default=use
                           both]
   --with-aix-soname=aix|svr4|both
@@ -1670,21 +1682,6 @@ Optional Packages:
   --with-libs             build libraries (default=yes)
   --with-daemon           build bitcoind daemon (default=yes)
   --with-incompatible-bdb allow using a bdb version other than 4.8
-  --with-gui[=no|qt4|qt5|auto]
-                          build bitcoin-qt GUI (default=auto, qt5 tried first)
-  --with-qt-incdir=INC_DIR
-                          specify qt include path (overridden by pkgconfig)
-  --with-qt-libdir=LIB_DIR
-                          specify qt lib path (overridden by pkgconfig)
-  --with-qt-plugindir=PLUGIN_DIR
-                          specify qt plugin path (overridden by pkgconfig)
-  --with-qt-translationdir=PLUGIN_DIR
-                          specify qt translation path (overridden by
-                          pkgconfig)
-  --with-qt-bindir=BIN_DIR
-                          specify qt bin path
-  --with-qtdbus           enable DBus support (default is yes if qt is enabled
-                          and QtDBus is found)
   --with-boost[=ARG]      use Boost library from a standard location
                           (ARG=yes), from the specified location (ARG=<path>),
                           or disable it (ARG=no) [ARG=yes]
@@ -18655,7 +18652,7 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ldflags___static" >&5
 $as_echo "$ax_cv_check_ldflags___static" >&6; }
-if test "x$ax_cv_check_ldflags___static" = xyes; then :
+if test x"$ax_cv_check_ldflags___static" = xyes; then :
   LIBTOOL_APP_LDFLAGS="$LIBTOOL_APP_LDFLAGS -all-static"
 else
   :
@@ -18869,12 +18866,8 @@ fi
 
 
        if test x$PORT = xport; then
-                  CPPFLAGS="$CPPFLAGS -isystem /opt/local/include"
-         LIBS="$LIBS -L/opt/local/lib"
-         if test -d /opt/local/include/db48; then
-           CPPFLAGS="$CPPFLAGS -I/opt/local/include/db48"
-           LIBS="$LIBS -L/opt/local/lib/db48"
-         fi
+                  CPPFLAGS="$CPPFLAGS -isystem /opt/local/include -I/opt/local/include/db48"
+         LIBS="$LIBS -L/opt/local/lib -L/opt/local/lib/db48"
        fi
 
        # Extract the first word of "brew", so it can be a program name with args.
@@ -18920,16 +18913,14 @@ fi
          bdb_prefix=`$BREW --prefix berkeley-db4 2>/dev/null`
          qt5_prefix=`$BREW --prefix qt5 2>/dev/null`
          if test x$openssl_prefix != x; then
-           PKG_CONFIG_PATH="$openssl_prefix/lib/pkgconfig:$PKG_CONFIG_PATH"
-           export PKG_CONFIG_PATH
+           export PKG_CONFIG_PATH="$openssl_prefix/lib/pkgconfig:$PKG_CONFIG_PATH"
          fi
          if test x$bdb_prefix != x; then
            CPPFLAGS="$CPPFLAGS -I$bdb_prefix/include"
            LIBS="$LIBS -L$bdb_prefix/lib"
          fi
          if test x$qt5_prefix != x; then
-           PKG_CONFIG_PATH="$qt5_prefix/lib/pkgconfig:$PKG_CONFIG_PATH"
-           export PKG_CONFIG_PATH
+           export PKG_CONFIG_PATH="$qt5_prefix/lib/pkgconfig:$PKG_CONFIG_PATH"
          fi
        fi
      else
@@ -19216,7 +19207,7 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ldflags___Wl__headerpad_max_install_names" >&5
 $as_echo "$ax_cv_check_ldflags___Wl__headerpad_max_install_names" >&6; }
-if test "x$ax_cv_check_ldflags___Wl__headerpad_max_install_names" = xyes; then :
+if test x"$ax_cv_check_ldflags___Wl__headerpad_max_install_names" = xyes; then :
   LDFLAGS="$LDFLAGS -Wl,-headerpad_max_install_names"
 else
   :
@@ -19293,7 +19284,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags____coverage" >&5
 $as_echo "$ax_cv_check_cxxflags____coverage" >&6; }
-if test "x$ax_cv_check_cxxflags____coverage" = xyes; then :
+if test x"$ax_cv_check_cxxflags____coverage" = xyes; then :
   CXXFLAGS="$CXXFLAGS --coverage"
 else
   as_fn_error $? "\"lcov testing requested but --coverage flag does not work\"" "$LINENO" 5
@@ -19527,8 +19518,6 @@ $as_echo "#define AC_APPLE_UNIVERSAL_BUILD 1" >>confdefs.h
 
 
 
-
-
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -19538,23 +19527,19 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 ax_pthread_ok=no
 
 # We used to check for pthread.h first, but this fails if pthread.h
-# requires special compiler flags (e.g. on Tru64 or Sequent).
+# requires special compiler flags (e.g. on True64 or Sequent).
 # It gets checked for in the link test anyway.
 
 # First of all, check if the user has set any of the PTHREAD_LIBS,
 # etcetera environment variables, and if threads linking works using
 # them:
-if test "x$PTHREAD_CFLAGS$PTHREAD_LIBS" != "x"; then
-        ax_pthread_save_CC="$CC"
-        ax_pthread_save_CFLAGS="$CFLAGS"
-        ax_pthread_save_LIBS="$LIBS"
-        if test "x$PTHREAD_CC" != "x"; then :
-  CC="$PTHREAD_CC"
-fi
+if test x"$PTHREAD_LIBS$PTHREAD_CFLAGS" != x; then
+        save_CFLAGS="$CFLAGS"
         CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+        save_LIBS="$LIBS"
         LIBS="$PTHREAD_LIBS $LIBS"
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pthread_join using $CC $PTHREAD_CFLAGS $PTHREAD_LIBS" >&5
-$as_echo_n "checking for pthread_join using $CC $PTHREAD_CFLAGS $PTHREAD_LIBS... " >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pthread_join in LIBS=$PTHREAD_LIBS with CFLAGS=$PTHREAD_CFLAGS" >&5
+$as_echo_n "checking for pthread_join in LIBS=$PTHREAD_LIBS with CFLAGS=$PTHREAD_CFLAGS... " >&6; }
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -19580,13 +19565,12 @@ rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_pthread_ok" >&5
 $as_echo "$ax_pthread_ok" >&6; }
-        if test "x$ax_pthread_ok" = "xno"; then
+        if test x"$ax_pthread_ok" = xno; then
                 PTHREAD_LIBS=""
                 PTHREAD_CFLAGS=""
         fi
-        CC="$ax_pthread_save_CC"
-        CFLAGS="$ax_pthread_save_CFLAGS"
-        LIBS="$ax_pthread_save_LIBS"
+        LIBS="$save_LIBS"
+        CFLAGS="$save_CFLAGS"
 fi
 
 # We must check for the threads library under a number of different
@@ -19599,7 +19583,7 @@ fi
 # which indicates that we try without any flags at all, and "pthread-config"
 # which is a program returning the flags for the Pth emulation library.
 
-ax_pthread_flags="pthreads none -Kthread -pthread -pthreads -mthreads pthread --thread-safe -mt pthread-config"
+ax_pthread_flags="pthreads none -Kthread -kthread lthread -pthread -pthreads -mthreads pthread --thread-safe -mt pthread-config"
 
 # The ordering *is* (sometimes) important.  Some notes on the
 # individual items follow:
@@ -19608,257 +19592,82 @@ ax_pthread_flags="pthreads none -Kthread -pthread -pthreads -mthreads pthread --
 # none: in case threads are in libc; should be tried before -Kthread and
 #       other compiler flags to prevent continual compiler warnings
 # -Kthread: Sequent (threads in libc, but -Kthread needed for pthread.h)
-# -pthread: Linux/gcc (kernel threads), BSD/gcc (userland threads), Tru64
-#           (Note: HP C rejects this with "bad form for `-t' option")
-# -pthreads: Solaris/gcc (Note: HP C also rejects)
-# -mt: Sun Workshop C (may only link SunOS threads [-lthread], but it
-#      doesn't hurt to check since this sometimes defines pthreads and
-#      -D_REENTRANT too), HP C (must be checked before -lpthread, which
-#      is present but should not be used directly; and before -mthreads,
-#      because the compiler interprets this as "-mt" + "-hreads")
+# -kthread: FreeBSD kernel threads (preferred to -pthread since SMP-able)
+# lthread: LinuxThreads port on FreeBSD (also preferred to -pthread)
+# -pthread: Linux/gcc (kernel threads), BSD/gcc (userland threads)
+# -pthreads: Solaris/gcc
 # -mthreads: Mingw32/gcc, Lynx/gcc
+# -mt: Sun Workshop C (may only link SunOS threads [-lthread], but it
+#      doesn't hurt to check since this sometimes defines pthreads too;
+#      also defines -D_REENTRANT)
+#      ... -mt is also the pthreads flag for HP/aCC
 # pthread: Linux, etcetera
 # --thread-safe: KAI C++
 # pthread-config: use pthread-config program (for GNU Pth library)
 
-case $host_os in
-
-        freebsd*)
-
-        # -kthread: FreeBSD kernel threads (preferred to -pthread since SMP-able)
-        # lthread: LinuxThreads port on FreeBSD (also preferred to -pthread)
-
-        ax_pthread_flags="-kthread lthread $ax_pthread_flags"
-        ;;
-
-        hpux*)
-
-        # From the cc(1) man page: "[-mt] Sets various -D flags to enable
-        # multi-threading and also sets -lpthread."
-
-        ax_pthread_flags="-mt -pthread pthread $ax_pthread_flags"
-        ;;
-
-        openedition*)
-
-        # IBM z/OS requires a feature-test macro to be defined in order to
-        # enable POSIX threads at all, so give the user a hint if this is
-        # not set. (We don't define these ourselves, as they can affect
-        # other portions of the system API in unpredictable ways.)
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#            if !defined(_OPEN_THREADS) && !defined(_UNIX03_THREADS)
-             AX_PTHREAD_ZOS_MISSING
-#            endif
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "AX_PTHREAD_ZOS_MISSING" >/dev/null 2>&1; then :
-  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: IBM z/OS requires -D_OPEN_THREADS or -D_UNIX03_THREADS to enable pthreads support." >&5
-$as_echo "$as_me: WARNING: IBM z/OS requires -D_OPEN_THREADS or -D_UNIX03_THREADS to enable pthreads support." >&2;}
-fi
-rm -f conftest*
-
-        ;;
-
+case ${host_os} in
         solaris*)
 
         # On Solaris (at least, for some versions), libc contains stubbed
         # (non-functional) versions of the pthreads routines, so link-based
-        # tests will erroneously succeed. (N.B.: The stubs are missing
-        # pthread_cleanup_push, or rather a function called by this macro,
-        # so we could check for that, but who knows whether they'll stub
-        # that too in a future libc.)  So we'll check first for the
-        # standard Solaris way of linking pthreads (-mt -lpthread).
+        # tests will erroneously succeed.  (We need to link with -pthreads/-mt/
+        # -lpthread.)  (The stubs are missing pthread_cleanup_push, or rather
+        # a function called by this macro, so we could check for that, but
+        # who knows whether they'll stub that too in a future libc.)  So,
+        # we'll just look for -pthreads and -lpthread first:
 
-        ax_pthread_flags="-mt,pthread pthread $ax_pthread_flags"
+        ax_pthread_flags="-pthreads pthread -mt -pthread $ax_pthread_flags"
+        ;;
+
+        darwin*)
+        ax_pthread_flags="-pthread $ax_pthread_flags"
         ;;
 esac
 
-# GCC generally uses -pthread, or -pthreads on some platforms (e.g. SPARC)
+# Clang doesn't consider unrecognized options an error unless we specify
+# -Werror. We throw in some extra Clang-specific options to ensure that
+# this doesn't happen for GCC, which also accepts -Werror.
 
-if test "x$GCC" = "xyes"; then :
-  ax_pthread_flags="-pthread -pthreads $ax_pthread_flags"
-fi
-
-# The presence of a feature test macro requesting re-entrant function
-# definitions is, on some systems, a strong hint that pthreads support is
-# correctly enabled
-
-case $host_os in
-        darwin* | hpux* | linux* | osf* | solaris*)
-        ax_pthread_check_macro="_REENTRANT"
-        ;;
-
-        aix*)
-        ax_pthread_check_macro="_THREAD_SAFE"
-        ;;
-
-        *)
-        ax_pthread_check_macro="--"
-        ;;
-esac
-if test "x$ax_pthread_check_macro" = "x--"; then :
-  ax_pthread_check_cond=0
-else
-  ax_pthread_check_cond="!defined($ax_pthread_check_macro)"
-fi
-
-# Are we compiling with Clang?
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $CC is Clang" >&5
-$as_echo_n "checking whether $CC is Clang... " >&6; }
-if ${ax_cv_PTHREAD_CLANG+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ax_cv_PTHREAD_CLANG=no
-     # Note that Autoconf sets GCC=yes for Clang as well as GCC
-     if test "x$GCC" = "xyes"; then
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if compiler needs -Werror to reject unknown flags" >&5
+$as_echo_n "checking if compiler needs -Werror to reject unknown flags... " >&6; }
+save_CFLAGS="$CFLAGS"
+ax_pthread_extra_flags="-Werror"
+CFLAGS="$CFLAGS $ax_pthread_extra_flags -Wunknown-warning-option -Wsizeof-array-argument"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-/* Note: Clang 2.7 lacks __clang_[a-z]+__ */
-#            if defined(__clang__) && defined(__llvm__)
-             AX_PTHREAD_CC_IS_CLANG
-#            endif
-
+int foo(void);
+int
+main ()
+{
+foo()
+  ;
+  return 0;
+}
 _ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "AX_PTHREAD_CC_IS_CLANG" >/dev/null 2>&1; then :
-  ax_cv_PTHREAD_CLANG=yes
-fi
-rm -f conftest*
-
-     fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_PTHREAD_CLANG" >&5
-$as_echo "$ax_cv_PTHREAD_CLANG" >&6; }
-ax_pthread_clang="$ax_cv_PTHREAD_CLANG"
-
-ax_pthread_clang_warning=no
-
-# Clang needs special handling, because older versions handle the -pthread
-# option in a rather... idiosyncratic way
-
-if test "x$ax_pthread_clang" = "xyes"; then
-
-        # Clang takes -pthread; it has never supported any other flag
-
-        # (Note 1: This will need to be revisited if a system that Clang
-        # supports has POSIX threads in a separate library.  This tends not
-        # to be the way of modern systems, but it's conceivable.)
-
-        # (Note 2: On some systems, notably Darwin, -pthread is not needed
-        # to get POSIX threads support; the API is always present and
-        # active.  We could reasonably leave PTHREAD_CFLAGS empty.  But
-        # -pthread does define _REENTRANT, and while the Darwin headers
-        # ignore this macro, third-party headers might not.)
-
-        PTHREAD_CFLAGS="-pthread"
-        PTHREAD_LIBS=
-
-        ax_pthread_ok=yes
-
-        # However, older versions of Clang make a point of warning the user
-        # that, in an invocation where only linking and no compilation is
-        # taking place, the -pthread option has no effect ("argument unused
-        # during compilation").  They expect -pthread to be passed in only
-        # when source code is being compiled.
-        #
-        # Problem is, this is at odds with the way Automake and most other
-        # C build frameworks function, which is that the same flags used in
-        # compilation (CFLAGS) are also used in linking.  Many systems
-        # supported by AX_PTHREAD require exactly this for POSIX threads
-        # support, and in fact it is often not straightforward to specify a
-        # flag that is used only in the compilation phase and not in
-        # linking.  Such a scenario is extremely rare in practice.
-        #
-        # Even though use of the -pthread flag in linking would only print
-        # a warning, this can be a nuisance for well-run software projects
-        # that build with -Werror.  So if the active version of Clang has
-        # this misfeature, we search for an option to squash it.
-
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether Clang needs flag to prevent \"argument unused\" warning when linking with -pthread" >&5
-$as_echo_n "checking whether Clang needs flag to prevent \"argument unused\" warning when linking with -pthread... " >&6; }
-if ${ax_cv_PTHREAD_CLANG_NO_WARN_FLAG+:} false; then :
-  $as_echo_n "(cached) " >&6
+if ac_fn_c_try_compile "$LINENO"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
 else
-  ax_cv_PTHREAD_CLANG_NO_WARN_FLAG=unknown
-             # Create an alternate version of $ac_link that compiles and
-             # links in two steps (.c -> .o, .o -> exe) instead of one
-             # (.c -> exe), because the warning occurs only in the second
-             # step
-             ax_pthread_save_ac_link="$ac_link"
-             ax_pthread_sed='s/conftest\.\$ac_ext/conftest.$ac_objext/g'
-             ax_pthread_link_step=`$as_echo "$ac_link" | sed "$ax_pthread_sed"`
-             ax_pthread_2step_ac_link="($ac_compile) && (echo ==== >&5) && ($ax_pthread_link_step)"
-             ax_pthread_save_CFLAGS="$CFLAGS"
-             for ax_pthread_try in '' -Qunused-arguments -Wno-unused-command-line-argument unknown; do
-                if test "x$ax_pthread_try" = "xunknown"; then :
-  break
+  ax_pthread_extra_flags=
+                   { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
 fi
-                CFLAGS="-Werror -Wunknown-warning-option $ax_pthread_try -pthread $ax_pthread_save_CFLAGS"
-                ac_link="$ax_pthread_save_ac_link"
-                cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-int main(void){return 0;}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_link="$ax_pthread_2step_ac_link"
-                     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-int main(void){return 0;}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  break
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+CFLAGS="$save_CFLAGS"
 
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-             done
-             ac_link="$ax_pthread_save_ac_link"
-             CFLAGS="$ax_pthread_save_CFLAGS"
-             if test "x$ax_pthread_try" = "x"; then :
-  ax_pthread_try=no
-fi
-             ax_cv_PTHREAD_CLANG_NO_WARN_FLAG="$ax_pthread_try"
+if test x"$ax_pthread_ok" = xno; then
+for flag in $ax_pthread_flags; do
 
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_PTHREAD_CLANG_NO_WARN_FLAG" >&5
-$as_echo "$ax_cv_PTHREAD_CLANG_NO_WARN_FLAG" >&6; }
-
-        case "$ax_cv_PTHREAD_CLANG_NO_WARN_FLAG" in
-                no | unknown) ;;
-                *) PTHREAD_CFLAGS="$ax_cv_PTHREAD_CLANG_NO_WARN_FLAG $PTHREAD_CFLAGS" ;;
-        esac
-
-fi # $ax_pthread_clang = yes
-
-if test "x$ax_pthread_ok" = "xno"; then
-for ax_pthread_try_flag in $ax_pthread_flags; do
-
-        case $ax_pthread_try_flag in
+        case $flag in
                 none)
                 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether pthreads work without any flags" >&5
 $as_echo_n "checking whether pthreads work without any flags... " >&6; }
                 ;;
 
-                -mt,pthread)
-                { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether pthreads work with -mt -lpthread" >&5
-$as_echo_n "checking whether pthreads work with -mt -lpthread... " >&6; }
-                PTHREAD_CFLAGS="-mt"
-                PTHREAD_LIBS="-lpthread"
-                ;;
-
                 -*)
-                { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether pthreads work with $ax_pthread_try_flag" >&5
-$as_echo_n "checking whether pthreads work with $ax_pthread_try_flag... " >&6; }
-                PTHREAD_CFLAGS="$ax_pthread_try_flag"
+                { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether pthreads work with $flag" >&5
+$as_echo_n "checking whether pthreads work with $flag... " >&6; }
+                PTHREAD_CFLAGS="$flag"
                 ;;
 
                 pthread-config)
@@ -19900,24 +19709,22 @@ $as_echo "no" >&6; }
 fi
 
 
-                if test "x$ax_pthread_config" = "xno"; then :
-  continue
-fi
+                if test x"$ax_pthread_config" = xno; then continue; fi
                 PTHREAD_CFLAGS="`pthread-config --cflags`"
                 PTHREAD_LIBS="`pthread-config --ldflags` `pthread-config --libs`"
                 ;;
 
                 *)
-                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for the pthreads library -l$ax_pthread_try_flag" >&5
-$as_echo_n "checking for the pthreads library -l$ax_pthread_try_flag... " >&6; }
-                PTHREAD_LIBS="-l$ax_pthread_try_flag"
+                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for the pthreads library -l$flag" >&5
+$as_echo_n "checking for the pthreads library -l$flag... " >&6; }
+                PTHREAD_LIBS="-l$flag"
                 ;;
         esac
 
-        ax_pthread_save_CFLAGS="$CFLAGS"
-        ax_pthread_save_LIBS="$LIBS"
-        CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+        save_LIBS="$LIBS"
+        save_CFLAGS="$CFLAGS"
         LIBS="$PTHREAD_LIBS $LIBS"
+        CFLAGS="$CFLAGS $PTHREAD_CFLAGS $ax_pthread_extra_flags"
 
         # Check for various functions.  We must include pthread.h,
         # since some functions may be macros.  (On the Sequent, we
@@ -19928,13 +19735,9 @@ $as_echo_n "checking for the pthreads library -l$ax_pthread_try_flag... " >&6; }
         # pthread_cleanup_push because it is one of the few pthread
         # functions on Solaris that doesn't have a non-functional libc stub.
         # We try pthread_create on general principles.
-
         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <pthread.h>
-#                       if $ax_pthread_check_cond
-#                        error "$ax_pthread_check_macro must be defined"
-#                       endif
                         static void routine(void *a) { a = 0; }
                         static void *start_routine(void *a) { return a; }
 int
@@ -19956,14 +19759,14 @@ fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
 
-        CFLAGS="$ax_pthread_save_CFLAGS"
-        LIBS="$ax_pthread_save_LIBS"
+        LIBS="$save_LIBS"
+        CFLAGS="$save_CFLAGS"
 
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_pthread_ok" >&5
 $as_echo "$ax_pthread_ok" >&6; }
-        if test "x$ax_pthread_ok" = "xyes"; then :
-  break
-fi
+        if test "x$ax_pthread_ok" = xyes; then
+                break;
+        fi
 
         PTHREAD_LIBS=""
         PTHREAD_CFLAGS=""
@@ -19971,80 +19774,72 @@ done
 fi
 
 # Various other checks:
-if test "x$ax_pthread_ok" = "xyes"; then
-        ax_pthread_save_CFLAGS="$CFLAGS"
-        ax_pthread_save_LIBS="$LIBS"
-        CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+if test "x$ax_pthread_ok" = xyes; then
+        save_LIBS="$LIBS"
         LIBS="$PTHREAD_LIBS $LIBS"
+        save_CFLAGS="$CFLAGS"
+        CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
 
         # Detect AIX lossage: JOINABLE attribute is called UNDETACHED.
         { $as_echo "$as_me:${as_lineno-$LINENO}: checking for joinable pthread attribute" >&5
 $as_echo_n "checking for joinable pthread attribute... " >&6; }
-if ${ax_cv_PTHREAD_JOINABLE_ATTR+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ax_cv_PTHREAD_JOINABLE_ATTR=unknown
-             for ax_pthread_attr in PTHREAD_CREATE_JOINABLE PTHREAD_CREATE_UNDETACHED; do
-                 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+        attr_name=unknown
+        for attr in PTHREAD_CREATE_JOINABLE PTHREAD_CREATE_UNDETACHED; do
+            cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <pthread.h>
 int
 main ()
 {
-int attr = $ax_pthread_attr; return attr /* ; */
+int attr = $attr; return attr /* ; */
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_PTHREAD_JOINABLE_ATTR=$ax_pthread_attr; break
+  attr_name=$attr; break
 fi
 rm -f core conftest.err conftest.$ac_objext \
     conftest$ac_exeext conftest.$ac_ext
-             done
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_PTHREAD_JOINABLE_ATTR" >&5
-$as_echo "$ax_cv_PTHREAD_JOINABLE_ATTR" >&6; }
-        if test "x$ax_cv_PTHREAD_JOINABLE_ATTR" != "xunknown" && \
-               test "x$ax_cv_PTHREAD_JOINABLE_ATTR" != "xPTHREAD_CREATE_JOINABLE" && \
-               test "x$ax_pthread_joinable_attr_defined" != "xyes"; then :
+        done
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $attr_name" >&5
+$as_echo "$attr_name" >&6; }
+        if test "$attr_name" != PTHREAD_CREATE_JOINABLE; then
 
 cat >>confdefs.h <<_ACEOF
-#define PTHREAD_CREATE_JOINABLE $ax_cv_PTHREAD_JOINABLE_ATTR
+#define PTHREAD_CREATE_JOINABLE $attr_name
 _ACEOF
 
-               ax_pthread_joinable_attr_defined=yes
+        fi
 
-fi
-
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether more special flags are required for pthreads" >&5
-$as_echo_n "checking whether more special flags are required for pthreads... " >&6; }
-if ${ax_cv_PTHREAD_SPECIAL_FLAGS+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ax_cv_PTHREAD_SPECIAL_FLAGS=no
-             case $host_os in
-             solaris*)
-             ax_cv_PTHREAD_SPECIAL_FLAGS="-D_POSIX_PTHREAD_SEMANTICS"
-             ;;
-             esac
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_PTHREAD_SPECIAL_FLAGS" >&5
-$as_echo "$ax_cv_PTHREAD_SPECIAL_FLAGS" >&6; }
-        if test "x$ax_cv_PTHREAD_SPECIAL_FLAGS" != "xno" && \
-               test "x$ax_pthread_special_flags_added" != "xyes"; then :
-  PTHREAD_CFLAGS="$ax_cv_PTHREAD_SPECIAL_FLAGS $PTHREAD_CFLAGS"
-               ax_pthread_special_flags_added=yes
-fi
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking if more special flags are required for pthreads" >&5
+$as_echo_n "checking if more special flags are required for pthreads... " >&6; }
+        flag=no
+        case ${host_os} in
+            aix* | freebsd* | darwin*) flag="-D_THREAD_SAFE";;
+            osf* | hpux*) flag="-D_REENTRANT";;
+            solaris*)
+            if test "$GCC" = "yes"; then
+                flag="-D_REENTRANT"
+            else
+                # TODO: What about Clang on Solaris?
+                flag="-mt -D_REENTRANT"
+            fi
+            ;;
+        esac
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $flag" >&5
+$as_echo "$flag" >&6; }
+        if test "x$flag" != xno; then
+            PTHREAD_CFLAGS="$flag $PTHREAD_CFLAGS"
+        fi
 
         { $as_echo "$as_me:${as_lineno-$LINENO}: checking for PTHREAD_PRIO_INHERIT" >&5
 $as_echo_n "checking for PTHREAD_PRIO_INHERIT... " >&6; }
 if ${ax_cv_PTHREAD_PRIO_INHERIT+:} false; then :
   $as_echo_n "(cached) " >&6
 else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+
+                cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <pthread.h>
 int
@@ -20066,26 +19861,23 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_PTHREAD_PRIO_INHERIT" >&5
 $as_echo "$ax_cv_PTHREAD_PRIO_INHERIT" >&6; }
-        if test "x$ax_cv_PTHREAD_PRIO_INHERIT" = "xyes" && \
-               test "x$ax_pthread_prio_inherit_defined" != "xyes"; then :
+        if test "x$ax_cv_PTHREAD_PRIO_INHERIT" = "xyes"; then :
 
 $as_echo "#define HAVE_PTHREAD_PRIO_INHERIT 1" >>confdefs.h
 
-               ax_pthread_prio_inherit_defined=yes
-
 fi
 
-        CFLAGS="$ax_pthread_save_CFLAGS"
-        LIBS="$ax_pthread_save_LIBS"
+        LIBS="$save_LIBS"
+        CFLAGS="$save_CFLAGS"
 
         # More AIX lossage: compile with *_r variant
-        if test "x$GCC" != "xyes"; then
+        if test "x$GCC" != xyes; then
             case $host_os in
                 aix*)
                 case "x/$CC" in #(
   x*/c89|x*/c89_128|x*/c99|x*/c99_128|x*/cc|x*/cc128|x*/xlc|x*/xlc_v6|x*/xlc128|x*/xlc128_v6) :
     #handle absolute path differently from PATH based program lookup
-                     case "x$CC" in #(
+                   case "x$CC" in #(
   x/*) :
     if as_fn_executable_p ${CC}_r; then :
   PTHREAD_CC="${CC}_r"
@@ -20150,7 +19942,7 @@ test -n "$PTHREAD_CC" || PTHREAD_CC="$CC"
 
 
 # Finally, execute ACTION-IF-FOUND/ACTION-IF-NOT-FOUND:
-if test "x$ax_pthread_ok" = "xyes"; then
+if test x"$ax_pthread_ok" = xyes; then
 
 $as_echo "#define HAVE_PTHREAD 1" >>confdefs.h
 
@@ -20506,7 +20298,7 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ldflags___Wl___large_address_aware" >&5
 $as_echo "$ax_cv_check_ldflags___Wl___large_address_aware" >&6; }
-if test "x$ax_cv_check_ldflags___Wl___large_address_aware" = xyes; then :
+if test x"$ax_cv_check_ldflags___Wl___large_address_aware" = xyes; then :
   LDFLAGS="$LDFLAGS -Wl,--large-address-aware"
 else
   :
@@ -20528,8 +20320,6 @@ else
 
                     int foo_def( void ) __attribute__((visibility("default")));
                     int foo_hid( void ) __attribute__((visibility("hidden")));
-                    int foo_int( void ) __attribute__((visibility("internal")));
-                    int foo_pro( void ) __attribute__((visibility("protected")));
 
 int
 main ()
@@ -20735,7 +20525,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___Wstack_protector" >&5
 $as_echo "$ax_cv_check_cxxflags___Wstack_protector" >&6; }
-if test "x$ax_cv_check_cxxflags___Wstack_protector" = xyes; then :
+if test x"$ax_cv_check_cxxflags___Wstack_protector" = xyes; then :
   HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -Wstack-protector"
 else
   :
@@ -20770,7 +20560,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___fstack_protector_all" >&5
 $as_echo "$ax_cv_check_cxxflags___fstack_protector_all" >&6; }
-if test "x$ax_cv_check_cxxflags___fstack_protector_all" = xyes; then :
+if test x"$ax_cv_check_cxxflags___fstack_protector_all" = xyes; then :
   HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -fstack-protector-all"
 else
   :
@@ -20807,7 +20597,7 @@ rm -f conftest.err conftest.i conftest.$ac_ext
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxcppflags___D_FORTIFY_SOURCE_2" >&5
 $as_echo "$ax_cv_check_cxxcppflags___D_FORTIFY_SOURCE_2" >&6; }
-if test "x$ax_cv_check_cxxcppflags___D_FORTIFY_SOURCE_2" = xyes; then :
+if test x"$ax_cv_check_cxxcppflags___D_FORTIFY_SOURCE_2" = xyes; then :
 
     { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether C++ preprocessor accepts -U_FORTIFY_SOURCE" >&5
 $as_echo_n "checking whether C++ preprocessor accepts -U_FORTIFY_SOURCE... " >&6; }
@@ -20838,7 +20628,7 @@ rm -f conftest.err conftest.i conftest.$ac_ext
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxcppflags___U_FORTIFY_SOURCE" >&5
 $as_echo "$ax_cv_check_cxxcppflags___U_FORTIFY_SOURCE" >&6; }
-if test "x$ax_cv_check_cxxcppflags___U_FORTIFY_SOURCE" = xyes; then :
+if test x"$ax_cv_check_cxxcppflags___U_FORTIFY_SOURCE" = xyes; then :
 
       HARDENED_CPPFLAGS="$HARDENED_CPPFLAGS -U_FORTIFY_SOURCE"
 
@@ -20883,7 +20673,7 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ldflags___Wl___dynamicbase" >&5
 $as_echo "$ax_cv_check_ldflags___Wl___dynamicbase" >&6; }
-if test "x$ax_cv_check_ldflags___Wl___dynamicbase" = xyes; then :
+if test x"$ax_cv_check_ldflags___Wl___dynamicbase" = xyes; then :
   HARDENED_LDFLAGS="$HARDENED_LDFLAGS -Wl,--dynamicbase"
 else
   :
@@ -20919,7 +20709,7 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ldflags___Wl___nxcompat" >&5
 $as_echo "$ax_cv_check_ldflags___Wl___nxcompat" >&6; }
-if test "x$ax_cv_check_ldflags___Wl___nxcompat" = xyes; then :
+if test x"$ax_cv_check_ldflags___Wl___nxcompat" = xyes; then :
   HARDENED_LDFLAGS="$HARDENED_LDFLAGS -Wl,--nxcompat"
 else
   :
@@ -20955,7 +20745,7 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ldflags___Wl__z_relro" >&5
 $as_echo "$ax_cv_check_ldflags___Wl__z_relro" >&6; }
-if test "x$ax_cv_check_ldflags___Wl__z_relro" = xyes; then :
+if test x"$ax_cv_check_ldflags___Wl__z_relro" = xyes; then :
   HARDENED_LDFLAGS="$HARDENED_LDFLAGS -Wl,-z,relro"
 else
   :
@@ -20991,7 +20781,7 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ldflags___Wl__z_now" >&5
 $as_echo "$ax_cv_check_ldflags___Wl__z_now" >&6; }
-if test "x$ax_cv_check_ldflags___Wl__z_now" = xyes; then :
+if test x"$ax_cv_check_ldflags___Wl__z_now" = xyes; then :
   HARDENED_LDFLAGS="$HARDENED_LDFLAGS -Wl,-z,now"
 else
   :
@@ -21029,7 +20819,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___fPIC" >&5
 $as_echo "$ax_cv_check_cxxflags___fPIC" >&6; }
-if test "x$ax_cv_check_cxxflags___fPIC" = xyes; then :
+if test x"$ax_cv_check_cxxflags___fPIC" = xyes; then :
   HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -fPIC"
 else
   :
@@ -21065,7 +20855,7 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ldflags___pic" >&5
 $as_echo "$ax_cv_check_ldflags___pic" >&6; }
-if test "x$ax_cv_check_ldflags___pic" = xyes; then :
+if test x"$ax_cv_check_ldflags___pic" = xyes; then :
   HARDENED_LDFLAGS="$HARDENED_LDFLAGS -pic"
 else
   :
@@ -21156,7 +20946,7 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ldflags___Wl__dead_strip" >&5
 $as_echo "$ax_cv_check_ldflags___Wl__dead_strip" >&6; }
-if test "x$ax_cv_check_ldflags___Wl__dead_strip" = xyes; then :
+if test x"$ax_cv_check_ldflags___Wl__dead_strip" = xyes; then :
   LDFLAGS="$LDFLAGS -Wl,-dead_strip"
 else
   :
@@ -21557,7 +21347,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_cxxflags___fvisibility_hidden" >&5
 $as_echo "$ax_cv_check_cxxflags___fvisibility_hidden" >&6; }
-if test "x$ax_cv_check_cxxflags___fvisibility_hidden" = xyes; then :
+if test x"$ax_cv_check_cxxflags___fvisibility_hidden" = xyes; then :
   RE_CXXFLAGS="-fvisibility=hidden"
 else
 
@@ -21660,7 +21450,7 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
   if test "x$bdbpath" = "xX"; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-    as_fn_error $? "libdb_cxx headers missing, Bata Core requires this library for wallet functionality (--disable-wallet to disable wallet functionality)" "$LINENO" 5
+    as_fn_error $? "libdb_cxx headers missing" "$LINENO" 5
   elif test "x$bdb48path" = "xX"; then
 
   if test "x${bdbpath}" = "x"; then
@@ -21751,7 +21541,7 @@ fi
 
   done
   if test "x$BDB_LIBS" = "x"; then
-      as_fn_error $? "libdb_cxx missing, Bata Core requires this library for wallet functionality (--disable-wallet to disable wallet functionality)" "$LINENO" 5
+      as_fn_error $? "libdb_cxx missing, Bitcoin Core requires this library for wallet functionality (--disable-wallet to disable wallet functionality)" "$LINENO" 5
   fi
 
 
@@ -21811,65 +21601,7 @@ done
 
 fi
 
-
-
-# Check whether --with-gui was given.
-if test "${with_gui+set}" = set; then :
-  withval=$with_gui;
-     bitcoin_qt_want_version=$withval
-     if test x$bitcoin_qt_want_version = xyes; then
-       bitcoin_qt_force=yes
-       bitcoin_qt_want_version=auto
-     fi
-
-else
-  bitcoin_qt_want_version=auto
-fi
-
-
-
-# Check whether --with-qt-incdir was given.
-if test "${with_qt_incdir+set}" = set; then :
-  withval=$with_qt_incdir; qt_include_path=$withval
-fi
-
-
-# Check whether --with-qt-libdir was given.
-if test "${with_qt_libdir+set}" = set; then :
-  withval=$with_qt_libdir; qt_lib_path=$withval
-fi
-
-
-# Check whether --with-qt-plugindir was given.
-if test "${with_qt_plugindir+set}" = set; then :
-  withval=$with_qt_plugindir; qt_plugin_path=$withval
-fi
-
-
-# Check whether --with-qt-translationdir was given.
-if test "${with_qt_translationdir+set}" = set; then :
-  withval=$with_qt_translationdir; qt_translation_path=$withval
-fi
-
-
-# Check whether --with-qt-bindir was given.
-if test "${with_qt_bindir+set}" = set; then :
-  withval=$with_qt_bindir; qt_bin_path=$withval
-fi
-
-
-
-# Check whether --with-qtdbus was given.
-if test "${with_qtdbus+set}" = set; then :
-  withval=$with_qtdbus; use_dbus=$withval
-else
-  use_dbus=auto
-fi
-
-
-  QT_TRANSLATION_DIR=$qt_translation_path
-
-
+BITCOIN_QT_INIT
 
 
   use_pkgconfig=$use_pkgconfig
@@ -22048,7 +21780,11 @@ fi
       fi
 
             if test x$have_qt = xno && test x$bitcoin_qt_want_version = xauto; then
+<<<<<<< HEAD
         if test x$auto_priority_version = xqt5; then
+=======
+        if test x$auto_priority_version = x$qt5; then
+>>>>>>> upstream/0.10
 
 pkg_failed=no
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for QT" >&5
@@ -22203,7 +21939,10 @@ fi
 $as_echo "$as_me: WARNING: Qt dependencies not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "Qt dependencies not found" "$LINENO" 5
   fi
@@ -22382,8 +22121,11 @@ fi
     true
 
   TEMP_CPPFLAGS="$CPPFLAGS"
+<<<<<<< HEAD
   TEMP_CXXFLAGS="$CXXFLAGS"
   CXXFLAGS="$PIC_FLAGS $CXXFLAGS"
+=======
+>>>>>>> upstream/0.10
   TEMP_LIBS="$LIBS"
 
   if test "x$bitcoin_enable_qt" != "xno" && test x$bitcoin_qt_want_version != xno; then
@@ -22414,7 +22156,10 @@ else
 $as_echo "$as_me: WARNING: QtCore headers missing; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "QtCore headers missing" "$LINENO" 5
   fi
@@ -22441,7 +22186,10 @@ else
 $as_echo "$as_me: WARNING: QtGui headers missing; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "QtGui headers missing" "$LINENO" 5
   fi
@@ -22468,7 +22216,10 @@ else
 $as_echo "$as_me: WARNING: QtNetwork headers missing; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "QtNetwork headers missing" "$LINENO" 5
   fi
@@ -22591,7 +22342,10 @@ else
 $as_echo "$as_me: WARNING: libimm32 not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "libimm32 not found" "$LINENO" 5
   fi
@@ -22762,6 +22516,7 @@ fi
 
   fi
 
+<<<<<<< HEAD
 
   if test "x$bitcoin_enable_qt" != "xno" && test x$bitcoin_qt_want_version != xno; then
     true
@@ -22896,6 +22651,60 @@ fi
 
   fi
 
+=======
+
+  if test "x$bitcoin_enable_qt" != "xno" && test x$bitcoin_qt_want_version != xno; then
+    true
+    as_ac_Lib=`$as_echo "ac_cv_lib_pcre16 ''_main" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lpcre16 " >&5
+$as_echo_n "checking for main in -lpcre16 ... " >&6; }
+if eval \${$as_ac_Lib+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpcre16   $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  eval "$as_ac_Lib=yes"
+else
+  eval "$as_ac_Lib=no"
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+eval ac_res=\$$as_ac_Lib
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBPCRE16_ 1
+_ACEOF
+
+  LIBS="-lpcre16  $LIBS"
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: libpcre16 not found. Assuming qt has it built-in" >&5
+$as_echo "$as_me: WARNING: libpcre16 not found. Assuming qt has it built-in" >&2;}
+fi
+
+  else
+    true
+
+  fi
+
+>>>>>>> upstream/0.10
 
   if test "x$bitcoin_enable_qt" != "xno" && test x$bitcoin_qt_want_version != xno; then
     true
@@ -22946,7 +22755,10 @@ else
 $as_echo "$as_me: WARNING: lib$QT_LIB_PREFIXCore not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "lib$QT_LIB_PREFIXCore not found" "$LINENO" 5
   fi
@@ -23008,7 +22820,10 @@ else
 $as_echo "$as_me: WARNING: lib$QT_LIB_PREFIXGui not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "lib$QT_LIB_PREFIXGui not found" "$LINENO" 5
   fi
@@ -23070,7 +22885,10 @@ else
 $as_echo "$as_me: WARNING: lib$QT_LIB_PREFIXNetwork not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "lib$QT_LIB_PREFIXNetwork not found" "$LINENO" 5
   fi
@@ -23133,7 +22951,10 @@ else
 $as_echo "$as_me: WARNING: lib$QT_LIB_PREFIXWidgets not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "lib$QT_LIB_PREFIXWidgets not found" "$LINENO" 5
   fi
@@ -23274,7 +23095,10 @@ fi
   fi
 
   CPPFLAGS="$TEMP_CPPFLAGS"
+<<<<<<< HEAD
   CXXFLAGS="$TEMP_CXXFLAGS"
+=======
+>>>>>>> upstream/0.10
   LIBS="$TEMP_LIBS"
 
   else
@@ -23289,6 +23113,7 @@ fi
     true
 
   TEMP_CPPFLAGS=$CPPFLAGS
+<<<<<<< HEAD
   TEMP_CXXFLAGS=$CXXFLAGS
   CPPFLAGS="$QT_INCLUDES $CPPFLAGS"
   CXXFLAGS="$PIC_FLAGS $CXXFLAGS"
@@ -23797,7 +23622,10 @@ else
 $as_echo "$as_me: WARNING: lib$QT_LIB_PREFIXPlatformSupport not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "lib$QT_LIB_PREFIXPlatformSupport not found" "$LINENO" 5
   fi
@@ -23884,7 +23712,10 @@ $as_echo "no" >&6; };
 $as_echo "$as_me: WARNING: Could not resolve: -lqtaccessiblewidgets; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "Could not resolve: -lqtaccessiblewidgets" "$LINENO" 5
   fi
@@ -23895,6 +23726,195 @@ rm -f core conftest.err conftest.$ac_objext \
   LIBS="$CHECK_STATIC_PLUGINS_TEMP_LIBS"
 
       fi
+=======
+  CPPFLAGS=$QT_INCLUDES
+  if test x$bitcoin_qt_got_major_vers = x5; then
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for static Qt" >&5
+$as_echo_n "checking for static Qt... " >&6; }
+if ${bitcoin_cv_static_qt+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <QtCore>
+int
+main ()
+{
+
+      #if defined(QT_STATIC)
+      return 0;
+      #else
+      choke me
+      #endif
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  bitcoin_cv_static_qt=yes
+else
+  bitcoin_cv_static_qt=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $bitcoin_cv_static_qt" >&5
+$as_echo "$bitcoin_cv_static_qt" >&6; }
+  if test xbitcoin_cv_static_qt = xyes; then
+
+$as_echo "#define QT_STATICPLUGIN 1" >>confdefs.h
+
+  fi
+
+    if test x$bitcoin_cv_static_qt = xyes; then
+
+$as_echo "#define QT_STATICPLUGIN 1" >>confdefs.h
+
+      if test x$qt_plugin_path != x; then
+        QT_LIBS="$QT_LIBS -L$qt_plugin_path/accessible"
+        QT_LIBS="$QT_LIBS -L$qt_plugin_path/platforms"
+      fi
+      if test x$use_pkgconfig = xyes; then
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for QTPLATFORM" >&5
+$as_echo_n "checking for QTPLATFORM... " >&6; }
+
+if test -n "$QTPLATFORM_CFLAGS"; then
+    pkg_cv_QTPLATFORM_CFLAGS="$QTPLATFORM_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5PlatformSupport\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "Qt5PlatformSupport") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_QTPLATFORM_CFLAGS=`$PKG_CONFIG --cflags "Qt5PlatformSupport" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$QTPLATFORM_LIBS"; then
+    pkg_cv_QTPLATFORM_LIBS="$QTPLATFORM_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5PlatformSupport\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "Qt5PlatformSupport") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_QTPLATFORM_LIBS=`$PKG_CONFIG --libs "Qt5PlatformSupport" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        QTPLATFORM_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "Qt5PlatformSupport" 2>&1`
+        else
+	        QTPLATFORM_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "Qt5PlatformSupport" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$QTPLATFORM_PKG_ERRORS" >&5
+
+	as_fn_error $? "Package requirements (Qt5PlatformSupport) were not met:
+
+$QTPLATFORM_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables QTPLATFORM_CFLAGS
+and QTPLATFORM_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details." "$LINENO" 5
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables QTPLATFORM_CFLAGS
+and QTPLATFORM_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details" "$LINENO" 5; }
+else
+	QTPLATFORM_CFLAGS=$pkg_cv_QTPLATFORM_CFLAGS
+	QTPLATFORM_LIBS=$pkg_cv_QTPLATFORM_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	QT_LIBS="$QTPLATFORM_LIBS $QT_LIBS"
+fi
+      fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for static Qt plugins: -lqtaccessiblewidgets" >&5
+$as_echo_n "checking for static Qt plugins: -lqtaccessiblewidgets... " >&6; }
+  CHECK_STATIC_PLUGINS_TEMP_LIBS="$LIBS"
+  LIBS="-lqtaccessiblewidgets $QT_LIBS $LIBS"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+    #define QT_STATICPLUGIN
+    #include <QtPlugin>
+    Q_IMPORT_PLUGIN(AccessibleFactory)
+int
+main ()
+{
+return 0;
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }; QT_LIBS="-lqtaccessiblewidgets $QT_LIBS"
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; };
+  if test "x$bitcoin_qt_want_version" = "xauto" && test x$bitcoin_qt_force != xyes; then
+    if test x$bitcoin_enable_qt != xno; then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Could not resolve: -lqtaccessiblewidgets; bitcoin-qt frontend will not be built" >&5
+$as_echo "$as_me: WARNING: Could not resolve: -lqtaccessiblewidgets; bitcoin-qt frontend will not be built" >&2;}
+    fi
+    bitcoin_enable_qt=no
+<<<<<<< HEAD
+    bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
+  else
+    as_fn_error $? "Could not resolve: -lqtaccessiblewidgets" "$LINENO" 5
+  fi
+
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+  LIBS="$CHECK_STATIC_PLUGINS_TEMP_LIBS"
+
+>>>>>>> upstream/0.10
       if test x$TARGET_OS = xwindows; then
 
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for static Qt plugins: -lqwindows" >&5
@@ -23927,7 +23947,10 @@ $as_echo "no" >&6; };
 $as_echo "$as_me: WARNING: Could not resolve: -lqwindows; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "Could not resolve: -lqwindows" "$LINENO" 5
   fi
@@ -23941,6 +23964,7 @@ rm -f core conftest.err conftest.$ac_objext \
 $as_echo "#define QT_QPA_PLATFORM_WINDOWS 1" >>confdefs.h
 
       elif test x$TARGET_OS = xlinux; then
+<<<<<<< HEAD
 
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for static Qt plugins: -lqxcb -lxcb-static" >&5
 $as_echo_n "checking for static Qt plugins: -lqxcb -lxcb-static... " >&6; }
@@ -23972,7 +23996,10 @@ $as_echo "no" >&6; };
 $as_echo "$as_me: WARNING: Could not resolve: -lqxcb -lxcb-static; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "Could not resolve: -lqxcb -lxcb-static" "$LINENO" 5
   fi
@@ -23986,6 +24013,240 @@ rm -f core conftest.err conftest.$ac_objext \
 $as_echo "#define QT_QPA_PLATFORM_XCB 1" >>confdefs.h
 
       elif test x$TARGET_OS = xdarwin; then
+=======
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for X11XCB" >&5
+$as_echo_n "checking for X11XCB... " >&6; }
+
+if test -n "$X11XCB_CFLAGS"; then
+    pkg_cv_X11XCB_CFLAGS="$X11XCB_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"x11-xcb\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "x11-xcb") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_X11XCB_CFLAGS=`$PKG_CONFIG --cflags "x11-xcb" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$X11XCB_LIBS"; then
+    pkg_cv_X11XCB_LIBS="$X11XCB_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"x11-xcb\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "x11-xcb") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_X11XCB_LIBS=`$PKG_CONFIG --libs "x11-xcb" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        X11XCB_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "x11-xcb" 2>&1`
+        else
+	        X11XCB_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "x11-xcb" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$X11XCB_PKG_ERRORS" >&5
+
+	as_fn_error $? "Package requirements (x11-xcb) were not met:
+
+$X11XCB_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables X11XCB_CFLAGS
+and X11XCB_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details." "$LINENO" 5
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables X11XCB_CFLAGS
+and X11XCB_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details" "$LINENO" 5; }
+else
+	X11XCB_CFLAGS=$pkg_cv_X11XCB_CFLAGS
+	X11XCB_LIBS=$pkg_cv_X11XCB_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	QT_LIBS="$X11XCB_LIBS $QT_LIBS"
+fi
+
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for static Qt plugins: -lqxcb -lxcb-static" >&5
+$as_echo_n "checking for static Qt plugins: -lqxcb -lxcb-static... " >&6; }
+  CHECK_STATIC_PLUGINS_TEMP_LIBS="$LIBS"
+  LIBS="-lqxcb -lxcb-static $QT_LIBS $LIBS"
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+    #define QT_STATICPLUGIN
+    #include <QtPlugin>
+    Q_IMPORT_PLUGIN(QXcbIntegrationPlugin)
+int
+main ()
+{
+return 0;
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_link "$LINENO"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }; QT_LIBS="-lqxcb -lxcb-static $QT_LIBS"
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; };
+  if test "x$bitcoin_qt_want_version" = "xauto" && test x$bitcoin_qt_force != xyes; then
+    if test x$bitcoin_enable_qt != xno; then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Could not resolve: -lqxcb -lxcb-static; bitcoin-qt frontend will not be built" >&5
+$as_echo "$as_me: WARNING: Could not resolve: -lqxcb -lxcb-static; bitcoin-qt frontend will not be built" >&2;}
+    fi
+    bitcoin_enable_qt=no
+<<<<<<< HEAD
+    bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
+  else
+    as_fn_error $? "Could not resolve: -lqxcb -lxcb-static" "$LINENO" 5
+  fi
+
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+  LIBS="$CHECK_STATIC_PLUGINS_TEMP_LIBS"
+
+
+$as_echo "#define QT_QPA_PLATFORM_XCB 1" >>confdefs.h
+
+      elif test x$TARGET_OS = xdarwin; then
+        if test x$use_pkgconfig = xyes; then
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for QTPRINT" >&5
+$as_echo_n "checking for QTPRINT... " >&6; }
+
+if test -n "$QTPRINT_CFLAGS"; then
+    pkg_cv_QTPRINT_CFLAGS="$QTPRINT_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5PrintSupport\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "Qt5PrintSupport") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_QTPRINT_CFLAGS=`$PKG_CONFIG --cflags "Qt5PrintSupport" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$QTPRINT_LIBS"; then
+    pkg_cv_QTPRINT_LIBS="$QTPRINT_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"Qt5PrintSupport\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "Qt5PrintSupport") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_QTPRINT_LIBS=`$PKG_CONFIG --libs "Qt5PrintSupport" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+   	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        QTPRINT_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "Qt5PrintSupport" 2>&1`
+        else
+	        QTPRINT_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "Qt5PrintSupport" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$QTPRINT_PKG_ERRORS" >&5
+
+	as_fn_error $? "Package requirements (Qt5PrintSupport) were not met:
+
+$QTPRINT_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables QTPRINT_CFLAGS
+and QTPRINT_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details." "$LINENO" 5
+elif test $pkg_failed = untried; then
+     	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	{ { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+Alternatively, you may set the environment variables QTPRINT_CFLAGS
+and QTPRINT_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.
+See \`config.log' for more details" "$LINENO" 5; }
+else
+	QTPRINT_CFLAGS=$pkg_cv_QTPRINT_CFLAGS
+	QTPRINT_LIBS=$pkg_cv_QTPRINT_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+	QT_LIBS="$QTPRINT_LIBS $QT_LIBS"
+fi
+        fi
+>>>>>>> upstream/0.10
         { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the linker accepts -framework IOKit" >&5
 $as_echo_n "checking whether the linker accepts -framework IOKit... " >&6; }
 if ${ax_cv_check_ldflags___framework_IOKit+:} false; then :
@@ -24016,7 +24277,7 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ldflags___framework_IOKit" >&5
 $as_echo "$ax_cv_check_ldflags___framework_IOKit" >&6; }
-if test "x$ax_cv_check_ldflags___framework_IOKit" = xyes; then :
+if test x"$ax_cv_check_ldflags___framework_IOKit" = xyes; then :
   QT_LIBS="$QT_LIBS -framework IOKit"
 else
   as_fn_error $? "could not iokit framework" "$LINENO" 5
@@ -24053,7 +24314,10 @@ $as_echo "no" >&6; };
 $as_echo "$as_me: WARNING: Could not resolve: -lqcocoa; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "Could not resolve: -lqcocoa" "$LINENO" 5
   fi
@@ -24073,6 +24337,13 @@ $as_echo "#define QT_QPA_PLATFORM_COCOA 1" >>confdefs.h
 
 $as_echo "#define QT_STATICPLUGIN 1" >>confdefs.h
 
+<<<<<<< HEAD
+=======
+      if test x$qt_plugin_path != x; then
+        QT_LIBS="$QT_LIBS -L$qt_plugin_path/accessible"
+        QT_LIBS="$QT_LIBS -L$qt_plugin_path/codecs"
+      fi
+>>>>>>> upstream/0.10
 
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for static Qt plugins: -lqcncodecs -lqjpcodecs -lqtwcodecs -lqkrcodecs -lqtaccessiblewidgets" >&5
 $as_echo_n "checking for static Qt plugins: -lqcncodecs -lqjpcodecs -lqtwcodecs -lqkrcodecs -lqtaccessiblewidgets... " >&6; }
@@ -24109,7 +24380,10 @@ $as_echo "no" >&6; };
 $as_echo "$as_me: WARNING: Could not resolve: -lqcncodecs -lqjpcodecs -lqtwcodecs -lqkrcodecs -lqtaccessiblewidgets; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "Could not resolve: -lqcncodecs -lqjpcodecs -lqtwcodecs -lqkrcodecs -lqtaccessiblewidgets" "$LINENO" 5
   fi
@@ -24122,7 +24396,10 @@ rm -f core conftest.err conftest.$ac_objext \
     fi
   fi
   CPPFLAGS=$TEMP_CPPFLAGS
+<<<<<<< HEAD
   CXXFLAGS=$TEMP_CXXFLAGS
+=======
+>>>>>>> upstream/0.10
 
   else
     true
@@ -24136,6 +24413,7 @@ rm -f core conftest.err conftest.$ac_objext \
     fi
   fi
 
+<<<<<<< HEAD
   if test x$use_hardening != xno; then
 
   if test "x$bitcoin_enable_qt" != "xno" && test x$bitcoin_qt_want_version != xno; then
@@ -24221,6 +24499,8 @@ rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
   fi
 
+=======
+>>>>>>> upstream/0.10
 
 
   if test "x$bitcoin_enable_qt" != "xno" && test x$bitcoin_qt_want_version != xno; then
@@ -24327,7 +24607,10 @@ done
 $as_echo "$as_me: WARNING: MOC not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "MOC not found" "$LINENO" 5
   fi
@@ -24446,7 +24729,10 @@ done
 $as_echo "$as_me: WARNING: UIC not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "UIC not found" "$LINENO" 5
   fi
@@ -24565,7 +24851,10 @@ done
 $as_echo "$as_me: WARNING: RCC not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "RCC not found" "$LINENO" 5
   fi
@@ -24684,7 +24973,10 @@ done
 $as_echo "$as_me: WARNING: LRELEASE not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "LRELEASE not found" "$LINENO" 5
   fi
@@ -24803,7 +25095,10 @@ done
 $as_echo "$as_me: WARNING: LUPDATE not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "LUPDATE not found" "$LINENO" 5
   fi
@@ -24858,7 +25153,7 @@ fi
 eval ac_res=\$$as_CACHEVAR
 	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
 $as_echo "$ac_res" >&6; }
-if eval test \"x\$"$as_CACHEVAR"\" = x"yes"; then :
+if test x"`eval 'as_val=${'$as_CACHEVAR'};$as_echo "$as_val"'`" = xyes; then :
   QT_LIBS="$QT_LIBS $base_frameworks"
 else
   as_fn_error $? "could not find base frameworks" "$LINENO" 5
@@ -24906,7 +25201,7 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ldflags___mwindows" >&5
 $as_echo "$ax_cv_check_ldflags___mwindows" >&6; }
-if test "x$ax_cv_check_ldflags___mwindows" = xyes; then :
+if test x"$ax_cv_check_ldflags___mwindows" = xyes; then :
   QT_LDFLAGS="$QT_LDFLAGS -mwindows"
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: -mwindows linker support not detected" >&5
@@ -24922,8 +25217,13 @@ fi
   esac
 
 
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to build Bata Core GUI" >&5
+  <<<<<<< HEAD
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to build Bata Core GUI" >&5
 $as_echo_n "checking whether to build Bata Core GUI... " >&6; }
+=======
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to build Bitcoin Core GUI" >&5
+$as_echo_n "checking whether to build Bitcoin Core GUI... " >&6; }
+>>>>>>> upstream/0.10
 
   if test "x$bitcoin_enable_qt" != "xno" && test x$bitcoin_qt_want_version != xno; then
     true
@@ -24955,7 +25255,10 @@ $as_echo "$as_me: WARNING: \"lupdate is required to update qt translations\"" >&
   { $as_echo "$as_me:${as_lineno-$LINENO}: result: $bitcoin_enable_qt (Qt${bitcoin_qt_got_major_vers})" >&5
 $as_echo "$bitcoin_enable_qt (Qt${bitcoin_qt_got_major_vers})" >&6; }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/0.10
 
 
 
@@ -25034,7 +25337,7 @@ $as_echo_n "checking for boostlib >= $boost_lib_version_req... " >&6; }
       x86_64)
         libsubdirs="lib64 libx32 lib lib64"
         ;;
-      ppc64|s390x|sparc64|aarch64|ppc64le)
+      ppc64|s390x|sparc64|aarch64)
         libsubdirs="lib64 lib lib64"
         ;;
     esac
@@ -25116,6 +25419,9 @@ $as_echo "yes" >&6; }
     succeeded=yes
     found_system=yes
 
+else
+  :
+
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
     ac_ext=cpp
@@ -25128,10 +25434,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
             if test "x$succeeded" != "xyes"; then
-        CPPFLAGS="$CPPFLAGS_SAVED"
-        LDFLAGS="$LDFLAGS_SAVED"
-        BOOST_CPPFLAGS=
-        BOOST_LDFLAGS=
         _version=0
         if test "$ac_boost_path" != ""; then
             if test -d "$ac_boost_path" && test -r "$ac_boost_path"; then
@@ -25144,11 +25446,6 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
                     VERSION_UNDERSCORE=`echo $_version | sed 's/\./_/'`
                     BOOST_CPPFLAGS="-I$ac_boost_path/include/boost-$VERSION_UNDERSCORE"
                 done
-                                if test -z "$BOOST_CPPFLAGS"; then
-                    if test -d "$ac_boost_path/boost" && test -r "$ac_boost_path/boost"; then
-                        BOOST_CPPFLAGS="-I$ac_boost_path"
-                    fi
-                fi
             fi
         else
             if test "$cross_compiling" != yes; then
@@ -25231,6 +25528,9 @@ $as_echo "yes" >&6; }
         succeeded=yes
         found_system=yes
 
+else
+  :
+
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
         ac_ext=cpp
@@ -25310,7 +25610,6 @@ ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ex
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 			 CXXFLAGS_SAVE=$CXXFLAGS
-			 CXXFLAGS=
 
 			 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -25318,7 +25617,7 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 int
 main ()
 {
-boost::system::error_category *a = 0;
+boost::system::system_category
   ;
   return 0;
 }
@@ -25792,12 +26091,12 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 				cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
-#include <boost/program_options/errors.hpp>
+#include <boost/program_options.hpp>
 
 int
 main ()
 {
-boost::program_options::error err("Error message");
+boost::program_options::options_description generic("Generic options");
                                    return 0;
   ;
   return 0;
@@ -25825,6 +26124,7 @@ $as_echo "#define HAVE_BOOST_PROGRAM_OPTIONS /**/" >>confdefs.h
 
                   BOOSTLIBDIR=`echo $BOOST_LDFLAGS | sed -e 's/[^\/]*//'`
                 if test "x$ax_boost_user_program_options_lib" = "x"; then
+                ax_lib=
                 for libextension in `ls $BOOSTLIBDIR/libboost_program_options*.so* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^lib\(boost_program_options.*\)\.so.*$;\1;'` `ls $BOOSTLIBDIR/libboost_program_options*.dylib* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^lib\(boost_program_options.*\)\.dylib.*$;\1;'` `ls $BOOSTLIBDIR/libboost_program_options*.a* 2>/dev/null | sed 's,.*/,,' | sed -e 's;^lib\(boost_program_options.*\)\.a.*$;\1;'` ; do
                      ax_lib=${libextension}
 				    as_ac_Lib=`$as_echo "ac_cv_lib_$ax_lib''_exit" | $as_tr_sh`
@@ -26574,7 +26874,7 @@ rm -f core conftest.err conftest.$ac_objext \
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ldflags___Wl___exclude_libs_ALL" >&5
 $as_echo "$ax_cv_check_ldflags___Wl___exclude_libs_ALL" >&6; }
-if test "x$ax_cv_check_ldflags___Wl___exclude_libs_ALL" = xyes; then :
+if test x"$ax_cv_check_ldflags___Wl___exclude_libs_ALL" = xyes; then :
   RELDFLAGS="-Wl,--exclude-libs,ALL"
 else
   :
@@ -26892,7 +27192,7 @@ fi
 
 if test x$use_pkgconfig = xyes; then
 
-  if test x"$PKG_CONFIG" = "x"; then
+  if test x$PKG_CONFIG == x; then
     as_fn_error $? "pkg-config not found." "$LINENO" 5
   fi
 
@@ -26967,7 +27267,7 @@ else
 	SSL_LIBS=$pkg_cv_SSL_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-
+	INCLUDES="$INCLUDES $SSL_CFLAGS"; LIBS="$LIBS $SSL_LIBS"
 fi
 
 pkg_failed=no
@@ -27038,7 +27338,7 @@ else
 	CRYPTO_LIBS=$pkg_cv_CRYPTO_LIBS
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
-
+	INCLUDES="$INCLUDES $CRYPTO_CFLAGS"; LIBS="$LIBS $CRYPTO_LIBS"
 fi
 
   if test "x$bitcoin_enable_qt" != "xno" && test x$bitcoin_qt_want_version != xno; then
@@ -27109,7 +27409,10 @@ fi
 $as_echo "$as_me: WARNING: libprotobuf not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "libprotobuf not found" "$LINENO" 5
   fi
@@ -27124,7 +27427,10 @@ $as_echo "no" >&6; }
 $as_echo "$as_me: WARNING: libprotobuf not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "libprotobuf not found" "$LINENO" 5
   fi
@@ -27360,7 +27666,10 @@ else
 $as_echo "$as_me: WARNING: libprotobuf not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "libprotobuf not found" "$LINENO" 5
   fi
@@ -27652,7 +27961,10 @@ done
 $as_echo "$as_me: WARNING: PROTOC not found; bitcoin-qt frontend will not be built" >&2;}
     fi
     bitcoin_enable_qt=no
+<<<<<<< HEAD
     bitcoin_enable_qt_test=no
+=======
+>>>>>>> upstream/0.10
   else
     as_fn_error $? "PROTOC not found" "$LINENO" 5
   fi
@@ -27666,8 +27978,8 @@ $as_echo "$as_me: WARNING: PROTOC not found; bitcoin-qt frontend will not be bui
 
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to build litecoind" >&5
-$as_echo_n "checking whether to build litecoind... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to build batad" >&5
+$as_echo_n "checking whether to build batad... " >&6; }
  if test x$build_bitcoind = xyes; then
   BUILD_BITCOIND_TRUE=
   BUILD_BITCOIND_FALSE='#'
@@ -27679,8 +27991,8 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $build_bitcoind" >&5
 $as_echo "$build_bitcoind" >&6; }
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to build utils (litecoin-cli litecoin-tx)" >&5
-$as_echo_n "checking whether to build utils (litecoin-cli litecoin-tx)... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to build utils (bata-cli bata-tx)" >&5
+$as_echo_n "checking whether to build utils (bata-cli bata-tx)... " >&6; }
  if test x$build_bitcoin_utils = xyes; then
   BUILD_BITCOIN_UTILS_TRUE=
   BUILD_BITCOIN_UTILS_FALSE='#'
@@ -27764,7 +28076,7 @@ rm -f conftest.err conftest.i conftest.$ac_ext
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_ccppflags___Qunused_arguments" >&5
 $as_echo "$ax_cv_check_ccppflags___Qunused_arguments" >&6; }
-if test "x$ax_cv_check_ccppflags___Qunused_arguments" = xyes; then :
+if test x"$ax_cv_check_ccppflags___Qunused_arguments" = xyes; then :
   CPPFLAGS="-Qunused-arguments $CPPFLAGS"
 else
   :

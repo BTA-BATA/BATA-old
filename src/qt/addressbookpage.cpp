@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Copyright (c) 2011-2015 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -6,6 +7,12 @@
 #include "config/bitcoin-config.h"
 #endif
 
+=======
+// Copyright (c) 2011-2013 The Bitcoin developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+>>>>>>> upstream/0.10
 #include "addressbookpage.h"
 #include "ui_addressbookpage.h"
 

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2011-2014 The Bitcoin developers
+=======
+// Copyright (c) 2011-2013 The Bitcoin developers
+>>>>>>> upstream/0.10
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -39,8 +43,15 @@ SendCoinsDialog::SendCoinsDialog(QWidget *parent) :
     ui->clearButton->setIcon(QIcon());
     ui->sendButton->setIcon(QIcon());
 #endif
+<<<<<<< HEAD
 
     GUIUtil::setupAddressWidget(ui->lineEditCoinControlChange, this);
+=======
+#if QT_VERSION >= 0x040700
+    /* Do not move this to the XML file, Qt before 4.7 will choke on it */
+    ui->lineEditCoinControlChange->setPlaceholderText(tr("Enter a BATA address (e.g. B9BiqLLWuBmHy5P1MGuqyeSj9JNG211DTz)"));
+#endif
+>>>>>>> upstream/0.10
 
     addEntry();
 

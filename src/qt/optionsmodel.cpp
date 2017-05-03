@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -6,6 +7,12 @@
 #include "config/bitcoin-config.h"
 #endif
 
+=======
+// Copyright (c) 2011-2013 The Bitcoin developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+>>>>>>> upstream/0.10
 #include "optionsmodel.h"
 
 #include "bitcoinunits.h"
@@ -46,6 +53,17 @@ void OptionsModel::Init()
     setRestartRequired(false);
 
     // These are Qt-only settings:
+<<<<<<< HEAD
+=======
+    nDisplayUnit = settings.value("nDisplayUnit", BitcoinUnits::BTC).toInt();
+    bDisplayAddresses = settings.value("bDisplayAddresses", false).toBool();
+    fMinimizeToTray = settings.value("fMinimizeToTray", false).toBool();
+    fMinimizeOnClose = settings.value("fMinimizeOnClose", false).toBool();
+    nTransactionFee = settings.value("nTransactionFee").toLongLong();
+    bSpendZeroConfChange = settings.value("bSpendZeroConfChange").toBool();
+    language = settings.value("language", "").toString();
+    fCoinControlFeatures = settings.value("fCoinControlFeatures", false).toBool();
+>>>>>>> upstream/0.10
 
     // Window
     if (!settings.contains("fMinimizeToTray"))
@@ -177,11 +195,25 @@ QVariant OptionsModel::data(const QModelIndex & index, int role) const
             QStringList strlIpPort = settings.value("addrProxy").toString().split(":", QString::SkipEmptyParts);
             return strlIpPort.at(1);
         }
+<<<<<<< HEAD
 
 #ifdef ENABLE_WALLET
         case SpendZeroConfChange:
             return settings.value("bSpendZeroConfChange");
 #endif
+=======
+        case ProxySocksVersion: {
+            proxyType proxy;
+            if (GetProxy(NET_IPV4, proxy))
+                return QVariant(proxy.second);
+            else
+                return QVariant(5);
+        }
+        case Fee:
+            return QVariant(nTransactionFee);
+        case SpendZeroConfChange:
+            return bSpendZeroConfChange;
+>>>>>>> upstream/0.10
         case DisplayUnit:
             return nDisplayUnit;
         case ThirdPartyTxUrls:
@@ -266,7 +298,16 @@ bool OptionsModel::setData(const QModelIndex & index, const QVariant & value, in
                 setRestartRequired(true);
             }
             break;
+<<<<<<< HEAD
 #endif
+=======
+        case SpendZeroConfChange:
+            if (settings.value("bSpendZeroConfChange") != value) {
+                bSpendZeroConfChange = value.toBool();
+                settings.setValue("bSpendZeroConfChange", value);
+            }
+            break;
+>>>>>>> upstream/0.10
         case DisplayUnit:
             setDisplayUnit(value);
             break;

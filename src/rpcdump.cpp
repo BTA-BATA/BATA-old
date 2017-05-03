@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Distributed under the MIT software license, see the accompanying
+=======
+// Copyright (c) 2009-2014 Bitcoin Developers
+// Distributed under the MIT/X11 software license, see the accompanying
+>>>>>>> upstream/0.10
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "base58.h"
@@ -93,6 +98,8 @@ Value importprivkey(const Array& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
+    EnsureWalletIsUnlocked();
+
     string strSecret = params[0].get_str();
     string strLabel = "";
     if (params.size() > 1)
@@ -114,6 +121,8 @@ Value importprivkey(const Array& params, bool fHelp)
     CPubKey pubkey = key.GetPubKey();
     assert(key.VerifyPubKey(pubkey));
     CKeyID vchAddress = pubkey.GetID();
+    if (!key.IsValid()) throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Private key outside allowed range");
+
     {
         pwalletMain->MarkDirty();
         pwalletMain->SetAddressBook(vchAddress, strLabel, "receive");

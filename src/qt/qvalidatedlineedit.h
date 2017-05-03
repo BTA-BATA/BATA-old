@@ -2,8 +2,13 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+<<<<<<< HEAD
 #ifndef BITCOIN_QT_QVALIDATEDLINEEDIT_H
 #define BITCOIN_QT_QVALIDATEDLINEEDIT_H
+=======
+#ifndef QVALIDATEDLINEEDIT_H
+#define QVALIDATEDLINEEDIT_H
+>>>>>>> upstream/0.10
 
 #include <QLineEdit>
 

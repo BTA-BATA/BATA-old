@@ -9,6 +9,10 @@
 #include "config/bitcoin-config.h"
 #endif
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/0.10
 #include <QIcon>
 #include <QObject>
 

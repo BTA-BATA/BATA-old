@@ -3,8 +3,11 @@ work/
 built/
 sources/
 config.site
+<<<<<<< HEAD
 x86_64*
 i686*
 mips*
 arm*
 aarch64*
+=======
+>>>>>>> upstream/0.10

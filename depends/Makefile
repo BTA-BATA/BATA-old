@@ -6,6 +6,10 @@ SDK_PATH ?= $(BASEDIR)/SDKs
 NO_QT ?=
 NO_WALLET ?=
 NO_UPNP ?=
+<<<<<<< HEAD
+=======
+USE_LINUX_STATIC_QT5 ?=
+>>>>>>> upstream/0.10
 FALLBACK_DOWNLOAD_PATH ?= https://bitcoincore.org/depends-sources
 
 BUILD = $(shell ./config.guess)
@@ -15,8 +19,11 @@ BASEDIR = $(CURDIR)
 HASH_LENGTH:=11
 DOWNLOAD_CONNECT_TIMEOUT:=10
 DOWNLOAD_RETRIES:=3
+<<<<<<< HEAD
 HOST_ID_SALT ?= salt
 BUILD_ID_SALT ?= salt
+=======
+>>>>>>> upstream/0.10
 
 host:=$(BUILD)
 ifneq ($(HOST),)
@@ -75,6 +82,7 @@ include builders/$(build_os).mk
 include builders/default.mk
 include packages/packages.mk
 
+<<<<<<< HEAD
 build_id_string:=$(BUILD_ID_SALT)
 build_id_string+=$(shell $(build_CC) --version 2>/dev/null)
 build_id_string+=$(shell $(build_AR) --version 2>/dev/null)
@@ -90,16 +98,24 @@ $(host_arch)_$(host_os)_id_string+=$(shell $(host_RANLIB) --version 2>/dev/null)
 $(host_arch)_$(host_os)_id_string+=$(shell $(host_STRIP) --version 2>/dev/null)
 
 qt_packages_$(NO_QT) = $(qt_packages) $(qt_$(host_os)_packages) $(qt_$(host_arch)_$(host_os)_packages)
+=======
+qt_packages_$(NO_QT) = $(qt_packages) $(qt_$(host_os)_packages)
+qt_native_packages_$(NO_QT) = $(qt_native_packages)
+>>>>>>> upstream/0.10
 wallet_packages_$(NO_WALLET) = $(wallet_packages)
 upnp_packages_$(NO_UPNP) = $(upnp_packages)
 
 packages += $($(host_arch)_$(host_os)_packages) $($(host_os)_packages) $(qt_packages_) $(wallet_packages_) $(upnp_packages_)
+<<<<<<< HEAD
 native_packages += $($(host_arch)_$(host_os)_native_packages) $($(host_os)_native_packages)
 
 ifneq ($(qt_packages_),)
 native_packages += $(qt_native_packages)
 endif
 
+=======
+native_packages += $($(host_arch)_$(host_os)_native_packages) $($(host_os)_native_packages) $(qt_native_packages_)
+>>>>>>> upstream/0.10
 all_packages = $(packages) $(native_packages)
 
 meta_depends = Makefile funcs.mk builders/default.mk hosts/default.mk hosts/$(host_os).mk builders/$(build_os).mk
@@ -110,6 +126,7 @@ include funcs.mk
 
 toolchain_path=$($($(host_arch)_$(host_os)_native_toolchain)_prefixbin)
 final_build_id_long+=$(shell $(build_SHA256SUM) config.site.in)
+<<<<<<< HEAD
 final_build_id+=$(shell echo -n "$(final_build_id_long)" | $(build_SHA256SUM) | cut -c-$(HASH_LENGTH))
 $(host_prefix)/.stamp_$(final_build_id): $(native_packages) $(packages)
 	$(AT)rm -rf $(@D)
@@ -117,6 +134,15 @@ $(host_prefix)/.stamp_$(final_build_id): $(native_packages) $(packages)
 	$(AT)echo copying packages: $^
 	$(AT)echo to: $(@D)
 	$(AT)cd $(@D); $(foreach package,$^, tar xf $($(package)_cached); )
+=======
+final_build_id+=$(shell echo -n $(final_build_id_long) | $(build_SHA256SUM) | cut -c-$(HASH_LENGTH))
+$(host_prefix)/.stamp_$(final_build_id): | $(native_packages) $(packages)
+	$(AT)rm -rf $(@D)
+	$(AT)mkdir -p $(@D)
+	$(AT)echo copying packages: $|
+	$(AT)echo to: $(@D)
+	$(AT)cd $(@D); $(foreach package,$|, tar xf $($(package)_cached); )
+>>>>>>> upstream/0.10
 	$(AT)touch $@
 
 $(host_prefix)/share/config.site : config.site.in $(host_prefix)/.stamp_$(final_build_id)
@@ -141,6 +167,7 @@ $(host_prefix)/share/config.site : config.site.in $(host_prefix)/.stamp_$(final_
             $< > $@
 	$(AT)touch $@
 
+<<<<<<< HEAD
 
 define check_or_remove_cached
   mkdir -p $(BASE_CACHE)/$(host)/$(package) && cd $(BASE_CACHE)/$(host)/$(package); \
@@ -170,6 +197,10 @@ install: check-packages $(host_prefix)/share/config.site
 
 download-one: check-sources $(all_sources)
 
+=======
+install: $(host_prefix)/share/config.site
+download-one: $(all_sources)
+>>>>>>> upstream/0.10
 download-osx:
 	@$(MAKE) -s HOST=x86_64-apple-darwin11 download-one
 download-linux:
@@ -177,5 +208,9 @@ download-linux:
 download-win:
 	@$(MAKE) -s HOST=x86_64-w64-mingw32 download-one
 download: download-osx download-linux download-win
+<<<<<<< HEAD
 
 .PHONY: install cached download-one download-osx download-linux download-win download check-packages check-sources
+=======
+.PHONY: install cached download-one download-osx download-linux download-win download
+>>>>>>> upstream/0.10

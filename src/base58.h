@@ -3,6 +3,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+<<<<<<< HEAD
 /**
  * Why base-58 instead of standard base-64 encoding?
  * - Don't want 0OIl characters that look the same in some fonts and
@@ -11,6 +12,17 @@
  * - E-mail usually won't line-break if there's no punctuation to break at.
  * - Double-clicking selects the whole number as one word if it's all alphanumeric.
  */
+=======
+
+//
+// Why base-58 instead of standard base-64 encoding?
+// - Don't want 0OIl characters that look the same in some fonts and
+//      could be used to create visually identical looking account numbers.
+// - A string with non-alphanumeric characters is not as easily accepted as an account number.
+// - E-mail usually won't line-break if there's no punctuation to break at.
+// - Double-clicking selects the whole number as one word if it's all alphanumeric.
+//
+>>>>>>> upstream/0.10
 #ifndef BITCOIN_BASE58_H
 #define BITCOIN_BASE58_H
 
@@ -124,6 +136,7 @@ public:
 class CBitcoinSecret : public CBase58Data
 {
 public:
+<<<<<<< HEAD
     void SetKey(const CKey& vchSecret);
     CKey GetKey();
     bool IsValid() const;
@@ -132,6 +145,126 @@ public:
 
     CBitcoinSecret(const CKey& vchSecret) { SetKey(vchSecret); }
     CBitcoinSecret() {}
+=======
+    enum
+    {
+        PUBKEY_ADDRESS = 25,  // BATA addresses start with B
+        SCRIPT_ADDRESS = 5,
+        PUBKEY_ADDRESS_TEST = 111,
+        SCRIPT_ADDRESS_TEST = 196,
+    };
+
+    bool Set(const CKeyID &id) {
+        SetData(fTestNet ? PUBKEY_ADDRESS_TEST : PUBKEY_ADDRESS, &id, 20);
+        return true;
+    }
+
+    bool Set(const CScriptID &id) {
+        SetData(fTestNet ? SCRIPT_ADDRESS_TEST : SCRIPT_ADDRESS, &id, 20);
+        return true;
+    }
+
+    bool Set(const CTxDestination &dest)
+    {
+        return boost::apply_visitor(CBitcoinAddressVisitor(this), dest);
+    }
+
+    bool IsValid() const
+    {
+        unsigned int nExpectedSize = 20;
+        bool fExpectTestNet = false;
+        switch(nVersion)
+        {
+            case PUBKEY_ADDRESS:
+                nExpectedSize = 20; // Hash of public key
+                fExpectTestNet = false;
+                break;
+            case SCRIPT_ADDRESS:
+                nExpectedSize = 20; // Hash of CScript
+                fExpectTestNet = false;
+                break;
+
+            case PUBKEY_ADDRESS_TEST:
+                nExpectedSize = 20;
+                fExpectTestNet = true;
+                break;
+            case SCRIPT_ADDRESS_TEST:
+                nExpectedSize = 20;
+                fExpectTestNet = true;
+                break;
+
+            default:
+                return false;
+        }
+        return fExpectTestNet == fTestNet && vchData.size() == nExpectedSize;
+    }
+
+    CBitcoinAddress()
+    {
+    }
+
+    CBitcoinAddress(const CTxDestination &dest)
+    {
+        Set(dest);
+    }
+
+    CBitcoinAddress(const std::string& strAddress)
+    {
+        SetString(strAddress);
+    }
+
+    CBitcoinAddress(const char* pszAddress)
+    {
+        SetString(pszAddress);
+    }
+
+    CTxDestination Get() const {
+        if (!IsValid())
+            return CNoDestination();
+        switch (nVersion) {
+        case PUBKEY_ADDRESS:
+        case PUBKEY_ADDRESS_TEST: {
+            uint160 id;
+            memcpy(&id, &vchData[0], 20);
+            return CKeyID(id);
+        }
+        case SCRIPT_ADDRESS:
+        case SCRIPT_ADDRESS_TEST: {
+            uint160 id;
+            memcpy(&id, &vchData[0], 20);
+            return CScriptID(id);
+        }
+        }
+        return CNoDestination();
+    }
+
+    bool GetKeyID(CKeyID &keyID) const {
+        if (!IsValid())
+            return false;
+        switch (nVersion) {
+        case PUBKEY_ADDRESS:
+        case PUBKEY_ADDRESS_TEST: {
+            uint160 id;
+            memcpy(&id, &vchData[0], 20);
+            keyID = CKeyID(id);
+            return true;
+        }
+        default: return false;
+        }
+    }
+
+    bool IsScript() const {
+        if (!IsValid())
+            return false;
+        switch (nVersion) {
+        case SCRIPT_ADDRESS:
+        case SCRIPT_ADDRESS_TEST: {
+            return true;
+        }
+        default: return false;
+        }
+    }
+>>>>>>> upstream/0.10
 };
 
 template<typename K, int Size, CChainParams::Base58Type Type> class CBitcoinExtKeyBase : public CBase58Data

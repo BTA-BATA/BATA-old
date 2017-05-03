@@ -1,6 +1,12 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+<<<<<<< HEAD
+=======
+
+#ifndef SENDCOINSENTRY_H
+#define SENDCOINSENTRY_H
+>>>>>>> upstream/0.10
 
 #ifndef BITCOIN_QT_SENDCOINSENTRY_H
 #define BITCOIN_QT_SENDCOINSENTRY_H

@@ -5,9 +5,15 @@ SetCompressor /SOLID lzma
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
+<<<<<<< HEAD
 !define VERSION 0.10.4.0
 !define COMPANY "Litecoin Core project"
 !define URL http://www.litecoin.org/
+=======
+!define VERSION 0.8.7.5
+!define COMPANY "BATA project"
+!define URL http://www.BATA.io/
+>>>>>>> upstream/0.10
 
 # MUI Symbol Definitions
 !define MUI_ICON "/home/jdavid/bata-10/dev-0.10.x/share/pixmaps/bitcoin.ico"
@@ -48,18 +54,28 @@ Var StartMenuGroup
 !insertmacro MUI_LANGUAGE English
 
 # Installer attributes
+<<<<<<< HEAD
 OutFile /home/jdavid/bata-10/dev-0.10.x/litecoin-${VERSION}-win-setup.exe
 !if "" == "64"
 InstallDir $PROGRAMFILES64\Litecoin
 !else
 InstallDir $PROGRAMFILES\Litecoin
 !endif
+=======
+OutFile BATA-${VERSION}-win32-setup.exe
+InstallDir $PROGRAMFILES\BATA
+>>>>>>> upstream/0.10
 CRCCheck on
 XPStyle on
 BrandingText " "
 ShowInstDetails show
+<<<<<<< HEAD
 VIProductVersion ${VERSION}.0
 VIAddVersionKey ProductName "Litecoin Core"
+=======
+VIProductVersion ${VERSION}
+VIAddVersionKey ProductName BATA
+>>>>>>> upstream/0.10
 VIAddVersionKey ProductVersion "${VERSION}"
 VIAddVersionKey CompanyName "${COMPANY}"
 VIAddVersionKey CompanyWebsite "${URL}"

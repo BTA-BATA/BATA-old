@@ -2,10 +2,15 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+<<<<<<< HEAD
 #ifndef BITCOIN_QT_TRANSACTIONVIEW_H
 #define BITCOIN_QT_TRANSACTIONVIEW_H
 
 #include "guiutil.h"
+=======
+#ifndef TRANSACTIONVIEW_H
+#define TRANSACTIONVIEW_H
+>>>>>>> upstream/0.10
 
 #include <QWidget>
 #include <QKeyEvent>

@@ -2,10 +2,15 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+<<<<<<< HEAD
 #ifndef BITCOIN_QT_OPTIONSMODEL_H
 #define BITCOIN_QT_OPTIONSMODEL_H
 
 #include "amount.h"
+=======
+#ifndef OPTIONSMODEL_H
+#define OPTIONSMODEL_H
+>>>>>>> upstream/0.10
 
 #include <QAbstractListModel>
 
@@ -27,6 +32,7 @@ public:
     explicit OptionsModel(QObject *parent = 0);
 
     enum OptionID {
+<<<<<<< HEAD
         StartAtStartup,         // bool
         MinimizeToTray,         // bool
         MapPortUPnP,            // bool
@@ -42,6 +48,22 @@ public:
         DatabaseCache,          // int
         SpendZeroConfChange,    // bool
         Listen,                 // bool
+=======
+        StartAtStartup,    // bool
+        MinimizeToTray,    // bool
+        MapPortUPnP,       // bool
+        MinimizeOnClose,   // bool
+        ProxyUse,          // bool
+        ProxyIP,           // QString
+        ProxyPort,         // int
+        ProxySocksVersion, // int
+        Fee,               // qint64
+        DisplayUnit,       // BitcoinUnits::Unit
+        DisplayAddresses,  // bool
+        Language,          // QString
+        CoinControlFeatures, // bool
+        SpendZeroConfChange,    // bool
+>>>>>>> upstream/0.10
         OptionIDRowCount,
     };
 

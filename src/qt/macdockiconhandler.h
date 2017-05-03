@@ -2,8 +2,13 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+<<<<<<< HEAD
 #ifndef BITCOIN_QT_MACDOCKICONHANDLER_H
 #define BITCOIN_QT_MACDOCKICONHANDLER_H
+=======
+#ifndef MACDOCKICONHANDLER_H
+#define MACDOCKICONHANDLER_H
+>>>>>>> upstream/0.10
 
 #include <QMainWindow>
 #include <QObject>

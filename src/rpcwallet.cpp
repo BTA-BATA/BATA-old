@@ -1,6 +1,10 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< HEAD
 // Distributed under the MIT software license, see the accompanying
+=======
+// Distributed under the MIT/X11 software license, see the accompanying
+>>>>>>> upstream/0.10
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "amount.h"
@@ -55,6 +59,7 @@ void WalletTxToJSON(const CWalletTx& wtx, Object& entry)
         entry.push_back(Pair("blockindex", wtx.nIndex));
         entry.push_back(Pair("blocktime", mapBlockIndex[wtx.hashBlock]->GetBlockTime()));
     }
+<<<<<<< HEAD
     uint256 hash = wtx.GetHash();
     entry.push_back(Pair("txid", hash.GetHex()));
     Array conflicts;
@@ -63,6 +68,12 @@ void WalletTxToJSON(const CWalletTx& wtx, Object& entry)
     entry.push_back(Pair("walletconflicts", conflicts));
     entry.push_back(Pair("time", wtx.GetTxTime()));
     entry.push_back(Pair("timereceived", (int64_t)wtx.nTimeReceived));
+=======
+    entry.push_back(Pair("txid", wtx.GetHash().GetHex()));
+    entry.push_back(Pair("normtxid", wtx.GetNormalizedHash().GetHex()));
+    entry.push_back(Pair("time", (boost::int64_t)wtx.GetTxTime()));
+    entry.push_back(Pair("timereceived", (boost::int64_t)wtx.nTimeReceived));
+>>>>>>> upstream/0.10
     BOOST_FOREACH(const PAIRTYPE(string,string)& item, wtx.mapValue)
         entry.push_back(Pair(item.first, item.second));
 }
@@ -1153,6 +1164,16 @@ Value listreceivedbyaccount(const Array& params, bool fHelp)
 }
 
 static void MaybePushAddress(Object & entry, const CTxDestination &dest)
+<<<<<<< HEAD
+=======
+{
+    CBitcoinAddress addr;
+    if (addr.Set(dest))
+        entry.push_back(Pair("address", addr.ToString()));
+}
+
+void ListTransactions(const CWalletTx& wtx, const string& strAccount, int nMinDepth, bool fLong, Array& ret)
+>>>>>>> upstream/0.10
 {
     CBitcoinAddress addr;
     if (addr.Set(dest))
@@ -1180,7 +1201,11 @@ void ListTransactions(const CWalletTx& wtx, const string& strAccount, int nMinDe
             if(involvesWatchonly || (::IsMine(*pwalletMain, s.destination) & ISMINE_WATCH_ONLY))
                 entry.push_back(Pair("involvesWatchonly", true));
             entry.push_back(Pair("account", strSentAccount));
+<<<<<<< HEAD
             MaybePushAddress(entry, s.destination);
+=======
+            MaybePushAddress(entry, s.first);
+>>>>>>> upstream/0.10
             entry.push_back(Pair("category", "send"));
             entry.push_back(Pair("amount", ValueFromAmount(-s.amount)));
             entry.push_back(Pair("vout", s.vout));
@@ -1205,7 +1230,11 @@ void ListTransactions(const CWalletTx& wtx, const string& strAccount, int nMinDe
                 if(involvesWatchonly || (::IsMine(*pwalletMain, r.destination) & ISMINE_WATCH_ONLY))
                     entry.push_back(Pair("involvesWatchonly", true));
                 entry.push_back(Pair("account", account));
+<<<<<<< HEAD
                 MaybePushAddress(entry, r.destination);
+=======
+                MaybePushAddress(entry, r.first);
+>>>>>>> upstream/0.10
                 if (wtx.IsCoinBase())
                 {
                     if (wtx.GetDepthInMainChain() < 1)
@@ -1219,8 +1248,12 @@ void ListTransactions(const CWalletTx& wtx, const string& strAccount, int nMinDe
                 {
                     entry.push_back(Pair("category", "receive"));
                 }
+<<<<<<< HEAD
                 entry.push_back(Pair("amount", ValueFromAmount(r.amount)));
                 entry.push_back(Pair("vout", r.vout));
+=======
+                entry.push_back(Pair("amount", ValueFromAmount(r.second)));
+>>>>>>> upstream/0.10
                 if (fLong)
                     WalletTxToJSON(wtx, entry);
                 ret.push_back(entry);

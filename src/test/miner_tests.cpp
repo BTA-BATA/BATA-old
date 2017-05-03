@@ -88,7 +88,11 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
     delete pblocktemplate;
 
     // Just to make sure we can still make simple blocks
+<<<<<<< HEAD
     BOOST_CHECK(pblocktemplate = CreateNewBlock(scriptPubKey));
+=======
+    BOOST_CHECK(pblocktemplate = CreateNewBlockWithKey(reservekey));
+>>>>>>> upstream/0.10
     delete pblocktemplate;
 
     // block sigops > limit: 1000 CHECKMULTISIG + 1
@@ -206,7 +210,15 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
     chainActive.Tip()->nHeight = 210000;
     BOOST_CHECK(pblocktemplate = CreateNewBlock(scriptPubKey));
     delete pblocktemplate;
+<<<<<<< HEAD
     chainActive.Tip()->nHeight = nHeight;
+=======
+    pindexBest->nHeight = nHeight;
+
+    BOOST_FOREACH(CTransaction *tx, txFirst)
+        delete tx;
+}
+>>>>>>> upstream/0.10
 
     // non-final txs in mempool
     SetMockTime(chainActive.Tip()->GetMedianTimePast()+1);

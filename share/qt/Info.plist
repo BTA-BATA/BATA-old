@@ -2,6 +2,7 @@
 <!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
 <plist version="0.9">
 <dict>
+<<<<<<< HEAD
   <key>LSMinimumSystemVersion</key>
   <string>10.6.0</string>
 
@@ -64,6 +65,25 @@
         <key>public.mime-type</key>
         <string>application/x-litecoin-payment-request</string>
         <key>public.filename-extension</key>
+=======
+	<key>CFBundleIconFile</key>
+	<string>bitcoin.icns</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleGetInfoString</key>
+	<string>$VERSION, Copyright © 2009-$YEAR The Bitcoin developers</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$VERSION</string>
+	<key>CFBundleVersion</key>
+	<string>$VERSION</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleExecutable</key>
+	<string>BATA-Qt</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.BATA.BATA-Qt</string>
+        <key>CFBundleURLTypes</key>
+>>>>>>> upstream/0.10
         <array>
           <string>litecoinpaymentrequest</string>
         </array>

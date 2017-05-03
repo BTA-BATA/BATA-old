@@ -6,8 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
+<<<<<<< HEAD
     <width>596</width>
     <height>342</height>
+=======
+    <width>662</width>
+    <height>590</height>
+>>>>>>> upstream/0.10
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,6 +50,28 @@
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLabel" name="label_wallet_bgcoin">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="../bitcoin.qrc">:/images/wallet_bgcoin_small</pixmap>
+              </property>
+              <property name="scaledContents">
+               <bool>false</bool>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="margin">
+               <number>5</number>
+              </property>
+              <property name="indent">
+               <number>10</number>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QLabel" name="label_5">
               <property name="font">
@@ -402,6 +429,16 @@
          </property>
         </spacer>
        </item>
+<<<<<<< HEAD
+=======
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+>>>>>>> upstream/0.10
       </layout>
      </item>
      <item>
@@ -505,6 +542,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../bitcoin.qrc"/>
+ </resources>
  <connections/>
 </ui>

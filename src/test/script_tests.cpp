@@ -957,6 +957,7 @@ BOOST_AUTO_TEST_CASE(script_combineSigs)
 
 BOOST_AUTO_TEST_CASE(script_standard_push)
 {
+<<<<<<< HEAD
     ScriptError err;
     for (int i=0; i<67000; i++) {
         CScript script;
@@ -967,10 +968,21 @@ BOOST_AUTO_TEST_CASE(script_standard_push)
     }
 
     for (unsigned int i=0; i<=MAX_SCRIPT_ELEMENT_SIZE; i++) {
+=======
+    for (int i=0; i<1000; i++) {
+        CScript script;
+        script << i;
+        BOOST_CHECK_MESSAGE(script.IsPushOnly(), "Number " << i << " is not pure push.");
+        BOOST_CHECK_MESSAGE(script.HasCanonicalPushes(), "Number " << i << " push is not canonical.");
+    }
+
+    for (int i=0; i<1000; i++) {
+>>>>>>> upstream/0.10
         std::vector<unsigned char> data(i, '\111');
         CScript script;
         script << data;
         BOOST_CHECK_MESSAGE(script.IsPushOnly(), "Length " << i << " is not pure push.");
+<<<<<<< HEAD
         BOOST_CHECK_MESSAGE(VerifyScript(script, CScript() << OP_1, SCRIPT_VERIFY_MINIMALDATA, BaseSignatureChecker(), &err), "Length " << i << " push is not minimal data.");
         BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_OK, ScriptErrorString(err));
     }
@@ -1104,4 +1116,10 @@ BOOST_AUTO_TEST_CASE(script_FindAndDelete)
     BOOST_CHECK(s == expect);
 }
 
+=======
+        BOOST_CHECK_MESSAGE(script.HasCanonicalPushes(), "Length " << i << " push is not canonical.");
+    }
+}
+
+>>>>>>> upstream/0.10
 BOOST_AUTO_TEST_SUITE_END()

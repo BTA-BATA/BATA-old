@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // Copyright (c) 2011-2014 The Bitcoin developers
+=======
+// Copyright (c) 2011-2013 The Bitcoin developers
+>>>>>>> upstream/0.10
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -184,12 +188,20 @@ void TransactionRecord::updateStatus(const CWalletTx &wtx)
     status.depth = wtx.GetDepthInMainChain();
     status.cur_num_blocks = chainActive.Height();
 
+<<<<<<< HEAD
     if (!IsFinalTx(wtx, chainActive.Height() + 1))
+=======
+    if (!wtx.IsFinal(nBestHeight + 1))
+>>>>>>> upstream/0.10
     {
         if (wtx.nLockTime < LOCKTIME_THRESHOLD)
         {
             status.status = TransactionStatus::OpenUntilBlock;
+<<<<<<< HEAD
             status.open_for = wtx.nLockTime - chainActive.Height();
+=======
+            status.open_for = wtx.nLockTime - nBestHeight;
+>>>>>>> upstream/0.10
         }
         else
         {
