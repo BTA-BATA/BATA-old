@@ -1,8 +1,14 @@
+<<<<<<< HEAD
+// Copyright (c) 2011-2014 The Bitcoin developers
+=======
 // Copyright (c) 2011-2013 The Bitcoin developers
+>>>>>>> upstream/0.10
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "bitcoinaddressvalidator.h"
+
+#include "base58.h"
 
 /* Base58 characters are:
      "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
@@ -11,21 +17,23 @@
   - All numbers except for '0'
   - All upper-case letters except for 'I' and 'O'
   - All lower-case letters except for 'l'
-
-  User friendly Base58 input can map
-  - 'l' and 'I' to '1'
-  - '0' and 'O' to 'o'
 */
 
-BitcoinAddressValidator::BitcoinAddressValidator(QObject *parent) :
+BitcoinAddressEntryValidator::BitcoinAddressEntryValidator(QObject *parent) :
     QValidator(parent)
 {
 }
 
-QValidator::State BitcoinAddressValidator::validate(QString &input, int &pos) const
+QValidator::State BitcoinAddressEntryValidator::validate(QString &input, int &pos) const
 {
+    Q_UNUSED(pos);
+
+    // Empty address is "intermediate" input
+    if (input.isEmpty())
+        return QValidator::Intermediate;
+
     // Correction
-    for(int idx=0; idx<input.size();)
+    for (int idx = 0; idx < input.size();)
     {
         bool removeChar = false;
         QChar ch = input.at(idx);
@@ -42,11 +50,13 @@ QValidator::State BitcoinAddressValidator::validate(QString &input, int &pos) co
         default:
             break;
         }
+
         // Remove whitespace
-        if(ch.isSpace())
+        if (ch.isSpace())
             removeChar = true;
+
         // To next character
-        if(removeChar)
+        if (removeChar)
             input.remove(idx, 1);
         else
             ++idx;
@@ -54,11 +64,11 @@ QValidator::State BitcoinAddressValidator::validate(QString &input, int &pos) co
 
     // Validation
     QValidator::State state = QValidator::Acceptable;
-    for(int idx=0; idx<input.size(); ++idx)
+    for (int idx = 0; idx < input.size(); ++idx)
     {
         int ch = input.at(idx).unicode();
 
-        if(((ch >= '0' && ch<='9') ||
+        if (((ch >= '0' && ch<='9') ||
            (ch >= 'a' && ch<='z') ||
            (ch >= 'A' && ch<='Z')) &&
            ch != 'l' && ch != 'I' && ch != '0' && ch != 'O')
@@ -71,11 +81,21 @@ QValidator::State BitcoinAddressValidator::validate(QString &input, int &pos) co
         }
     }
 
-    // Empty address is "intermediate" input
-    if(input.isEmpty())
-    {
-        state = QValidator::Intermediate;
-    }
-
     return state;
+}
+
+BitcoinAddressCheckValidator::BitcoinAddressCheckValidator(QObject *parent) :
+    QValidator(parent)
+{
+}
+
+QValidator::State BitcoinAddressCheckValidator::validate(QString &input, int &pos) const
+{
+    Q_UNUSED(pos);
+    // Validate the passed Bitcoin address
+    CBitcoinAddress addr(input.toStdString());
+    if (addr.IsValid())
+        return QValidator::Acceptable;
+
+    return QValidator::Invalid;
 }

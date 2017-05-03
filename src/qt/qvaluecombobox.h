@@ -2,8 +2,13 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+<<<<<<< HEAD
+#ifndef BITCOIN_QT_QVALUECOMBOBOX_H
+#define BITCOIN_QT_QVALUECOMBOBOX_H
+=======
 #ifndef QVALUECOMBOBOX_H
 #define QVALUECOMBOBOX_H
+>>>>>>> upstream/0.10
 
 #include <QComboBox>
 #include <QVariant>
@@ -34,4 +39,4 @@ private slots:
     void handleSelectionChanged(int idx);
 };
 
-#endif // QVALUECOMBOBOX_H
+#endif // BITCOIN_QT_QVALUECOMBOBOX_H

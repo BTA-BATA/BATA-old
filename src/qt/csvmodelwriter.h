@@ -2,11 +2,16 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+<<<<<<< HEAD
+#ifndef BITCOIN_QT_CSVMODELWRITER_H
+#define BITCOIN_QT_CSVMODELWRITER_H
+=======
 #ifndef CSVMODELWRITER_H
 #define CSVMODELWRITER_H
+>>>>>>> upstream/0.10
 
-#include <QObject>
 #include <QList>
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
 class QAbstractItemModel;
@@ -43,4 +48,4 @@ private:
     QList<Column> columns;
 };
 
-#endif // CSVMODELWRITER_H
+#endif // BITCOIN_QT_CSVMODELWRITER_H
