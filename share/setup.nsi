@@ -5,22 +5,16 @@ SetCompressor /SOLID lzma
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
-<<<<<<< HEAD
 !define VERSION 0.10.4.0
 !define COMPANY "Litecoin Core project"
 !define URL http://www.litecoin.org/
-=======
-!define VERSION 0.8.7.5
-!define COMPANY "BATA project"
-!define URL http://www.BATA.io/
->>>>>>> upstream/0.10
 
 # MUI Symbol Definitions
-!define MUI_ICON "/home/jdavid/bata-10/dev-0.10.x/share/pixmaps/bitcoin.ico"
-!define MUI_WELCOMEFINISHPAGE_BITMAP "/home/jdavid/bata-10/dev-0.10.x/share/pixmaps/nsis-wizard.bmp"
+!define MUI_ICON "/home/jdavid/bata-10/after-master/BATA-Development/share/pixmaps/bitcoin.ico"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "/home/jdavid/bata-10/after-master/BATA-Development/share/pixmaps/nsis-wizard.bmp"
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_RIGHT
-!define MUI_HEADERIMAGE_BITMAP "/home/jdavid/bata-10/dev-0.10.x/share/pixmaps/nsis-header.bmp"
+!define MUI_HEADERIMAGE_BITMAP "/home/jdavid/bata-10/after-master/BATA-Development/share/pixmaps/nsis-header.bmp"
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT HKLM
 !define MUI_STARTMENUPAGE_REGISTRY_KEY ${REGKEY}
@@ -28,7 +22,7 @@ SetCompressor /SOLID lzma
 !define MUI_STARTMENUPAGE_DEFAULTFOLDER "Bata Core"
 !define MUI_FINISHPAGE_RUN $INSTDIR\litecoin-qt.exe
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
-!define MUI_UNWELCOMEFINISHPAGE_BITMAP "/home/jdavid/bata-10/dev-0.10.x/share/pixmaps/nsis-wizard.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "/home/jdavid/bata-10/after-master/BATA-Development/share/pixmaps/nsis-wizard.bmp"
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
 
 # Included files
@@ -54,28 +48,18 @@ Var StartMenuGroup
 !insertmacro MUI_LANGUAGE English
 
 # Installer attributes
-<<<<<<< HEAD
-OutFile /home/jdavid/bata-10/dev-0.10.x/litecoin-${VERSION}-win-setup.exe
+OutFile /home/jdavid/bata-10/after-master/BATA-Development/litecoin-${VERSION}-win-setup.exe
 !if "" == "64"
 InstallDir $PROGRAMFILES64\Litecoin
 !else
 InstallDir $PROGRAMFILES\Litecoin
 !endif
-=======
-OutFile BATA-${VERSION}-win32-setup.exe
-InstallDir $PROGRAMFILES\BATA
->>>>>>> upstream/0.10
 CRCCheck on
 XPStyle on
 BrandingText " "
 ShowInstDetails show
-<<<<<<< HEAD
 VIProductVersion ${VERSION}.0
 VIAddVersionKey ProductName "Litecoin Core"
-=======
-VIProductVersion ${VERSION}
-VIAddVersionKey ProductName BATA
->>>>>>> upstream/0.10
 VIAddVersionKey ProductVersion "${VERSION}"
 VIAddVersionKey CompanyName "${COMPANY}"
 VIAddVersionKey CompanyWebsite "${URL}"
@@ -89,14 +73,14 @@ ShowUninstDetails show
 Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
-    File /home/jdavid/bata-10/dev-0.10.x/release/litecoin-qt.exe
-    File /oname=COPYING.txt /home/jdavid/bata-10/dev-0.10.x/COPYING
-    File /oname=readme.txt /home/jdavid/bata-10/dev-0.10.x/doc/README_windows.txt
+    File /home/jdavid/bata-10/after-master/BATA-Development/release/litecoin-qt.exe
+    File /oname=COPYING.txt /home/jdavid/bata-10/after-master/BATA-Development/COPYING
+    File /oname=readme.txt /home/jdavid/bata-10/after-master/BATA-Development/doc/README_windows.txt
     SetOutPath $INSTDIR\daemon
-    File /home/jdavid/bata-10/dev-0.10.x/release/litecoind.exe
-    File /home/jdavid/bata-10/dev-0.10.x/release/litecoin-cli.exe
+    File /home/jdavid/bata-10/after-master/BATA-Development/release/litecoind.exe
+    File /home/jdavid/bata-10/after-master/BATA-Development/release/litecoin-cli.exe
     SetOutPath $INSTDIR\doc
-    File /r /home/jdavid/bata-10/dev-0.10.x/doc\*.*
+    File /r /home/jdavid/bata-10/after-master/BATA-Development/doc\*.*
     SetOutPath $INSTDIR
     WriteRegStr HKCU "${REGKEY}\Components" Main 1
 
