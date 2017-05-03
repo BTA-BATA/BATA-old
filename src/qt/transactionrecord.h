@@ -1,12 +1,6 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-<<<<<<< HEAD
-=======
-
-#ifndef TRANSACTIONRECORD_H
-#define TRANSACTIONRECORD_H
->>>>>>> upstream/0.10
 
 #ifndef BITCOIN_QT_TRANSACTIONRECORD_H
 #define BITCOIN_QT_TRANSACTIONRECORD_H

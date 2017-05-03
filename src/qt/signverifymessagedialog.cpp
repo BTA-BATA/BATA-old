@@ -25,13 +25,7 @@ SignVerifyMessageDialog::SignVerifyMessageDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-<<<<<<< HEAD
 #if QT_VERSION >= 0x040700
-=======
-#if (QT_VERSION >= 0x040700)
-    /* Do not move this to the XML file, Qt before 4.7 will choke on it */
-    ui->addressIn_SM->setPlaceholderText(tr("Enter a BATA address (e.g. B9BiqLLWuBmHy5P1MGuqyeSj9JNG211DTz)"));
->>>>>>> upstream/0.10
     ui->signatureOut_SM->setPlaceholderText(tr("Click \"Sign Message\" to generate signature"));
 #endif
 

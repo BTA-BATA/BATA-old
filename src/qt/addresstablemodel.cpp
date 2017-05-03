@@ -254,11 +254,7 @@ bool AddressTableModel::setData(const QModelIndex &index, const QVariant &value,
                 editStatus = NO_CHANGES;
                 return false;
             }
-<<<<<<< HEAD
             wallet->SetAddressBook(curAddress, value.toString().toStdString(), strPurpose);
-=======
-            wallet->SetAddressBookName(curAddress, value.toString().toStdString());
->>>>>>> upstream/0.10
         } else if(index.column() == Address) {
             CTxDestination newAddress = CBitcoinAddress(value.toString().toStdString()).Get();
             // Refuse to set invalid address, set error status and return false
@@ -284,15 +280,9 @@ bool AddressTableModel::setData(const QModelIndex &index, const QVariant &value,
             else if(rec->type == AddressTableEntry::Sending)
             {
                 // Remove old entry
-<<<<<<< HEAD
                 wallet->DelAddressBook(curAddress);
                 // Add new entry with new address
                 wallet->SetAddressBook(newAddress, rec->label.toStdString(), strPurpose);
-=======
-                wallet->DelAddressBookName(curAddress);
-                // Add new entry with new address
-                wallet->SetAddressBookName(newAddress, rec->label.toStdString());
->>>>>>> upstream/0.10
             }
         }
         return true;

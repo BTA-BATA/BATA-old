@@ -2,15 +2,10 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-<<<<<<< HEAD
 #ifndef BITCOIN_QT_TRANSACTIONFILTERPROXY_H
 #define BITCOIN_QT_TRANSACTIONFILTERPROXY_H
 
 #include "amount.h"
-=======
-#ifndef TRANSACTIONFILTERPROXY_H
-#define TRANSACTIONFILTERPROXY_H
->>>>>>> upstream/0.10
 
 #include <QDateTime>
 #include <QSortFilterProxyModel>

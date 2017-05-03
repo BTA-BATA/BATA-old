@@ -242,7 +242,6 @@ TEST(CorruptionTest, TableFile) {
 
   Corrupt(kTableFile, 100, 1);
   Check(90, 99);
-<<<<<<< HEAD
 }
 
 TEST(CorruptionTest, TableFileRepair) {
@@ -259,8 +258,6 @@ TEST(CorruptionTest, TableFileRepair) {
   RepairDB();
   Reopen();
   Check(95, 99);
-=======
->>>>>>> upstream/0.10
 }
 
 TEST(CorruptionTest, TableFileIndexData) {

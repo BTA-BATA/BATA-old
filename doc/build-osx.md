@@ -16,7 +16,6 @@ Then install [Homebrew](http://brew.sh).
 Dependencies
 ----------------------
 
-<<<<<<< HEAD
     brew install automake berkeley-db4 libtool boost --c++11 miniupnpc openssl pkg-config homebrew/versions/protobuf260 --c++11 qt5 libevent
 
 NOTE: Building with Qt4 is still supported, however, could result in a broken UI. Building with Qt5 is recommended.
@@ -28,9 +27,6 @@ Build Litecoin Core
 
         git clone https://github.com/BTA-BATA/BATA-SOURCE
         cd bata
-=======
-#### Install dependencies using Homebrew
->>>>>>> upstream/0.10
 
 2.  Build bata:
 
@@ -61,15 +57,11 @@ Before running, it's recommended you create an RPC configuration file.
 
     chmod 600 "/Users/${USER}/Library/Application Support/Litecoin/litecoin.conf"
 
-<<<<<<< HEAD
 The first time you run litecoind, it will start downloading the blockchain. This process could take several hours.
 
 You can monitor the download process by looking at the debug.log file:
 
     tail -f $HOME/Library/Application\ Support/Litecoin/debug.log
-=======
-3.  Build litecoind:
->>>>>>> upstream/0.10
 
 Other commands:
 -------

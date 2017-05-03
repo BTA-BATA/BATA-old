@@ -2,15 +2,10 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-<<<<<<< HEAD
 #ifndef BITCOIN_QT_OVERVIEWPAGE_H
 #define BITCOIN_QT_OVERVIEWPAGE_H
 
 #include "amount.h"
-=======
-#ifndef OVERVIEWPAGE_H
-#define OVERVIEWPAGE_H
->>>>>>> upstream/0.10
 
 #include <QWidget>
 

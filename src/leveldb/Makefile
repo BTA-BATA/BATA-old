@@ -6,18 +6,12 @@
 # Uncomment exactly one of the lines labelled (A), (B), and (C) below
 # to switch between compilation modes.
 
-<<<<<<< HEAD
 # (A) Production use (optimized mode)
 OPT ?= -O2 -DNDEBUG
 # (B) Debug mode, w/ full line-level debugging symbols
 # OPT ?= -g2
 # (C) Profiling mode: opt, but w/debugging symbols
 # OPT ?= -O2 -g2 -DNDEBUG
-=======
-OPT ?= -O2 -DNDEBUG       # (A) Production use (optimized mode)
-# OPT ?= -g2              # (B) Debug mode, w/ full line-level debugging symbols
-# OPT ?= -O2 -g2 -DNDEBUG # (C) Profiling mode: opt, but w/debugging symbols
->>>>>>> upstream/0.10
 #-----------------------------------------------
 
 # detect what platform we're building on
@@ -57,13 +51,9 @@ TESTS = \
 	env_test \
 	filename_test \
 	filter_block_test \
-<<<<<<< HEAD
 	hash_test \
 	issue178_test \
 	issue200_test \
-=======
-	issue178_test \
->>>>>>> upstream/0.10
 	log_test \
 	memenv_test \
 	skiplist_test \
@@ -91,11 +81,7 @@ SHARED = $(SHARED1)
 else
 # Update db.h if you change these.
 SHARED_MAJOR = 1
-<<<<<<< HEAD
 SHARED_MINOR = 18
-=======
-SHARED_MINOR = 13
->>>>>>> upstream/0.10
 SHARED1 = libleveldb.$(PLATFORM_SHARED_EXT)
 SHARED2 = $(SHARED1).$(SHARED_MAJOR)
 SHARED3 = $(SHARED1).$(SHARED_MAJOR).$(SHARED_MINOR)
@@ -175,7 +161,6 @@ filename_test: db/filename_test.o $(LIBOBJECTS) $(TESTHARNESS)
 filter_block_test: table/filter_block_test.o $(LIBOBJECTS) $(TESTHARNESS)
 	$(CXX) $(LDFLAGS) table/filter_block_test.o $(LIBOBJECTS) $(TESTHARNESS) -o $@ $(LIBS)
 
-<<<<<<< HEAD
 hash_test: util/hash_test.o $(LIBOBJECTS) $(TESTHARNESS)
 	$(CXX) $(LDFLAGS) util/hash_test.o $(LIBOBJECTS) $(TESTHARNESS) -o $@ $(LIBS)
 
@@ -185,11 +170,6 @@ issue178_test: issues/issue178_test.o $(LIBOBJECTS) $(TESTHARNESS)
 issue200_test: issues/issue200_test.o $(LIBOBJECTS) $(TESTHARNESS)
 	$(CXX) $(LDFLAGS) issues/issue200_test.o $(LIBOBJECTS) $(TESTHARNESS) -o $@ $(LIBS)
 
-=======
-issue178_test: issues/issue178_test.o $(LIBOBJECTS) $(TESTHARNESS)
-	$(CXX) $(LDFLAGS) issues/issue178_test.o $(LIBOBJECTS) $(TESTHARNESS) -o $@ $(LIBS)
-
->>>>>>> upstream/0.10
 log_test: db/log_test.o $(LIBOBJECTS) $(TESTHARNESS)
 	$(CXX) $(LDFLAGS) db/log_test.o $(LIBOBJECTS) $(TESTHARNESS) -o $@ $(LIBS)
 

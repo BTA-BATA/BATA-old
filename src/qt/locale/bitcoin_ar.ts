@@ -244,21 +244,7 @@
     </message>
     <message>
         <source>Browse transaction history</source>
-<<<<<<< HEAD
         <translation>تصفح سجل المعاملات</translation>
-=======
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Edit the list of stored addresses and labels</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <location line="-14"/>
-        <source>Show the list of addresses for receiving payments</source>
-        <translation type="unfinished"/>
->>>>>>> upstream/0.10
     </message>
     <message>
         <source>E&amp;xit</source>

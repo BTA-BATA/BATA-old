@@ -78,12 +78,6 @@ class SpecialEnv : public EnvWrapper {
   bool count_random_reads_;
   AtomicCounter random_read_counter_;
 
-<<<<<<< HEAD
-=======
-  AtomicCounter sleep_counter_;
-  AtomicCounter sleep_time_counter_;
-
->>>>>>> upstream/0.10
   explicit SpecialEnv(Env* base) : EnvWrapper(base) {
     delay_data_sync_.Release_Store(NULL);
     data_sync_error_.Release_Store(NULL);
@@ -117,14 +111,10 @@ class SpecialEnv : public EnvWrapper {
       Status Close() { return base_->Close(); }
       Status Flush() { return base_->Flush(); }
       Status Sync() {
-<<<<<<< HEAD
         if (env_->data_sync_error_.Acquire_Load() != NULL) {
           return Status::IOError("simulated data sync error");
         }
         while (env_->delay_data_sync_.Acquire_Load() != NULL) {
-=======
-        while (env_->delay_sstable_sync_.Acquire_Load() != NULL) {
->>>>>>> upstream/0.10
           DelayMilliseconds(100);
         }
         return base_->Sync();
@@ -194,15 +184,6 @@ class SpecialEnv : public EnvWrapper {
     }
     return s;
   }
-<<<<<<< HEAD
-=======
-
-  virtual void SleepForMicroseconds(int micros) {
-    sleep_counter_.Increment();
-    sleep_time_counter_.IncrementBy(micros);
-  }
-
->>>>>>> upstream/0.10
 };
 
 class DBTest {
@@ -502,7 +483,6 @@ class DBTest {
     }
     return false;
   }
-<<<<<<< HEAD
 
   // Returns number of files renamed.
   int RenameLDBToSST() {
@@ -521,8 +501,6 @@ class DBTest {
     }
     return files_renamed;
   }
-=======
->>>>>>> upstream/0.10
 };
 
 TEST(DBTest, Empty) {
@@ -1564,30 +1542,6 @@ TEST(DBTest, NoSpace) {
   ASSERT_LT(CountFiles(), num_files + 3);
 }
 
-TEST(DBTest, ExponentialBackoff) {
-  Options options = CurrentOptions();
-  options.env = env_;
-  Reopen(&options);
-
-  ASSERT_OK(Put("foo", "v1"));
-  ASSERT_EQ("v1", Get("foo"));
-  Compact("a", "z");
-  env_->non_writable_.Release_Store(env_);  // Force errors for new files
-  env_->sleep_counter_.Reset();
-  env_->sleep_time_counter_.Reset();
-  for (int i = 0; i < 5; i++) {
-    dbfull()->TEST_CompactRange(2, NULL, NULL);
-  }
-  env_->non_writable_.Release_Store(NULL);
-
-  // Wait for compaction to finish
-  DelayMilliseconds(1000);
-
-  ASSERT_GE(env_->sleep_counter_.Read(), 5);
-  ASSERT_LT(env_->sleep_counter_.Read(), 10);
-  ASSERT_GE(env_->sleep_time_counter_.Read(), 10e6);
-}
-
 TEST(DBTest, NonWritableFileSystem) {
   Options options = CurrentOptions();
   options.write_buffer_size = 1000;
@@ -1698,7 +1652,6 @@ TEST(DBTest, MissingSSTFile) {
       << s.ToString();
 }
 
-<<<<<<< HEAD
 TEST(DBTest, StillReadSST) {
   ASSERT_OK(Put("foo", "bar"));
   ASSERT_EQ("bar", Get("foo"));
@@ -1715,8 +1668,6 @@ TEST(DBTest, StillReadSST) {
   ASSERT_EQ("bar", Get("foo"));
 }
 
-=======
->>>>>>> upstream/0.10
 TEST(DBTest, FilesDeletedAfterCompaction) {
   ASSERT_OK(Put("foo", "v2"));
   Compact("a", "z");
