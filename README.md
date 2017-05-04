@@ -83,6 +83,8 @@ http://bitcoingarden.tk/forum/index.php?topic=3479.msg90749#msg90749
 
 https://www.cryptocompare.com/coins/bta/forum
 
+https://www.cryptopia.co.nz/Forum/Thread/377
+
 
 ### instructions for compile: 
 
@@ -200,7 +202,7 @@ lots of money.
 
 Large changes should have a test plan, and should be tested by somebody other
 than the developer who wrote the code.
-Creating a thread in the [Bata discussion forum](https://batatalk.org/index.php?board=2.0) will allow the Bata
+Creating a thread in the [Bata discussion forum](https://bitcointalk.org/index.php?topic=1040956.0) will allow the Bata
 development team members to review your proposal and to provide assistance with creating a test plan. 
 
 
