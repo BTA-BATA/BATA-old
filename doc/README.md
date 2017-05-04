@@ -21,7 +21,6 @@ Unpack the files into a directory and run:
 - bin/64/bitcoin-qt (GUI, 64-bit) or bin/64/bitcoind (headless, 64-bit)
 
 
-
 ### Windows
 
 Unpack the files into a directory, and then run bitcoin-qt.exe.
