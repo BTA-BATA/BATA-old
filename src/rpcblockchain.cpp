@@ -1,10 +1,6 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-<<<<<<< HEAD
 // Distributed under the MIT software license, see the accompanying
-=======
-// Distributed under the MIT/X11 software license, see the accompanying
->>>>>>> upstream/0.10
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "checkpoints.h"
@@ -145,25 +141,6 @@ Value getdifficulty(const Array& params, bool fHelp)
 }
 
 
-<<<<<<< HEAD
-=======
-Value settxfee(const Array& params, bool fHelp)
-{
-    if (fHelp || params.size() < 1 || params.size() > 1)
-        throw runtime_error(
-            "settxfee <amount BTA/KB>\n"
-            "<amount> is a real and is rounded to the nearest 0.00000001 BTA per KB");
-
-    // Amount
-    int64 nAmount = 0;
-    if (params[0].get_real() != 0.0)
-        nAmount = AmountFromValue(params[0]);        // rejects 0.0 amounts
-
-    nTransactionFee = nAmount;
-    return true;
-}
-
->>>>>>> upstream/0.10
 Value getrawmempool(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)

@@ -1,10 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-<<<<<<< HEAD
 // Distributed under the MIT software license, see the accompanying
-=======
-// Distributed under the MIT/X11 software license, see the accompanying
->>>>>>> upstream/0.10
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_WALLET_H
@@ -21,7 +17,6 @@
 #include "wallet_ismine.h"
 #include "walletdb.h"
 
-<<<<<<< HEAD
 #include <algorithm>
 #include <map>
 #include <set>
@@ -53,9 +48,6 @@ static const CAmount DEFAULT_TRANSACTION_MAXFEE = 0.1 * COIN;
 static const CAmount nHighTransactionMaxFeeWarning = 100 * nHighTransactionFeeWarning;
 //! Largest (in bytes) free transaction we're willing to create
 static const unsigned int MAX_FREE_TRANSACTION_CREATE_SIZE = 5000;
-=======
-extern bool bSpendZeroConfChange;
->>>>>>> upstream/0.10
 
 class CAccountingEntry;
 class CCoinControl;
@@ -896,11 +888,7 @@ public:
             return true;
         if (nDepth < 0)
             return false;
-<<<<<<< HEAD
         if (!bSpendZeroConfChange || !IsFromMe(ISMINE_ALL)) // using wtx's cached debit
-=======
-        if (!bSpendZeroConfChange || !IsFromMe()) // using wtx's cached debit
->>>>>>> upstream/0.10
             return false;
 
         // Trusted if all inputs are from us and are in the mempool:
@@ -910,17 +898,8 @@ public:
             const CWalletTx* parent = pwallet->GetWalletTx(txin.prevout.hash);
             if (parent == NULL)
                 return false;
-<<<<<<< HEAD
             const CTxOut& parentOut = parent->vout[txin.prevout.n];
             if (pwallet->IsMine(parentOut) != ISMINE_SPENDABLE)
-=======
-            int nPDepth = ptx->GetDepthInMainChain();
-            if (nPDepth >= 1)
-                continue;
-            if (nPDepth < 0)
-                return false;
-            if (!pwallet->IsFromMe(*ptx))
->>>>>>> upstream/0.10
                 return false;
         }
         return true;

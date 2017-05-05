@@ -1,10 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-<<<<<<< HEAD
 // Distributed under the MIT software license, see the accompanying
-=======
-// Distributed under the MIT/X11 software license, see the accompanying
->>>>>>> upstream/0.10
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "wallet.h"
@@ -26,7 +22,6 @@
 
 using namespace std;
 
-<<<<<<< HEAD
 /**
  * Settings
  */
@@ -49,15 +44,6 @@ CFeeRate CWallet::minTxFee = CFeeRate(DEFAULT_TX_FEE);
  *
  * @{
  */
-=======
-
-bool bSpendZeroConfChange = true;
-
-//////////////////////////////////////////////////////////////////////////////
-//
-// mapWallet
-//
->>>>>>> upstream/0.10
 
 struct CompareValueOnly
 {
@@ -861,12 +847,8 @@ void CWalletTx::GetAmounts(list<COutputEntry>& listReceived,
     // Sent/received.
     for (unsigned int i = 0; i < vout.size(); ++i)
     {
-<<<<<<< HEAD
         const CTxOut& txout = vout[i];
         isminetype fIsMine = pwallet->IsMine(txout);
-=======
-        bool fIsMine;
->>>>>>> upstream/0.10
         // Only need to handle txouts if AT LEAST one of these is true:
         //   1) they debit from us (sent)
         //   2) the output is to us (received)
@@ -875,27 +857,16 @@ void CWalletTx::GetAmounts(list<COutputEntry>& listReceived,
             // Don't report 'change' txouts
             if (pwallet->IsChange(txout))
                 continue;
-<<<<<<< HEAD
         }
         else if (!(fIsMine & filter))
-=======
-            fIsMine = pwallet->IsMine(txout);
-        }
-        else if (!(fIsMine = pwallet->IsMine(txout)))
->>>>>>> upstream/0.10
             continue;
 
         // In either case, we need to get the destination address
         CTxDestination address;
         if (!ExtractDestination(txout.scriptPubKey, address))
         {
-<<<<<<< HEAD
             LogPrintf("CWalletTx::GetAmounts: Unknown transaction type found, txid %s\n",
                      this->GetHash().ToString());
-=======
-            printf("CWalletTx::GetAmounts: Unknown transaction type found, txid %s\n",
-                   this->GetHash().ToString().c_str());
->>>>>>> upstream/0.10
             address = CNoDestination();
         }
 
@@ -906,13 +877,8 @@ void CWalletTx::GetAmounts(list<COutputEntry>& listReceived,
             listSent.push_back(output);
 
         // If we are receiving the output, add it as a "received" entry
-<<<<<<< HEAD
         if (fIsMine & filter)
             listReceived.push_back(output);
-=======
-        if (fIsMine)
-            listReceived.push_back(make_pair(address, txout.nValue));
->>>>>>> upstream/0.10
     }
 
 }
@@ -1213,18 +1179,11 @@ void CWallet::AvailableCoins(vector<COutput>& vCoins, bool fOnlyConfirmed, const
                 continue;
 
             for (unsigned int i = 0; i < pcoin->vout.size(); i++) {
-<<<<<<< HEAD
                 isminetype mine = IsMine(pcoin->vout[i]);
                 if (!(IsSpent(wtxid, i)) && mine != ISMINE_NO &&
                     !IsLockedCoin((*it).first, i) && pcoin->vout[i].nValue >= nMinimumInputThreshold &&
                     (!coinControl || !coinControl->HasSelected() || coinControl->IsSelected((*it).first, i)))
                         vCoins.push_back(COutput(pcoin, i, nDepth, (mine & ISMINE_SPENDABLE) != ISMINE_NO));
-=======
-                if (!(pcoin->IsSpent(i)) && IsMine(pcoin->vout[i]) &&
-                    !IsLockedCoin((*it).first, i) && pcoin->vout[i].nValue >= nMinimumInputValue &&
-                    (!coinControl || !coinControl->HasSelected() || coinControl->IsSelected((*it).first, i))) 
-                    vCoins.push_back(COutput(pcoin, i, nDepth));
->>>>>>> upstream/0.10
             }
         }
     }

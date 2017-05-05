@@ -1,9 +1,5 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
-<<<<<<< HEAD
 // Distributed under the MIT software license, see the accompanying
-=======
-// Distributed under the MIT/X11 software license, see the accompanying
->>>>>>> upstream/0.10
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "key.h"
@@ -25,96 +21,8 @@ public:
     CSecp256k1Init() {
         secp256k1_start(SECP256K1_START_SIGN);
     }
-<<<<<<< HEAD
     ~CSecp256k1Init() {
         secp256k1_stop();
-=======
-
-    bool Sign(const uint256 &hash, std::vector<unsigned char>& vchSig) {
-        unsigned int nSize = ECDSA_size(pkey);
-        vchSig.resize(nSize); // Make sure it is big enough
-        assert(ECDSA_sign(0, (unsigned char*)&hash, sizeof(hash), &vchSig[0], &nSize, pkey));
-        vchSig.resize(nSize); // Shrink to fit actual size
-        return true;
-    }
-
-    bool Verify(const uint256 &hash, const std::vector<unsigned char>& vchSig) {
-        if (vchSig.empty())
-            return false;
-
-        // New versions of OpenSSL will reject non-canonical DER signatures. de/re-serialize first.
-        unsigned char *norm_der = NULL;
-        ECDSA_SIG *norm_sig = ECDSA_SIG_new();
-        const unsigned char* sigptr = &vchSig[0];
-        assert(norm_sig);
-        if (d2i_ECDSA_SIG(&norm_sig, &sigptr, vchSig.size()) == NULL)
-        {
-            /* As of OpenSSL 1.0.0p d2i_ECDSA_SIG frees and nulls the pointer on
-             * error. But OpenSSL's own use of this function redundantly frees the
-             * result. As ECDSA_SIG_free(NULL) is a no-op, and in the absence of a
-             * clear contract for the function behaving the same way is more
-             * conservative.
-             */
-            ECDSA_SIG_free(norm_sig);
-            return false;
-        }
-        int derlen = i2d_ECDSA_SIG(norm_sig, &norm_der);
-        ECDSA_SIG_free(norm_sig);
-        if (derlen <= 0)
-            return false;
-
-        // -1 = error, 0 = bad sig, 1 = good
-        bool ret = ECDSA_verify(0, (unsigned char*)&hash, sizeof(hash), norm_der, derlen, pkey) == 1;
-        OPENSSL_free(norm_der);
-        return ret;
-    }
-
-    bool SignCompact(const uint256 &hash, unsigned char *p64, int &rec) {
-        bool fOk = false;
-        ECDSA_SIG *sig = ECDSA_do_sign((unsigned char*)&hash, sizeof(hash), pkey);
-        if (sig==NULL)
-            return false;
-        memset(p64, 0, 64);
-        int nBitsR = BN_num_bits(sig->r);
-        int nBitsS = BN_num_bits(sig->s);
-        if (nBitsR <= 256 && nBitsS <= 256) {
-            CPubKey pubkey;
-            GetPubKey(pubkey, true);
-            for (int i=0; i<4; i++) {
-                CECKey keyRec;
-                if (ECDSA_SIG_recover_key_GFp(keyRec.pkey, sig, (unsigned char*)&hash, sizeof(hash), i, 1) == 1) {
-                    CPubKey pubkeyRec;
-                    keyRec.GetPubKey(pubkeyRec, true);
-                    if (pubkeyRec == pubkey) {
-                        rec = i;
-                        fOk = true;
-                        break;
-                    }
-                }
-            }
-            assert(fOk);
-            BN_bn2bin(sig->r,&p64[32-(nBitsR+7)/8]);
-            BN_bn2bin(sig->s,&p64[64-(nBitsS+7)/8]);
-        }
-        ECDSA_SIG_free(sig);
-        return fOk;
-    }
-
-    // reconstruct public key from a compact signature
-    // This is only slightly more CPU intensive than just verifying it.
-    // If this function succeeds, the recovered public key is guaranteed to be valid
-    // (the signature is a valid signature of the given data for that key)
-    bool Recover(const uint256 &hash, const unsigned char *p64, int rec)
-    {
-        if (rec<0 || rec>=3)
-            return false;
-        ECDSA_SIG *sig = ECDSA_SIG_new();
-        BN_bin2bn(&p64[0],  32, sig->r);
-        BN_bin2bn(&p64[32], 32, sig->s);
-        bool ret = ECDSA_SIG_recover_key_GFp(pkey, sig, (unsigned char*)&hash, sizeof(hash), rec, 0) == 1;
-        ECDSA_SIG_free(sig);
-        return ret;
->>>>>>> upstream/0.10
     }
 };
 static CSecp256k1Init instance_of_csecp256k1;
