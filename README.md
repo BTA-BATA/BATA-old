@@ -32,7 +32,7 @@ Unzip the file into the same directory as the bata-qt.exe
 
 Then with a shortcut or in the command prompt:
 
-BATA-qt.exe -loadblock=bootstrap.dat
+bata-qt.exe -loadblock=bootstrap.dat
 
 ### Seednode
 
@@ -40,7 +40,7 @@ in your bata.conf file just at this line
 
 addnode=68.71.58.226
 
-(Create in AppData\Roaming\BATA)
+(Create in AppData\Roaming\bata)
 
 
 ### For Developments visit: https://bata.io/development
