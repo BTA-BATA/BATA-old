@@ -28,7 +28,7 @@ net port: 5784
 
 ### Bootstrap: http://crypt.midnightminer.net/bootstraps/bata/bootstrap.zip
 
-Unzip the file into the same directory as the BATA-qt.exe
+Unzip the file into the same directory as the bata-qt.exe
 
 Then with a shortcut or in the command prompt:
 
@@ -36,7 +36,7 @@ BATA-qt.exe -loadblock=bootstrap.dat
 
 ### Seednode
 
-in your BATA.conf file just at this line
+in your bata.conf file just at this line
 
 addnode=68.71.58.226
 
@@ -94,11 +94,11 @@ git clone https://github.com/BTA-BATA/BATA-SOURCE bata && cd bata/src
 
 make -f makefile.unix
 
-./BATAd -daemon
+./batad -daemon
 
-(it will instruct you to make a BATA.conf file, so make the BATA.conf file and place in the .BATA/ folder.)
+(it will instruct you to make a bata.conf file, so make the bata.conf file and place in the .bata/ folder.)
 
-### example regular internet users' BATA.conf:
+### example regular internet users' bata.conf:
 
 rpcuser=BATAusername
 
@@ -118,7 +118,7 @@ proxy=127.0.0.1:3643
 
 connect=lv4llpu75ydlfwxgx3ej5t6dpcnyi47px4wnluf7pyxpncd5trca.b32.i2p
 
-### example for tor users' BATA.conf:
+### example for tor users' bata.conf:
 (you will need to download tor software)
 https://www.torproject.org/download/
 
