@@ -93,7 +93,7 @@ sudo apt-get install git build-essential openssl libminiupnpc-dev libboost++-dev
 git clone https://github.com/BTA-BATA/BATA-SOURCE bata && cd bata
 sudo chmod +777 *
 ./autogen.sh
-./configure    to ./configure   or:    ./configure --with-incompatible-bdb
+./configure     or:    ./configure --with-incompatible-bdb
 make
 
 (it will instruct you to make a bata.conf file, so make the bata.conf file and place in the .bata/ folder.)
