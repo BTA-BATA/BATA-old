@@ -12,6 +12,7 @@
 #include "addrman.h"
 #include "amount.h"
 #include "checkpoints.h"
+#include "checkpointsync.h"
 #include "compat/sanity.h"
 #include "key.h"
 #include "main.h"
@@ -273,6 +274,7 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += "  -bind=<addr>           " + _("Bind to given address and always listen on it. Use [host]:port notation for IPv6") + "\n";
     strUsage += "  -connect=<ip>          " + _("Connect only to the specified node(s)") + "\n";
     strUsage += "  -discover              " + _("Discover own IP address (default: 1 when listening and no -externalip)") + "\n";
+    strUsage += "  -checkpointenforce     " + _("Only accept block chain matching checkpoints issued by the Auto-Checkpoint systems Master Node (default: 1)") + "\n";
     strUsage += "  -dns                   " + _("Allow DNS lookups for -addnode, -seednode and -connect") + " " + _("(default: 1)") + "\n";
     strUsage += "  -dnsseed               " + _("Query for peer addresses via DNS lookup, if low on addresses (default: 1 unless -connect)") + "\n";
     strUsage += "  -externalip=<ip>       " + _("Specify your own public address") + "\n";
@@ -752,6 +754,12 @@ bool AppInit2(boost::thread_group& threadGroup)
     }
 
 #endif // ENABLE_WALLET
+
+    if (mapArgs.count("-checkpointkey")) // checkpoint master priv key
+        {
+            if (!SetCheckpointPrivKey(GetArg("-checkpointkey", "")))
+                return InitError(_("Unable to sign checkpoint, wrong checkpointkey?"));
+    }
 
     fIsBareMultisigStd = GetArg("-permitbaremultisig", true) != 0;
     nMaxDatacarrierBytes = GetArg("-datacarriersize", nMaxDatacarrierBytes);

@@ -95,7 +95,7 @@ static inline int64_t roundint64(double d)
 CAmount AmountFromValue(const Value& value)
 {
     double dAmount = value.get_real();
-    if (dAmount <= 0.0 || dAmount > 84000000.0)
+    if (dAmount <= 0.0 || dAmount > 5000000.0)
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount");
     CAmount nAmount = roundint64(dAmount * COIN);
     if (!MoneyRange(nAmount))
@@ -271,6 +271,9 @@ static const CRPCCommand vRPCCommands[] =
     { "blockchain",         "verifychain",            &verifychain,            true,      false,      false },
     { "blockchain",         "invalidateblock",        &invalidateblock,        true,      true,       false },
     { "blockchain",         "reconsiderblock",        &reconsiderblock,        true,      true,       false },
+    { "blockchain",         "getcheckpoint",          &getcheckpoint,          true,      false,   	  false },
+    { "blockchain",         "sendcheckpoint",         &sendcheckpoint,         true,      false,      false },
+    { "blockchain",         "enforcecheckpoint",      &enforcecheckpoint,      true,      false,      false },
 
     /* Mining */
     { "mining",             "getblocktemplate",       &getblocktemplate,       true,      false,      false },

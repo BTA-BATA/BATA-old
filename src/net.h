@@ -253,6 +253,7 @@ public:
     bool fNetworkNode;
     bool fSuccessfullyConnected;
     bool fDisconnect;
+
     // We use fRelayTxes for two purposes -
     // a) it allows us to not relay tx invs before receiving the peer's version message
     // b) the peer may tell us in their version message that we should not relay tx invs
@@ -287,6 +288,7 @@ public:
     mruset<CAddress> setAddrKnown;
     bool fGetAddr;
     std::set<uint256> setKnown;
+    uint256 hashCheckpointKnown;
 
     // inventory based relay
     mruset<CInv> setInventoryKnown;
