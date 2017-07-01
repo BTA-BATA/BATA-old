@@ -90,7 +90,7 @@ https://www.cryptopia.co.nz/Forum/Thread/377
 
 sudo apt-get install git build-essential openssl libminiupnpc-dev libboost++-dev libboost-all-dev libssl-dev libdb++-dev automake qrencode qt4-dev-tools libtool libqt4-dev libprotobuf-dev
 
-git clone https://github.com/BTA-BATA/BATA-SOURCE bata && cd bata
+git clone https://github.com/JustinPercy/BATA-Development/ bata && cd bata
 
 sudo chmod +777 *
 
