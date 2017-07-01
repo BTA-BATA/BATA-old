@@ -379,11 +379,12 @@ CNode* FindNode(const CService& addr)
 
 CNode* ConnectNode(CAddress addrConnect, const char *pszDest)
 {
+
     if (pszDest == NULL) {
         if (IsLocal(addrConnect))
             return NULL;
 
-        // Look for an existing connection
+       // Look for an existing connection
         CNode* pnode = FindNode((CService)addrConnect);
         if (pnode)
         {
@@ -391,6 +392,9 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest)
             return pnode;
         }
     }
+
+
+
 
     /// debug print
     LogPrint("net", "trying connection %s lastseen=%.1fhrs\n",
@@ -408,6 +412,11 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest)
             CloseSocket(hSocket);
             return NULL;
         }
+
+
+
+
+
 
         addrman.Attempt(addrConnect);
 
@@ -488,6 +497,9 @@ bool CNode::IsBanned(CNetAddr ip)
             if (GetTime() < t)
                 fResult = true;
         }
+
+     
+
     }
     return fResult;
 }
@@ -653,10 +665,40 @@ int CNetMessage::readData(const char *pch, unsigned int nBytes)
 // requires LOCK(cs_vSend)
 void SocketSendData(CNode *pnode)
 {
+
+
     std::deque<CSerializeData>::iterator it = pnode->vSendMsg.begin();
 
+      
+
     while (it != pnode->vSendMsg.end()) {
+       
+       
         const CSerializeData &data = *it;
+
+                    //-------------------------------------------------------------------
+                    // BATA CORE 10.4 NetFlood PATCH #1 - June 30, 2017 - Biznatch Enterprises
+                    // Prevent Network Flooding trying to sync old wallets
+                    // HIGH bandwidth use triggers verify CORE10 CHECKPOINT
+                    // after active conntaction disconnection and removal if startheight is below checkpoint
+                    //
+                    if (pnode->nSendSize > 10000) { 
+                        if (pnode->nRecvBytes > 10000) { 
+                            if (pnode->nStartingHeight < 700000) { 
+                                // remove from vNodes
+                                vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());
+
+                                // release outbound grant (if any)
+                                 pnode->grantOutbound.Release();
+
+                                // close socket and cleanup
+                                pnode->CloseSocketDisconnect();
+                            }
+                        }
+                    }
+                    //-------------------------------------------------------------------
+
+
         assert(data.size() > pnode->nSendOffset);
         int nBytes = send(pnode->hSocket, &data[pnode->nSendOffset], data.size() - pnode->nSendOffset, MSG_NOSIGNAL | MSG_DONTWAIT);
         if (nBytes > 0) {
@@ -980,9 +1022,20 @@ void ThreadSocketHandler()
                 continue;
             if (FD_ISSET(pnode->hSocket, &fdsetSend))
             {
+
+
+
+                        
                 TRY_LOCK(pnode->cs_vSend, lockSend);
-                if (lockSend)
-                    SocketSendData(pnode);
+
+                if (lockSend) {
+
+       
+                        SocketSendData(pnode);
+        
+                }
+
+
             }
 
             //
@@ -1241,6 +1294,7 @@ void ThreadOpenConnections()
             BOOST_FOREACH(string strAddr, mapMultiArgs["-connect"])
             {
                 CAddress addr;
+
                 OpenNetworkConnection(addr, NULL, strAddr.c_str());
                 for (int i = 0; i < 10 && i < nLoop; i++)
                 {
@@ -1409,6 +1463,7 @@ bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOu
     //
     boost::this_thread::interruption_point();
     if (!pszDest) {
+
         if (IsLocal(addrConnect) ||
             FindNode((CNetAddr)addrConnect) || CNode::IsBanned(addrConnect) ||
             FindNode(addrConnect.ToStringIPPort()))
@@ -1428,6 +1483,9 @@ bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOu
         pnode->fOneShot = true;
 
     return true;
+
+  
+
 }
 
 
