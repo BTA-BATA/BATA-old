@@ -157,25 +157,35 @@ static CSemaphore *semOutbound = NULL;
    // ######## ########
     void NewHeightAverage(CNode *pnode)
     {
+        bool DebugFunction = false;
+
         // Dynamic Blockchain Checkpoint
         int TempHeight = pnode->nStartingHeight;
 
-        int TempAverageHeight = CurrentAverageHeight + 10;
+        // ** Check For Hard-Fork (Above Average) ****
+        int HardForkHeightMAX = 10;  // blocks ahead of average MAX!
+        int TempHeightCheck = TempHeight + HardForkHeightMAX;
+        if (TempHeight >= TempHeightCheck) 
+        { 
 
-        if (TempHeight >= TempAverageHeight)
-        {
-
-            TempHeight = 0;  // don't increase average
+            TempHeight = 0;
 
         }
+        // ********************************************
 
+        // ** Check For Hard-Fork (Above Average) ****
         if (TempHeight > CurrentAverageHeight) 
         {
 
         CurrentAverageHeight = CurrentAverageHeight + TempHeight; 
         CurrentAverageHeight = CurrentAverageHeight / 2;
     
-         cout<<"         "<<CurrentAverageHeight<<endl;
+        }
+        // ** Check For Hard-Fork (Above Average) ****
+
+        if (DebugFunction == true) {
+        cout<<"         "<<CurrentAverageHeight<<endl;
+        cout<<"         "<<TempHeight<<endl;
         }
  
     }
