@@ -8,7 +8,7 @@
 #endif
 
 #include "net.h"
-
+#include <string>
 #include "addrman.h"
 #include "chainparams.h"
 #include "clientversion.h"
@@ -113,7 +113,7 @@ static CSemaphore *semOutbound = NULL;
 
     string BLACKLIST[256];
     int blacklist_cnt = 1;
-    int CurrentAverage = 1;
+    int CurrentAverageHeight = 1;
 
     // ######## ########
     bool Add_ToBlackList(CNode *pnode)
@@ -149,14 +149,22 @@ static CSemaphore *semOutbound = NULL;
     }
     // ######## ########
 
+
+
+
+
+
    // ######## ########
     void NewHeightAverage(CNode *pnode)
     {
         // Dynamic Blockchain Checkpoint
 
-        if (pnode->nStartingHeight > CurrentAverage) 
+        if (pnode->nStartingHeight > CurrentAverageHeight) 
         {
-        CurrentAverage  = CurrentAverage + pnode->nStartingHeight / 2; 
+        CurrentAverageHeight  = CurrentAverageHeight + pnode->nStartingHeight; 
+        CurrentAverageHeight = CurrentAverageHeight / 2;
+    
+         //cout<<"         "<<CurrentAverage<<endl;
         }
  
     }
@@ -172,14 +180,14 @@ static CSemaphore *semOutbound = NULL;
     //      HIGH bandwidth use triggers verify CORE10 CHECKPOINT
     //      after active conntaction disconnection and removal if startheight is below checkpoint
     //
-    //NewHeightAverage(pnode);
+    NewHeightAverage(pnode);
 
-        // * Attack detection -> (Sent: 1 MB, Rec: 1 MB, StartingBlockHeight is lower than release checkpoint)
+        // * Attack detection -> (Send: 1 MB, Rec: 1 MB, StartingBlockHeight is lower than release checkpoint)
         if (pnode->nSendSize > 1000)
         { 
             if (pnode->nRecvBytes > 5000)
             { 
-                if (pnode->nStartingHeight < 700000)
+                if (pnode->nStartingHeight < CurrentAverageHeight)
                 { 
                     return true;
                 }
