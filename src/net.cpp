@@ -158,13 +158,25 @@ static CSemaphore *semOutbound = NULL;
     void NewHeightAverage(CNode *pnode)
     {
         // Dynamic Blockchain Checkpoint
+        int TempHeight = pnode->nStartingHeight;
 
-        if (pnode->nStartingHeight > CurrentAverageHeight) 
+        TempHeight = TempHeight + 10;
+        int TempAverageHeight = CurrentAverageHeight;
+
+        if (TempHeight > TempAverageHeight)
         {
-        CurrentAverageHeight  = CurrentAverageHeight + pnode->nStartingHeight; 
+
+            TempHeight = 0;  // don't increase average
+
+        }
+
+        if (TempHeight > CurrentAverageHeight) 
+        {
+
+        CurrentAverageHeight = CurrentAverageHeight + TempHeight; 
         CurrentAverageHeight = CurrentAverageHeight / 2;
     
-         //cout<<"         "<<CurrentAverage<<endl;
+         cout<<"         "<<CurrentAverage<<endl;
         }
  
     }
