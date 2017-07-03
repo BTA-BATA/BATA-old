@@ -157,36 +157,39 @@ static CSemaphore *semOutbound = NULL;
    // ######## ########
     void NewHeightAverage(CNode *pnode)
     {
-        bool DebugFunction = false;
+        bool DebugFunction = true;
 
         // Dynamic Blockchain Checkpoint
         int TempHeight = pnode->nStartingHeight;
 
         // ** Check For Hard-Fork (Above Average) ****
-        int HardForkHeightMAX = 10;  // blocks ahead of average MAX!
-        int TempHeightCheck = TempHeight + HardForkHeightMAX;
-        if (TempHeight >= TempHeightCheck) 
-        { 
+        //int HardForkHeightMAX = 10;  // blocks ahead of average MAX!
+        //int TempHeightCheck = CurrentAverageHeight + HardForkHeightMAX;
+        //if (TempHeight >= TempHeightCheck) 
+        //{ 
 
-            TempHeight = 0;
+          //  TempHeight = 0;
 
-        }
+        //}
         // ********************************************
 
-        // ** Check For Hard-Fork (Above Average) ****
+        // ** Update current average if increased ****
         if (TempHeight > CurrentAverageHeight) 
         {
 
         CurrentAverageHeight = CurrentAverageHeight + TempHeight; 
         CurrentAverageHeight = CurrentAverageHeight / 2;
-    
+        CurrentAverageHeight = CurrentAverageHeight - 10;
         }
-        // ** Check For Hard-Fork (Above Average) ****
-
+        // ********************************************
+        
+        // ** Debug Output ON/OFF ****
         if (DebugFunction == true) {
         cout<<"         "<<CurrentAverageHeight<<endl;
         cout<<"         "<<TempHeight<<endl;
+        cout<<"         "<<pnode->addrName<<endl;
         }
+        // ********************************************
  
     }
    // ######## ########
@@ -208,6 +211,7 @@ static CSemaphore *semOutbound = NULL;
         { 
             if (pnode->nRecvBytes > 5000)
             { 
+                
                 if (pnode->nStartingHeight < CurrentAverageHeight)
                 { 
                     return true;
