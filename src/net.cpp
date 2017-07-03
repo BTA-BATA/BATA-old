@@ -172,7 +172,7 @@ static CSemaphore *semOutbound = NULL;
     //      HIGH bandwidth use triggers verify CORE10 CHECKPOINT
     //      after active conntaction disconnection and removal if startheight is below checkpoint
     //
-    NewHeightAverage(pnode);
+    //NewHeightAverage(pnode);
 
         // * Attack detection -> (Sent: 1 MB, Rec: 1 MB, StartingBlockHeight is lower than release checkpoint)
         if (pnode->nSendSize > 1000)
