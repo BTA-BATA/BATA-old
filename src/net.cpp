@@ -113,6 +113,7 @@ static CSemaphore *semOutbound = NULL;
 
     string BLACKLIST[256];
     int blacklist_cnt = 1;
+    int CurrentAverage = 1;
 
     // ######## ########
     bool Add_ToBlackList(CNode *pnode)
@@ -148,6 +149,17 @@ static CSemaphore *semOutbound = NULL;
     }
     // ######## ########
 
+   // ######## ########
+    void NewHeightAverage(CNode *pnode)
+    {
+
+        if (pnode->nStartingHeight > CurrentAverage) 
+        {
+        CurrentAverage  = CurrentAverage + pnode->nStartingHeight / 2; 
+        }
+ 
+    }
+   // ######## ########
 
     // ######## ########
     bool Check_NetFloodAttack(CNode *pnode)
@@ -159,13 +171,14 @@ static CSemaphore *semOutbound = NULL;
     //      HIGH bandwidth use triggers verify CORE10 CHECKPOINT
     //      after active conntaction disconnection and removal if startheight is below checkpoint
     //
+    NewHeightAverage(pnode);
 
         // * Attack detection -> (Sent: 1 MB, Rec: 1 MB, StartingBlockHeight is lower than release checkpoint)
         if (pnode->nSendSize > 1000)
         { 
             if (pnode->nRecvBytes > 5000)
             { 
-                if (pnode->nStartingHeight < 700000)
+                if (pnode->nStartingHeight < CurrentAverage)
                 { 
                     return true;
                 }
