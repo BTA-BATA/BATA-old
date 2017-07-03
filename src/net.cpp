@@ -163,14 +163,14 @@ static CSemaphore *semOutbound = NULL;
         int TempHeight = pnode->nStartingHeight;
 
         // ** Check For Hard-Fork (Above Average) ****
-        int HardForkHeightMAX = 10;  // blocks ahead of average MAX!
-        int TempHeightCheck = CurrentAverageHeight + HardForkHeightMAX;
-        if (TempHeight >= TempHeightCheck) 
-        { 
+        //int HardForkHeightMAX = 10;  // blocks ahead of average MAX!
+        //int TempHeightCheck = CurrentAverageHeight + HardForkHeightMAX;
+        //if (TempHeight >= TempHeightCheck) 
+        //{ 
 
-            TempHeight = 0;
+          //  TempHeight = 0;
 
-        }
+        //}
         // ********************************************
 
         // ** Update current average if increased ****
