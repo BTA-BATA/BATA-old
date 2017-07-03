@@ -179,7 +179,7 @@ static CSemaphore *semOutbound = NULL;
         { 
             if (pnode->nRecvBytes > 5000)
             { 
-                if (pnode->nStartingHeight < CurrentAverage)
+                if (pnode->nStartingHeight < 700000)
                 { 
                     return true;
                 }
