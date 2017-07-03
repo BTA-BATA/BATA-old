@@ -152,6 +152,7 @@ static CSemaphore *semOutbound = NULL;
    // ######## ########
     void NewHeightAverage(CNode *pnode)
     {
+        // Dynamic Blockchain Checkpoint
 
         if (pnode->nStartingHeight > CurrentAverage) 
         {
