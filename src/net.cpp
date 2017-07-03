@@ -101,6 +101,140 @@ CCriticalSection cs_nLastNodeId;
 
 static CSemaphore *semOutbound = NULL;
 
+
+
+
+
+//-------------------------------------------------------------------
+// [Bitcoin Firewall 1.0 - Initial Release: Bata.io (BTA)]
+//  July 1, 2017 - Biznatch Enterprises
+// https://github.com/BiznatchEnterprises/BitcoinFirewall
+//
+
+    string BLACKLIST[256];
+    int blacklist_cnt = 1;
+
+    // ######## ########
+    bool Add_ToBlackList(CNode *pnode)
+    {
+        if (blacklist_cnt > 255)
+        {
+            blacklist_cnt = 1;
+        }
+
+        blacklist_cnt = blacklist_cnt + 1;
+        BLACKLIST[blacklist_cnt] = pnode->addrName;
+
+    return true;
+    }
+    // ######## ########
+
+    // ######## ########
+    bool CheckForBannedIP(CNode *pnode)
+    {
+        for (int i = 1; i < blacklist_cnt; i++)
+        {  
+            if (pnode->addrName == BLACKLIST[i])
+            {   
+
+                return true;
+            }
+
+        }
+
+        // Banned IP not found
+        return false;
+
+    }
+    // ######## ########
+
+
+    // ######## ########
+    bool Check_NetFloodAttack(CNode *pnode)
+    {
+
+    // [NetFlood Protection]
+    //
+    //      Prevent Network Flooding trying to sync old wallets
+    //      HIGH bandwidth use triggers verify CORE10 CHECKPOINT
+    //      after active conntaction disconnection and removal if startheight is below checkpoint
+    //
+
+        // * Attack detection -> (Sent: 1 MB, Rec: 1 MB, StartingBlockHeight is lower than release checkpoint)
+        if (pnode->nSendSize > 1000)
+        { 
+            if (pnode->nRecvBytes > 5000)
+            { 
+                if (pnode->nStartingHeight < 700000)
+                { 
+                    return true;
+                }
+            }
+
+        }
+
+        // * Attack detection -> (Rec: 1 MB, StartingBlockHeight is lower than Checkpoint Average [Dynamic])
+        //if (pnode->nRecvBytes > 10000) { 
+        //        if (pnode->nStartingHeight < nBlockHeightAverage) { 
+        //            return true;
+        //        }
+        //    }
+        //}
+
+        // * Attack detection -> (Rec: 2 MB, Less than 30 Seconds after connection)
+
+        // * Attack detection -> (Old Version)
+
+
+        // * Attack detection -> false
+        return false;
+
+    }
+    // ######## ########
+
+
+    // ######## ########
+    bool Force_DisconnectNode(CNode *pnode)
+    {
+    
+    // [Force Disconnection of node/peer]
+    //
+    //      Hard-disconnection function (Panic)
+    //
+
+       // * add node/peer IP to blacklist
+        Add_ToBlackList(pnode);
+
+        // remove from vNodes
+        vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());
+        
+        // close socket and cleanup
+        pnode->CloseSocketDisconnect();
+
+        return true;
+
+    }
+    // ######## ########
+
+    // ######## ########
+    void FireWall(CNode *pnode)
+    {
+
+        if (CheckForBannedIP(pnode) == true)
+        { 
+            Force_DisconnectNode(pnode);
+        }
+
+        if (Check_NetFloodAttack(pnode) == true)
+        { 
+            Force_DisconnectNode(pnode);
+        }
+
+    }
+    // ######## ########
+//-------------------------------------------------------------------
+
+
 // Signals for message handling
 static CNodeSignals g_signals;
 CNodeSignals& GetNodeSignals() { return g_signals; }
@@ -335,6 +469,7 @@ bool IsReachable(enum Network net)
 /** check whether a given address is in a network we can probably connect to */
 bool IsReachable(const CNetAddr& addr)
 {
+
     enum Network net = addr.GetNetwork();
     return IsReachable(net);
 }
@@ -384,7 +519,7 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest)
         if (IsLocal(addrConnect))
             return NULL;
 
-       // Look for an existing connection
+        // Look for an existing connection
         CNode* pnode = FindNode((CService)addrConnect);
         if (pnode)
         {
@@ -392,8 +527,6 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest)
             return pnode;
         }
     }
-
-
 
 
     /// debug print
@@ -412,11 +545,6 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest)
             CloseSocket(hSocket);
             return NULL;
         }
-
-
-
-
-
 
         addrman.Attempt(addrConnect);
 
@@ -497,9 +625,6 @@ bool CNode::IsBanned(CNetAddr ip)
             if (GetTime() < t)
                 fResult = true;
         }
-
-     
-
     }
     return fResult;
 }
@@ -654,50 +779,15 @@ int CNetMessage::readData(const char *pch, unsigned int nBytes)
     return nCopy;
 }
 
-
-
-
-
-
-
-
-
 // requires LOCK(cs_vSend)
 void SocketSendData(CNode *pnode)
 {
-
-
     std::deque<CSerializeData>::iterator it = pnode->vSendMsg.begin();
 
-      
-
     while (it != pnode->vSendMsg.end()) {
-       
-       
         const CSerializeData &data = *it;
 
-                    //-------------------------------------------------------------------
-                    // BATA CORE 10.4 NetFlood PATCH #1 - June 30, 2017 - Biznatch Enterprises
-                    // Prevent Network Flooding trying to sync old wallets
-                    // HIGH bandwidth use triggers verify CORE10 CHECKPOINT
-                    // after active conntaction disconnection and removal if startheight is below checkpoint
-                    //
-                    if (pnode->nSendSize > 10000) { 
-                        if (pnode->nRecvBytes > 10000) { 
-                            if (pnode->nStartingHeight < 700000) { 
-                                // remove from vNodes
-                                vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());
-
-                                // release outbound grant (if any)
-                                 pnode->grantOutbound.Release();
-
-                                // close socket and cleanup
-                                pnode->CloseSocketDisconnect();
-                            }
-                        }
-                    }
-                    //-------------------------------------------------------------------
-
+        FireWall(pnode);
 
         assert(data.size() > pnode->nSendOffset);
         int nBytes = send(pnode->hSocket, &data[pnode->nSendOffset], data.size() - pnode->nSendOffset, MSG_NOSIGNAL | MSG_DONTWAIT);
@@ -1022,20 +1112,10 @@ void ThreadSocketHandler()
                 continue;
             if (FD_ISSET(pnode->hSocket, &fdsetSend))
             {
-
-
-
-                        
                 TRY_LOCK(pnode->cs_vSend, lockSend);
-
-                if (lockSend) {
-
-       
-                        SocketSendData(pnode);
-        
-                }
-
-
+                if (lockSend)                             
+                        SocketSendData(pnode);  
+                 
             }
 
             //
@@ -1294,7 +1374,6 @@ void ThreadOpenConnections()
             BOOST_FOREACH(string strAddr, mapMultiArgs["-connect"])
             {
                 CAddress addr;
-
                 OpenNetworkConnection(addr, NULL, strAddr.c_str());
                 for (int i = 0; i < 10 && i < nLoop; i++)
                 {
@@ -1458,13 +1537,12 @@ void ThreadOpenAddedConnections()
 // if successful, this moves the passed grant to the constructed node
 bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOutbound, const char *pszDest, bool fOneShot)
 {
-    //
+     //
     // Initiate outbound network connection
     //
     boost::this_thread::interruption_point();
     if (!pszDest) {
-
-        if (IsLocal(addrConnect) ||
+       if (IsLocal(addrConnect) ||
             FindNode((CNetAddr)addrConnect) || CNode::IsBanned(addrConnect) ||
             FindNode(addrConnect.ToStringIPPort()))
             return false;
@@ -1477,15 +1555,15 @@ bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOu
     if (!pnode)
         return false;
     if (grantOutbound)
+
+        FireWall(pnode);
+
         grantOutbound->MoveTo(pnode->grantOutbound);
     pnode->fNetworkNode = true;
     if (fOneShot)
         pnode->fOneShot = true;
 
     return true;
-
-  
-
 }
 
 
@@ -1522,6 +1600,8 @@ void ThreadMessageHandler()
                 {
                     if (!g_signals.ProcessMessages(pnode))
                         pnode->CloseSocketDisconnect();
+
+                            FireWall(pnode);
 
                     if (pnode->nSendSize < SendBufferSize())
                     {
