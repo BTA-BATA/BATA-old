@@ -108,16 +108,24 @@ static CSemaphore *semOutbound = NULL;
 // https://github.com/BiznatchEnterprises/BitcoinFirewall
 //
 
+    // * BlackList node/peers Array
     string BLACKLIST[256];
     int blacklist_cnt = 1;
+
+    // * Global Firewall Variables *
     int CurrentAverageHeight = 0;
     int CurrentAverageHeight_Min = 0;
     int CurrentAverageHeight_Max = 0;
+    int OutputDelay = 300;
+    int OutputTimer = 0;
+
+    // * NetFlood Detection Settings *
     int AverageTolerance = 2;   // 2 Blocks tolerance
-    int AverageRange = 20;
+    int AverageRange = 20;  // Never allow peers using HIGH bandwidth with lower or higher than (AverageRange / 2) starting BlockHeight
+
+    // * FireWall Controls *
     bool Show_DebugOutput = true;
-
-
+    bool BlackList_NetFloodAttacks = true;
 
     // ######## ########
     bool Add_ToBlackList(CNode *pnode)
@@ -174,6 +182,19 @@ static CSemaphore *semOutbound = NULL;
         }
         // ********************************************
         
+        if (OutputTimer < OutputDelay)
+        {
+
+            Show_DebugOutput = false;
+
+            OutputTimer = 0;
+
+        }
+        else
+        {
+            OutputTimer = OutputTimer + 1;
+        }
+
         // ** Debug Output ON/OFF ****
         if (Show_DebugOutput == true) {
         cout<<"         Average Start Height: "<<CurrentAverageHeight<<endl;
@@ -203,8 +224,7 @@ static CSemaphore *semOutbound = NULL;
         int tSendSize = pnode->nSendSize;
         int tRecBytes = pnode->nRecvBytes;
         string tNodeIP = pnode->addrName;
-        bool Show_DebugOutput = true;
-
+  
         NewHeightAverage(pnode);
 
         // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -237,6 +257,12 @@ static CSemaphore *semOutbound = NULL;
                 {
                        if (Show_DebugOutput == true) {
                         cout<<" * NetFlood Attack Detected: "<<tNodeIP<<endl;
+                       }
+
+                       if (BlackList_NetFloodAttacks == true)
+                       {
+                        // * add node/peer IP to blacklist
+                        Add_ToBlackList(pnode);
                        }
 
                        return true;
@@ -282,9 +308,6 @@ static CSemaphore *semOutbound = NULL;
     //
     //      Hard-disconnection function (Panic)
     //
-
-       // * add node/peer IP to blacklist
-        Add_ToBlackList(pnode);
 
         // remove from vNodes
         vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());
