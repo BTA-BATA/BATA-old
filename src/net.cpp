@@ -116,7 +116,7 @@ static CSemaphore *semOutbound = NULL;
     int CurrentAverageHeight = 0;
     int CurrentAverageHeight_Min = 0;
     int CurrentAverageHeight_Max = 0;
-    int OutputDelay = 300;
+    int OutputDelay = 10;
     int OutputTimer = 0;
 
     // * NetFlood Detection Settings *
@@ -182,7 +182,7 @@ static CSemaphore *semOutbound = NULL;
         }
         // ********************************************
         
-        if (OutputTimer < OutputDelay)
+        if (OutputTimer > OutputDelay)
         {
 
             Show_DebugOutput = false;
@@ -193,6 +193,7 @@ static CSemaphore *semOutbound = NULL;
         else
         {
             OutputTimer = OutputTimer + 1;
+            Show_DebugOutput = true;
         }
 
         // ** Debug Output ON/OFF ****
