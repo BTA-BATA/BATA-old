@@ -114,7 +114,7 @@ static CSemaphore *semOutbound = NULL;
 
     // * FireWall Controls *
     bool Show_DebugOutput = true;
-    bool BlackList_NetFloodAttacks = true;
+    bool BlackList_NetFlood = true;
 
     // * Global Firewall Variables *
     int CurrentAverageHeight = 0;
@@ -146,24 +146,7 @@ static CSemaphore *semOutbound = NULL;
         }
 
         blacklist_cnt = blacklist_cnt + 1;
-        BLACKLIST[blacklist_cnt] = pnode->addrName;
-
-        if (Show_DebugOutput == true) {
-
-            if (Debug_OutputText != "Blacklist")
-            {
-                if (Debug_OutputIP != tNodeIP)
-                {
-
-                    cout << Module_Name + " - Blacklisted: "<<tNodeIP<<endl;
-                    Debug_OutputIP = tNodeIP;
-                    Debug_OutputText = "Blacklist";
-
-                }
-
-            }
-
-        }
+        BLACKLIST[blacklist_cnt] = tNodeIP;
 
     return true;
     }
@@ -242,7 +225,7 @@ static CSemaphore *semOutbound = NULL;
             // ** Debug Output ON/OFF ****
             if (DebugOutput == true) {
 
-                cout << Module_Name + " - Live Blockchain info: "<<endl;
+                cout <<"        " + Module_Name + " - Live Blockchain info: "<<endl;
                 cout<<"         -------------"<<endl;
                 cout<<"         Average StartHeight: "<<CurrentAverageHeight<<endl;
                 cout<<"         Average StartHeight Min: "<<CurrentAverageHeight_Min<<endl;
@@ -313,9 +296,9 @@ static CSemaphore *semOutbound = NULL;
                                 if (Debug_OutputIP != tNodeIP)
                                 {
 
-                                cout << Module_Name + " - NetFlood Attack Detected: "<<tNodeIP<<endl;
-                                Debug_OutputIP = tNodeIP;
-                                Debug_OutputText = "NetFlood";
+                                    cout << Module_Name + " - NetFlood Attack Detected: "<<tNodeIP<<endl;
+                                    Debug_OutputIP = tNodeIP;
+                                    Debug_OutputText = "NetFlood";
 
                                 }
 
@@ -323,10 +306,29 @@ static CSemaphore *semOutbound = NULL;
 
                        }
 
-                       if (BlackList_NetFloodAttacks == true)
+                       if (BlackList_NetFlood == true)
                        {
                         // * add node/peer IP to blacklist
                         Add_ToBlackList(pnode);
+
+                            if (Show_DebugOutput == true) {
+
+                                if (Debug_OutputText != "Blacklist")
+                                {
+                                    if (Debug_OutputIP != tNodeIP)
+                                    {
+
+                                        cout << Module_Name + " - Blacklisted: "<<tNodeIP<<endl;
+                                        Debug_OutputIP = tNodeIP;
+                                        Debug_OutputText = "Blacklist";
+
+                                    }
+
+                                }
+
+                            }
+
+
                        }
 
                        return true;
@@ -379,13 +381,10 @@ static CSemaphore *semOutbound = NULL;
         if (Show_DebugOutput == true) {   
 
             if (Debug_OutputText != "Panic"){
-                if (Debug_OutputIP != tNodeIP)        
-                {
-                    cout << Module_Name + " - Disconnected: "<<tNodeIP<<endl;
-                    Debug_OutputIP = tNodeIP;
-                    Debug_OutputText = "Panic";
 
-                }
+                cout << Module_Name + " - Disconnected: "<<tNodeIP<<endl;
+                Debug_OutputIP = tNodeIP;
+                Debug_OutputText = "Panic";
 
             }
 
@@ -411,11 +410,11 @@ static CSemaphore *semOutbound = NULL;
 
         if (Show_DebugOutput == true) {         
 
-            if (Debug_OutputText != "Init"){
+            if (Debug_OutputText != "Init")
+            {
 
-                cout << Module_Name + " - initialized (" + FromFunction + ")"<<endl;
-
-                    Debug_OutputText = "Init";
+                cout << Module_Name + " - Initialized from: " + FromFunction<<endl;
+                Debug_OutputText = "Init";
 
             }
 
