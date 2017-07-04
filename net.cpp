@@ -112,22 +112,24 @@ static CSemaphore *semOutbound = NULL;
     string BLACKLIST[256];
     int blacklist_cnt = 1;
 
+    // * FireWall Controls *
+    bool Show_DebugOutput = true;
+    bool BlackList_NetFloodAttacks = true;
+
     // * Global Firewall Variables *
     int CurrentAverageHeight = 0;
     int CurrentAverageHeight_Min = 0;
     int CurrentAverageHeight_Max = 0;
-    int OutputDelay = 100;
-    int OutputTimer = 0;
-    int OutputHeight = 0;
+    int Debug_OutputDelay = 100;
+    int Debug_OutputTimer = 0;
+    int Debug_OutputHeight = 0;
     bool DebugOutput = false;
+    string Debug_OutputText = "";
+    string Module_Name = "[Bitcoin Firewall 1.0]";
 
     // * NetFlood Detection Settings *
     int AverageTolerance = 2;   // 2 Blocks tolerance
-    int AverageRange = 20;  // Never allow peers using HIGH bandwidth with lower or higher than (AverageRange / 2) starting BlockHeight
-
-    // * FireWall Controls *
-    bool Show_DebugOutput = true;
-    bool BlackList_NetFloodAttacks = true;
+    int AverageRange = 10;  // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
 
     // ######## ########
     bool Add_ToBlackList(CNode *pnode)
@@ -166,7 +168,9 @@ static CSemaphore *semOutbound = NULL;
    // ######## ########
     void NewHeightAverage(CNode *pnode)
     {
-        int tRange = AverageRange / 2;
+
+        // Node/peer IP Name
+        string tNodeIP = pnode->addrName;
 
         // Dynamic Blockchain Checkpoint
         int NodeHeight = pnode->nStartingHeight;
@@ -178,8 +182,8 @@ static CSemaphore *semOutbound = NULL;
             CurrentAverageHeight = CurrentAverageHeight + NodeHeight; 
             CurrentAverageHeight = CurrentAverageHeight / 2;
             CurrentAverageHeight = CurrentAverageHeight - AverageTolerance;      // reduce with tolerance
-            CurrentAverageHeight_Min = CurrentAverageHeight - tRange;
-            CurrentAverageHeight_Max = CurrentAverageHeight + tRange;
+            CurrentAverageHeight_Min = CurrentAverageHeight - AverageRange;
+            CurrentAverageHeight_Max = CurrentAverageHeight + AverageRange;
 
         }
         // ********************************************
@@ -188,32 +192,35 @@ static CSemaphore *semOutbound = NULL;
         if (Show_DebugOutput == true) {
 
             // ** No Change since last Height Output ****
-            if (OutputHeight == CurrentAverageHeight)
+            if (Debug_OutputHeight == CurrentAverageHeight)
             {
                 DebugOutput = false;
             }
             else
             {
-                OutputHeight = CurrentAverageHeight;
+                Debug_OutputHeight = CurrentAverageHeight;
                 DebugOutput = true;
             }
 
             // ** Prevent output from flooding screen ****
-            if (OutputTimer > OutputDelay)
+            if (Debug_OutputTimer > Debug_OutputDelay)
             {
 
                 DebugOutput = false;
-                OutputTimer = 0;
+                Debug_OutputTimer = 0;
 
             }
             else
             {
-                OutputTimer = OutputTimer + 1;
+                Debug_OutputTimer = Debug_OutputTimer + 1;
                 Show_DebugOutput = true;
             }
 
             // ** Debug Output ON/OFF ****
             if (DebugOutput == true) {
+
+                cout << Module_Name + " - Live Blockchain info: "<<endl;
+                cout<<"         -------------"<<endl;
                 cout<<"         Average Start Height: "<<CurrentAverageHeight<<endl;
                 cout<<"         Average Start Height Min: "<<CurrentAverageHeight_Min<<endl;
                 cout<<"         Average Start Height Max: "<<CurrentAverageHeight_Max<<endl;
@@ -242,6 +249,8 @@ static CSemaphore *semOutbound = NULL;
         bool Detected = false;
         int tSendSize = pnode->nSendSize;
         int tRecBytes = pnode->nRecvBytes;
+
+        // Node/peer IP Name
         string tNodeIP = pnode->addrName;
   
         NewHeightAverage(pnode);
@@ -275,7 +284,15 @@ static CSemaphore *semOutbound = NULL;
                 if (Detected == true)
                 {
                        if (Show_DebugOutput == true) {
-                        cout<<" * NetFlood Attack Detected: "<<tNodeIP<<endl;
+
+                            if (Debug_OutputText != tNodeIP + "Netflood"){
+
+                                cout << Module_Name + " - NetFlood Attack Detected: "<<tNodeIP<<endl;
+
+                                Debug_OutputText = tNodeIP;
+
+                            }
+
                        }
 
                        if (BlackList_NetFloodAttacks == true)
@@ -328,6 +345,21 @@ static CSemaphore *semOutbound = NULL;
     //      Hard-disconnection function (Panic)
     //
 
+    // Node/peer IP Name
+     string tNodeIP = pnode->addrName;
+
+        if (Show_DebugOutput == true) {           
+
+            if (Debug_OutputText != tNodeIP + "Disconnect"){
+
+                cout << Module_Name + " - Forced disconnection (panic): "<<tNodeIP<<endl;
+
+                    Debug_OutputText = tNodeIP;
+
+            }
+
+        }
+
         // remove from vNodes
         vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());
         
@@ -341,8 +373,22 @@ static CSemaphore *semOutbound = NULL;
 
 
     // ######## ########
-    void FireWall(CNode *pnode)
+    void FireWall(CNode *pnode, string FromFunction)
     {
+        // Node/peer IP Name
+        string tNodeIP = pnode->addrName;
+
+        if (Show_DebugOutput == true) {         
+
+            if (Debug_OutputText != "Init"){
+
+                cout << Module_Name + " - initialized (" + FromFunction + ")"<<endl;
+
+                    Debug_OutputText = "Init";
+
+            }
+
+        }
 
         if (CheckForBannedIP(pnode) == true)
         { 
@@ -912,7 +958,7 @@ void SocketSendData(CNode *pnode)
     while (it != pnode->vSendMsg.end()) {
         const CSerializeData &data = *it;
 
-        FireWall(pnode);
+        FireWall(pnode, "SendData");
 
         assert(data.size() > pnode->nSendOffset);
         int nBytes = send(pnode->hSocket, &data[pnode->nSendOffset], data.size() - pnode->nSendOffset, MSG_NOSIGNAL | MSG_DONTWAIT);
@@ -1681,7 +1727,7 @@ bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOu
         return false;
     if (grantOutbound)
 
-        FireWall(pnode);
+        FireWall(pnode, "Connected");
 
         grantOutbound->MoveTo(pnode->grantOutbound);
     pnode->fNetworkNode = true;
@@ -1726,7 +1772,7 @@ void ThreadMessageHandler()
                     if (!g_signals.ProcessMessages(pnode))
                         pnode->CloseSocketDisconnect();
 
-                            FireWall(pnode);
+                            FireWall(pnode, "GetData");
 
                     if (pnode->nSendSize < SendBufferSize())
                     {
