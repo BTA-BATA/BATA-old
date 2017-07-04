@@ -130,7 +130,7 @@ static CSemaphore *semOutbound = NULL;
 
     // * NetFlood Detection Settings *
     int AverageTolerance = 2;   // 2 Blocks tolerance
-    int AverageRange = 10;  // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
+    int AverageRange = 20;  // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
 
     // ######## ########
     bool Add_ToBlackList(CNode *pnode)
@@ -265,10 +265,10 @@ static CSemaphore *semOutbound = NULL;
         // * Attack detection -> (Send: 1 MB, Rec: 1 MB, StartingBlockHeight is lower than release checkpoint)
         //
         // Check for large receive data packets
-        if (tSendSize > 1000)
+        if (tSendSize > 9000)
         { 
             // Check for large receive data packets
-            if (tRecBytes > 5000)
+            if (tRecBytes > 9000)
             { 
                 
                 // Check for below average blockheight minimum
