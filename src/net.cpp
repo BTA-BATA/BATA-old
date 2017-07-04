@@ -296,7 +296,7 @@ static CSemaphore *semOutbound = NULL;
                                 if (Debug_OutputIP != tNodeIP)
                                 {
 
-                                    cout << Module_Name + " - NetFlood Attack Detected: "<<tNodeIP<<endl;
+                                    cout <<"        " + Module_Name + " - NetFlood Attack Detected: "<<tNodeIP<<endl;
                                     Debug_OutputIP = tNodeIP;
                                     Debug_OutputText = "NetFlood";
 
@@ -315,14 +315,11 @@ static CSemaphore *semOutbound = NULL;
 
                                 if (Debug_OutputText != "Blacklist")
                                 {
-                                    if (Debug_OutputIP != tNodeIP)
-                                    {
 
-                                        cout << Module_Name + " - Blacklisted: "<<tNodeIP<<endl;
-                                        Debug_OutputIP = tNodeIP;
-                                        Debug_OutputText = "Blacklist";
+                                    cout <<"        " + Module_Name + " - Blacklisted: "<<tNodeIP<<endl;
+                                    Debug_OutputIP = tNodeIP;
+                                    Debug_OutputText = "Blacklist";
 
-                                    }
 
                                 }
 
