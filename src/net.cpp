@@ -379,7 +379,7 @@ static CSemaphore *semOutbound = NULL;
 
             if (Debug_OutputText != "Panic"){
 
-                cout << Module_Name + " - Disconnected: "<<tNodeIP<<endl;
+                cout <<"        " + Module_Name + " - Disconnected: "<<tNodeIP<<endl;
                 Debug_OutputIP = tNodeIP;
                 Debug_OutputText = "Panic";
 
@@ -410,7 +410,7 @@ static CSemaphore *semOutbound = NULL;
             if (Debug_OutputText != "Init")
             {
 
-                cout << Module_Name + " - Initialized from: " + FromFunction<<endl;
+                cout <<"        " + Module_Name + " - Initialized from: " + FromFunction<<endl;
                 Debug_OutputText = "Init";
 
             }
