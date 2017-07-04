@@ -135,6 +135,11 @@ static CSemaphore *semOutbound = NULL;
     // ######## ########
     bool Add_ToBlackList(CNode *pnode)
     {
+
+        // Node/peer IP Name
+        string tNodeIP = pnode->addrName;
+
+        // Restart Blacklist count
         if (blacklist_cnt > 255)
         {
             blacklist_cnt = 1;
@@ -142,6 +147,23 @@ static CSemaphore *semOutbound = NULL;
 
         blacklist_cnt = blacklist_cnt + 1;
         BLACKLIST[blacklist_cnt] = pnode->addrName;
+
+        if (Show_DebugOutput == true) {
+
+            if (Debug_OutputText != "Blacklist")
+            {
+                if (Debug_OutputIP != tNodeIP)
+                {
+
+                    cout << Module_Name + " - Blacklisted: "<<tNodeIP<<endl;
+                    Debug_OutputIP = tNodeIP;
+                    Debug_OutputText = "Blacklist";
+
+                }
+
+            }
+
+        }
 
     return true;
     }
@@ -359,7 +381,7 @@ static CSemaphore *semOutbound = NULL;
             if (Debug_OutputText != "Panic"){
                 if (Debug_OutputIP != tNodeIP)        
                 {
-                    cout << Module_Name + " - Forced disconnection (panic): "<<tNodeIP<<endl;
+                    cout << Module_Name + " - Disconnected: "<<tNodeIP<<endl;
                     Debug_OutputIP = tNodeIP;
                     Debug_OutputText = "Panic";
 
