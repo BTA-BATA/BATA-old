@@ -125,6 +125,7 @@ static CSemaphore *semOutbound = NULL;
     int Debug_OutputHeight = 0;
     bool DebugOutput = false;
     string Debug_OutputText = "";
+    string Debug_IP = "";
     string Module_Name = "[Bitcoin Firewall 1.0]";
 
     // * NetFlood Detection Settings *
@@ -221,10 +222,10 @@ static CSemaphore *semOutbound = NULL;
 
                 cout << Module_Name + " - Live Blockchain info: "<<endl;
                 cout<<"         -------------"<<endl;
-                cout<<"         Average Start Height: "<<CurrentAverageHeight<<endl;
-                cout<<"         Average Start Height Min: "<<CurrentAverageHeight_Min<<endl;
-                cout<<"         Average Start Height Max: "<<CurrentAverageHeight_Max<<endl;
-                cout<<"         Connected Node Start Height: "<<NodeHeight<<endl;
+                cout<<"         Average StartHeight: "<<CurrentAverageHeight<<endl;
+                cout<<"         Average StartHeight Min: "<<CurrentAverageHeight_Min<<endl;
+                cout<<"         Average StartHeight Max: "<<CurrentAverageHeight_Max<<endl;
+                cout<<"         Connected Node StartHeight: "<<NodeHeight<<endl;
                 cout<<"         Connected Node: "<<pnode->addrName<<endl;
                 cout<<"         -------------"<<endl;
             }
