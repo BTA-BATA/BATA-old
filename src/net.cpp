@@ -225,7 +225,7 @@ static CSemaphore *semOutbound = NULL;
             // ** Debug Output ON/OFF ****
             if (DebugOutput == true) {
 
-                cout <<"        " + Module_Name + " - Live Blockchain info: "<<endl;
+                cout <<"        " + Module_Name + " - Examination: "<<endl;
                 cout<<"         -------------"<<endl;
                 cout<<"         Average StartHeight: "<<CurrentAverageHeight<<endl;
                 cout<<"         Average StartHeight Min: "<<CurrentAverageHeight_Min<<endl;
