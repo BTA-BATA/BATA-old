@@ -218,8 +218,9 @@ static CSemaphore *semOutbound = NULL;
 
             // ** Debug Output ON/OFF ****
             if (DebugOutput == true) {
+
+                cout << Module_Name + " - Live Blockchain info: "<<endl;
                 cout<<"         -------------"<<endl;
-                cout << Module_Name + " - Live Blockchain info: "<<tNodeIP<<endl;
                 cout<<"         Average Start Height: "<<CurrentAverageHeight<<endl;
                 cout<<"         Average Start Height Min: "<<CurrentAverageHeight_Min<<endl;
                 cout<<"         Average Start Height Max: "<<CurrentAverageHeight_Max<<endl;
