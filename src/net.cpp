@@ -125,7 +125,7 @@ static CSemaphore *semOutbound = NULL;
     int Debug_OutputHeight = 0;
     bool DebugOutput = false;
     string Debug_OutputText = "";
-    string Debug_IP = "";
+    string Debug_OutputIP = "";
     string Module_Name = "[Bitcoin Firewall 1.0]";
 
     // * NetFlood Detection Settings *
@@ -286,11 +286,16 @@ static CSemaphore *semOutbound = NULL;
                 {
                        if (Show_DebugOutput == true) {
 
-                            if (Debug_OutputText != tNodeIP){
+                            if (Debug_OutputText != "NetFlood")
+                            {
+                                if (Debug_OutputIP != tNodeIP)
+                                {
 
                                 cout << Module_Name + " - NetFlood Attack Detected: "<<tNodeIP<<endl;
+                                Debug_OutputIP = tNodeIP;
+                                Debug_OutputText = "NetFlood";
 
-                                Debug_OutputText = tNodeIP;
+                                }
 
                             }
 
@@ -349,13 +354,16 @@ static CSemaphore *semOutbound = NULL;
     // Node/peer IP Name
      string tNodeIP = pnode->addrName;
 
-        if (Show_DebugOutput == true) {           
+        if (Show_DebugOutput == true) {   
 
-            if (Debug_OutputText != tNodeIP){
+            if (Debug_OutputText != "Panic"){
+                if (Debug_OutputIP != tNodeIP)        
+                {
+                    cout << Module_Name + " - Forced disconnection (panic): "<<tNodeIP<<endl;
+                    Debug_OutputIP = tNodeIP;
+                    Debug_OutputText = "Panic";
 
-                cout << Module_Name + " - Forced disconnection (panic): "<<tNodeIP<<endl;
-
-                    Debug_OutputText = tNodeIP;
+                }
 
             }
 
