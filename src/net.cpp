@@ -102,10 +102,7 @@ CCriticalSection cs_nLastNodeId;
 static CSemaphore *semOutbound = NULL;
 
 
-
-
-
-//-------------------------------------------------------------------
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 // [Bitcoin Firewall 1.0 - Initial Release: Bata.io (BTA)]
 //  July 1, 2017 - Biznatch Enterprises
 // https://github.com/BiznatchEnterprises/BitcoinFirewall
@@ -113,7 +110,14 @@ static CSemaphore *semOutbound = NULL;
 
     string BLACKLIST[256];
     int blacklist_cnt = 1;
-    int CurrentAverageHeight = 1;
+    int CurrentAverageHeight = 0;
+    int CurrentAverageHeight_Min = 0;
+    int CurrentAverageHeight_Max = 0;
+    int AverageTolerance = 2;   // 2 Blocks tolerance
+    int AverageRange = 20;
+    bool Show_DebugOutput = true;
+
+
 
     // ######## ########
     bool Add_ToBlackList(CNode *pnode)
@@ -149,44 +153,35 @@ static CSemaphore *semOutbound = NULL;
     }
     // ######## ########
 
-
-
-
-
-
    // ######## ########
     void NewHeightAverage(CNode *pnode)
     {
-        bool DebugFunction = false;
+        int tRange = AverageRange / 2;
 
         // Dynamic Blockchain Checkpoint
-        int TempHeight = pnode->nStartingHeight;
-
-        // ** Check For Hard-Fork (Above Average) ****
-        //int HardForkHeightMAX = 10;  // blocks ahead of average MAX!
-        //int TempHeightCheck = CurrentAverageHeight + HardForkHeightMAX;
-        //if (TempHeight >= TempHeightCheck) 
-        //{ 
-
-          //  TempHeight = 0;
-
-        //}
-        // ********************************************
+        int NodeHeight = pnode->nStartingHeight;
 
         // ** Update current average if increased ****
-        if (TempHeight > CurrentAverageHeight) 
+        if (NodeHeight > CurrentAverageHeight) 
         {
 
-        CurrentAverageHeight = CurrentAverageHeight + TempHeight; 
-        CurrentAverageHeight = CurrentAverageHeight / 2;
-    
+            CurrentAverageHeight = CurrentAverageHeight + NodeHeight; 
+            CurrentAverageHeight = CurrentAverageHeight / 2;
+            CurrentAverageHeight = CurrentAverageHeight - AverageTolerance;      // reduce with tolerance
+            CurrentAverageHeight_Min = CurrentAverageHeight - tRange;
+            CurrentAverageHeight_Max = CurrentAverageHeight + tRange;
+
         }
         // ********************************************
         
         // ** Debug Output ON/OFF ****
-        if (DebugFunction == true) {
-        cout<<"         "<<CurrentAverageHeight<<endl;
-        cout<<"         "<<TempHeight<<endl;
+        if (Show_DebugOutput == true) {
+        cout<<"         Average Start Height: "<<CurrentAverageHeight<<endl;
+        cout<<"         Average Start Height Min: "<<CurrentAverageHeight_Min<<endl;
+        cout<<"         Average Start Height Max: "<<CurrentAverageHeight_Max<<endl;
+        cout<<"         Connected Node Start Height: "<<NodeHeight<<endl;
+        cout<<"         Connected Node: "<<pnode->addrName<<endl;
+        cout<<"         -------------"<<endl;
         }
         // ********************************************
  
@@ -197,27 +192,64 @@ static CSemaphore *semOutbound = NULL;
     bool Check_NetFloodAttack(CNode *pnode)
     {
 
-    // [NetFlood Protection]
-    //
-    //      Prevent Network Flooding trying to sync old wallets
-    //      HIGH bandwidth use triggers verify CORE10 CHECKPOINT
-    //      after active conntaction disconnection and removal if startheight is below checkpoint
-    //
-    NewHeightAverage(pnode);
+        // [NetFlood Protection]
+        //
+        //      Prevent Network Flooding trying to sync old wallets
+        //      HIGH bandwidth use triggers verify CORE10 CHECKPOINT
+        //      after active conntaction disconnection and removal if startheight is below checkpoint
+        //
 
+        bool Detected = false;
+        int tSendSize = pnode->nSendSize;
+        int tRecBytes = pnode->nRecvBytes;
+        string tNodeIP = pnode->addrName;
+        bool Show_DebugOutput = true;
+
+        NewHeightAverage(pnode);
+
+        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         // * Attack detection -> (Send: 1 MB, Rec: 1 MB, StartingBlockHeight is lower than release checkpoint)
-        if (pnode->nSendSize > 1000)
+        //
+        // Check for large receive data packets
+        if (tSendSize > 1000)
         { 
-            if (pnode->nRecvBytes > 5000)
+            // Check for large receive data packets
+            if (tRecBytes > 5000)
             { 
-                if (pnode->nStartingHeight < CurrentAverageHeight)
+                
+                // Check for below average blockheight minimum
+                if (pnode->nStartingHeight < CurrentAverageHeight_Min)
                 { 
-                    return true;
+                    Detected = true;
+
                 }
+                //-----------------------------------------
+
+                // Check for above average blockheight max
+                if (pnode->nStartingHeight > CurrentAverageHeight_Max)
+                { 
+                    Detected = true;
+                }
+                //-----------------------------------------
+
+                // Check for above average blockheight max
+                if (Detected == true)
+                {
+                       if (Show_DebugOutput == true) {
+                        cout<<" * NetFlood Attack Detected: "<<tNodeIP<<endl;
+                       }
+
+                       return true;
+      
+                }
+                //-----------------------------------------
+
             }
 
         }
+        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         // * Attack detection -> (Rec: 1 MB, StartingBlockHeight is lower than Checkpoint Average [Dynamic])
         //if (pnode->nRecvBytes > 10000) { 
         //        if (pnode->nStartingHeight < nBlockHeightAverage) { 
@@ -230,9 +262,13 @@ static CSemaphore *semOutbound = NULL;
 
         // * Attack detection -> (Old Version)
 
-
         // * Attack detection -> false
+        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        // NO ATTACK DETECTED
         return false;
+        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     }
     // ######## ########
@@ -261,6 +297,7 @@ static CSemaphore *semOutbound = NULL;
     }
     // ######## ########
 
+
     // ######## ########
     void FireWall(CNode *pnode)
     {
@@ -277,7 +314,8 @@ static CSemaphore *semOutbound = NULL;
 
     }
     // ######## ########
-//-------------------------------------------------------------------
+
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 
 // Signals for message handling
