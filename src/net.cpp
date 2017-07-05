@@ -113,7 +113,7 @@ static CSemaphore *semOutbound = NULL;
     int blacklist_cnt = 1;
 
     // * FireWall Controls *
-    bool Show_DebugOutput = true;
+    bool Show_DebugOutput = false;
     bool BlackList_NetFlood = true;
 
     // * Global Firewall Variables *
@@ -219,7 +219,7 @@ static CSemaphore *semOutbound = NULL;
             else
             {
                 Debug_OutputTimer = Debug_OutputTimer + 1;
-                Show_DebugOutput = true;
+                DebugOutput = true;
             }
 
             // ** Debug Output ON/OFF ****
