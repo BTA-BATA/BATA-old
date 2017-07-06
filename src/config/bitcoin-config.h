@@ -8,9 +8,6 @@
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 
-/* Version Build */
-#define CLIENT_VERSION_BUILD 1
-
 /* Version is release */
 #define CLIENT_VERSION_IS_RELEASE true
 
@@ -22,6 +19,9 @@
 
 /* Build revision */
 #define CLIENT_VERSION_REVISION 4
+
+/* Client Version Build */
+#define CLIENT_VERSION_BUILD 1
 
 /* Version is release */
 #define COPYRIGHT_YEAR 2017
