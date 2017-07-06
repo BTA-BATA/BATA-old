@@ -261,27 +261,26 @@
 /* Define this symbol if boost sleep_for works */
 #define HAVE_WORKING_BOOST_SLEEP_FOR 1
 
-/* Define to the sub-directory in which libtool stores uninstalled libraries.
-   */
+/* Define to the sub-directory where libtool stores uninstalled libraries. */
 #define LT_OBJDIR ".libs/"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "info@litecoin.org"
+#define PACKAGE_BUGREPORT "info@bata.io"
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME "Bata Core"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "Bata Core 0.10.4.0"
+#define PACKAGE_STRING "Bata Core 0.10.4.1"
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "litecoin"
+#define PACKAGE_TARNAME "batacoin"
 
 /* Define to the home page for this package. */
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.10.4.0"
+#define PACKAGE_VERSION "0.10.4.1"
 
 /* Define to necessary symbol if this constant uses a non-standard name on
    your system. */
