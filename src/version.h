@@ -31,7 +31,7 @@ static const int GETHEADERS_VERSION = 70002;
 
 static const int PROTOCOL_VERSION_SHORT = 7;
 
-static const int PROTOCOL_VERSION = 80007;
+static const int PROTOCOL_VERSION = 80008;
 
 // intial proto version, to be increased after version/verack negotiation
 static const int INIT_PROTO_VERSION = 209;
