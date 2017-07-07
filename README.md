@@ -98,7 +98,7 @@ cd db-4.8.30.NC/build_unix
 make
 sudo make install
 
-### instructions for compile: 
+### Instructions for compile: 
 
 git clone  https://github.com/BTA-BATA/BATA-SOURCE bata && cd bata
 
