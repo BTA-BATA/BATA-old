@@ -97,7 +97,7 @@ tar -xzvf db-4.8.30.NC.tar.gz
 
 cd db-4.8.30.NC/build_unix
 
-#  Note: Do a static build so that it can be embedded into the executable, instead of having to find a .so at runtime
+Note: Do a static build so that it can be embedded into the executable, instead of having to find a .so at runtime
 ../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX
 
 sudo make install
@@ -119,6 +119,8 @@ cd $BITCOIN_ROOT
 ./configure LDFLAGS="-L${BDB_PREFIX}/lib/" CPPFLAGS="-I${BDB_PREFIX}/include/" # (other args...)
 
 make
+
+./bata-qt or ./batad
 
 (it will instruct you to make a bata.conf file, so make the bata.conf file and place in the .bata/ folder.)
 
