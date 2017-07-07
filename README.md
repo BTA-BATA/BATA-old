@@ -98,6 +98,8 @@ cd db-4.8.30.NC/build_unix
 make
 sudo make install
 
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
+
 ### Instructions for compile: 
 
 git clone  https://github.com/BTA-BATA/BATA-SOURCE bata && cd bata
