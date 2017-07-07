@@ -110,9 +110,9 @@ sudo chmod +777 *
 
 ./autogen.sh
 
-# Configure Bitcoin Core to use our own-built instance of BDB
+# Configure Bata Core to use our own-built instance of BDB
 
-cd $BITCOIN_ROOT
+cd ../  # go back to bata source
 
 ./autogen.sh
 
