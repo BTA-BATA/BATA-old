@@ -85,11 +85,20 @@ https://www.cryptocompare.com/coins/bta/forum
 
 https://www.cryptopia.co.nz/Forum/Thread/377
 
-
-
-### instructions for compile: 
+### Installing Dependencies
 
 sudo apt-get install git build-essential openssl libminiupnpc-dev libboost++-dev libboost-all-dev libssl-dev libdb++-dev automake qrencode qt4-dev-tools libtool libqt4-dev libprotobuf-dev
+
+### Installing db4.8
+
+wget http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz
+tar -xzvf db-4.8.30.NC.tar.gz
+cd db-4.8.30.NC/build_unix
+../dist/configure --enable-cxx
+make
+sudo make install
+
+### instructions for compile: 
 
 git clone  https://github.com/BTA-BATA/BATA-SOURCE bata && cd bata
 
@@ -97,7 +106,7 @@ sudo chmod +777 *
 
 ./autogen.sh
 
-./configure     or:    ./configure --with-incompatible-bdb
+./configure CPPFLAGS="-I/usr/local/BerkeleyDB.4.8/include -O2" LDFLAGS="-L/usr/local/BerkeleyDB.4.8/lib"
 
 make
 
