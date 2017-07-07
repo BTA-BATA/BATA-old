@@ -97,13 +97,10 @@ tar -xzvf db-4.8.30.NC.tar.gz
 
 cd db-4.8.30.NC/build_unix
 
-../dist/configure --enable-cxx
-
-make
+#  Note: Do a static build so that it can be embedded into the executable, instead of having to find a .so at runtime
+../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX
 
 sudo make install
-
-export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
 
 ### Instructions for compile: 
 
@@ -113,7 +110,13 @@ sudo chmod +777 *
 
 ./autogen.sh
 
-./configure CPPFLAGS="-I/usr/local/BerkeleyDB.4.8/include -O2" LDFLAGS="-L/usr/local/BerkeleyDB.4.8/lib"
+# Configure Bitcoin Core to use our own-built instance of BDB
+
+cd $BITCOIN_ROOT
+
+./autogen.sh
+
+./configure LDFLAGS="-L${BDB_PREFIX}/lib/" CPPFLAGS="-I${BDB_PREFIX}/include/" # (other args...)
 
 make
 
