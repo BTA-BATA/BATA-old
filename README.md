@@ -110,7 +110,7 @@ sudo chmod +777 *
 
 ./autogen.sh
 
-# Configure Bata Core to use our own-built instance of BDB
+Note: Configure Bata Core to use our own-built instance of BDB
 
 cd ../  # go back to bata source
 
