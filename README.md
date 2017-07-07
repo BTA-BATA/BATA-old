@@ -92,10 +92,15 @@ sudo apt-get install git build-essential openssl libminiupnpc-dev libboost++-dev
 ### Installing db4.8
 
 wget http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz
+
 tar -xzvf db-4.8.30.NC.tar.gz
+
 cd db-4.8.30.NC/build_unix
+
 ../dist/configure --enable-cxx
+
 make
+
 sudo make install
 
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"
