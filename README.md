@@ -110,12 +110,6 @@ sudo chmod +777 *
 
 ./autogen.sh
 
-Note: Configure Bata Core to use our own-built instance of BDB
-
-cd ../
-
-./autogen.sh
-
 ./configure LDFLAGS="-L${BDB_PREFIX}/lib/" CPPFLAGS="-I${BDB_PREFIX}/include/" # (other args...)
 
 make
