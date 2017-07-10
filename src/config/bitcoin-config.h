@@ -18,10 +18,10 @@
 #define CLIENT_VERSION_MINOR 10
 
 /* Build revision */
-#define CLIENT_VERSION_REVISION 4
+#define CLIENT_VERSION_REVISION 5
 
 /* Client Version Build */
-#define CLIENT_VERSION_BUILD 1
+#define CLIENT_VERSION_BUILD 0
 
 /* Version is release */
 #define COPYRIGHT_YEAR 2017
