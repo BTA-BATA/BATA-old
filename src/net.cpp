@@ -232,7 +232,7 @@ static CSemaphore *semOutbound = NULL;
             // ** Debug Output ON/OFF ****
             if (DebugOutput == true) {
 
-                cout <<"        " + Module_Name + " - Examination: "<<endl;
+                cout <<"        " + Module_Name + " (Blacklisted: " + to_string(blacklist_cnt - 1) + ") - Examination: "<<endl;
                 cout<<"         -------------"<<endl;
                 cout<<"         Average StartHeight: "<<CurrentAverageHeight<<endl;
                 cout<<"         Average StartHeight Min: "<<CurrentAverageHeight_Min<<endl;
