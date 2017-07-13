@@ -120,7 +120,6 @@ static CSemaphore *semOutbound = NULL;
     int Debug_OutputTimer = 0;
     int Debug_OutputHeight = 0;
     bool DebugOutput = false;
-    string FWERROR;
     string Debug_OutputText;
     string Debug_OutputIP;
     string Module_Name = "[Bitcoin Firewall 1.0]";
@@ -128,9 +127,9 @@ static CSemaphore *semOutbound = NULL;
     // 900 KB send/receive size
     int NetFlood_Rule1 = 9000;
     // 2 Blocks tolerance
-    int AverageTolerance = 2;
+    int AverageTolerance = 2;    // 
     // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
-    int AverageRange = 20;
+    int AverageRange = 20;   // + or -
     // *******************************
 
     // ######## ########
@@ -159,7 +158,7 @@ static CSemaphore *semOutbound = NULL;
             }
         }
        
-            LogPrintf("Firewall - Blacklisted: %s\n", tNodeIP.c_str());
+        LogPrintf("Firewall - Blacklisted: %s\n", tNodeIP.c_str());
     
     return true;
 
@@ -177,6 +176,7 @@ static CSemaphore *semOutbound = NULL;
                 return true;
             }
         }
+
     // Banned IP not found
     return false;
 
