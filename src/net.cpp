@@ -307,7 +307,9 @@ static CSemaphore *semOutbound = NULL;
         if (tTimeConnected < 30)
         {
 	
-        	if (tRecBytes > NetFlood_Rule1) {
+		int NetFlood_Rule2 = NetFlood_Rule1 * 4;
+
+        	if (tRecBytes > NetFlood_Rule2) {
 
                 	// Check for below average blockheight minimum
                 	if (pnode->nStartingHeight < CurrentAverageHeight_Min)
@@ -321,7 +323,7 @@ static CSemaphore *semOutbound = NULL;
 
             	}
 
-		if (tSendSize > NetFlood_Rule1) {
+		if (tSendSize > NetFlood_Rule2) {
 
                 	// Check for below average blockheight minimum
                 	if (pnode->nStartingHeight < CurrentAverageHeight_Min)
