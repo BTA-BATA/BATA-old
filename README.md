@@ -20,13 +20,21 @@ rpc port: 5493
 
 net port: 5784
 
-### Website: https://bata.io
+### Website: 
 
-### LinkedIn: https://www.linkedin.com/company/bata-money
+https://bata.io
 
-### Slack : https://bata-blockchain.signup.team/
+### LinkedIn: 
 
-### Bootstrap: http://crypt.midnightminer.net/bootstraps/bata/bootstrap.zip
+https://www.linkedin.com/company/bata-money
+
+### Slack : 
+
+https://bata-blockchain.signup.team/
+
+### Bootstrap: 
+
+http://crypt.midnightminer.net/bootstraps/bata/bootstrap.zip
 
 Unzip the file into the same directory as the bata-qt.exe
 
@@ -43,11 +51,11 @@ addnode=68.71.58.226
 (Create in AppData\Roaming\bata)
 
 
-### For Developments visit: https://bata.io/development
+### For Developments visit: 
+https://bata.io/development
 
 
 ### What is BATA (BTA)?
-
 
 The predecessor of barter trade dollars. Soon to release new POW/POS Hybrid.
 
@@ -62,6 +70,7 @@ BTA is traded on multiple cryptocurrency exchanges right across the globe.
 ### Blockchain Explorers
 
 https://chainz.cryptoid.info/bta/
+
 http://bata.midnightminer.net/
 
 
@@ -86,19 +95,23 @@ https://www.cryptocompare.com/coins/bta/forum
 https://www.cryptopia.co.nz/Forum/Thread/377
 
 ### Group Chat:
-Slack: bata-blockchain.slack.com
+
+Slack: https://bata-blockchain.slack.com
 
 Telegram: https://t.me/batacurrency
 
 ### install Linux dependencies:
 
 - General: 
+
 sudo apt-get install git build-essential openssl libminiupnpc-dev  build-essential openssl libminiupnpc-dev  automake libtool libprotobuf-dev qrencode autoconf-tools cmake libevent-dev libcurl4-openssl-dev
 
 - QT Creator 4:
+
 sudo apt-get install  libqt4-dev qt4-dev-tools
 
 - QT Creator 5:
+
 sudo apt-get install  libqt5-dev qt5-dev-tools qttools5-dev-tools qt5-default
 
 - LibBoost 4.8:
