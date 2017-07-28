@@ -303,11 +303,13 @@ static CSemaphore *semOutbound = NULL;
         }
         // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-        // * Netflood Attack detection #2 -> (Rec: 900 KB, in less than 30 Seconds after connection)
+        // * Netflood Attack detection #2 -> (Rec: 1800 KB, in less than 30 Seconds after connection)
         if (tTimeConnected < 30)
         {
+	
+	int NetFlood_Rule2 = NetFlood_Rule1 * 2;
 
-            if (tSendSize > NetFlood_Rule1) {
+            if (tRecBytes > NetFlood_Rule2) {
 
                 // Check for below average blockheight minimum
                 if (pnode->nStartingHeight < CurrentAverageHeight_Min)
@@ -318,14 +320,7 @@ static CSemaphore *semOutbound = NULL;
                 }
                 //-----------------------------------------
 
-                // Check for above average blockheight max
-                if (pnode->nStartingHeight > CurrentAverageHeight_Max)
-                { 
-                    Detected = true;
-                    NetFlood_Type = "2";
-                }
-                //-----------------------------------------
-
+     
             }
 
         }
