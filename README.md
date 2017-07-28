@@ -85,36 +85,48 @@ https://www.cryptocompare.com/coins/bta/forum
 
 https://www.cryptopia.co.nz/Forum/Thread/377
 
-### Installing Dependencies
+### Group Chat:
+Slack: bata-blockchain.slack.com
 
-sudo apt-get install git build-essential openssl libminiupnpc-dev libboost++-dev libboost-all-dev libssl-dev libdb++-dev automake qrencode qt4-dev-tools libtool libqt4-dev libprotobuf-dev
+Telegram: https://t.me/batacurrency
 
-### Installing db4.8
+### install Linux dependencies:
 
-wget http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz
+- General: 
+sudo apt-get install git build-essential openssl libminiupnpc-dev  build-essential openssl libminiupnpc-dev  automake libtool libprotobuf-dev qrencode autoconf-tools cmake libevent-dev libcurl4-openssl-dev
 
-tar -xzvf db-4.8.30.NC.tar.gz
+- QT Creator 4:
+sudo apt-get install  libqt4-dev qt4-dev-tools
 
-cd db-4.8.30.NC/build_unix
+- QT Creator 5:
+sudo apt-get install  libqt5-dev qt5-dev-tools qttools5-dev-tools qt5-default
 
-Note: Do a static build so that it can be embedded into the executable, instead of having to find a .so at runtime
-../dist/configure --enable-cxx --disable-shared --with-pic --prefix=$BDB_PREFIX
+- LibBoost 4.8:
 
-sudo make install
+sudo apt-get install software-properties-common
+sudo add-apt-repository ppa:bitcoin/bitcoin
+sudo apt-get update
+sudo apt-get install libdb4.8-dev libdb4.8++-dev
 
-### Instructions for compile: 
+- Latest version of LibBoost:
 
-git clone  https://github.com/BTA-BATA/BATA-SOURCE bata && cd bata
+sudo apt-get install libboost++-dev libboost-all-dev libssl-dev libdb++-dev
+
+
+### instructions for Linux compile: 
+
+
+git clone https://github.com/BTA-BATA/BATA-SOURCE
+
+cd BATA-SOURCE
 
 sudo chmod +777 *
 
 ./autogen.sh
 
-./configure LDFLAGS="-L${BDB_PREFIX}/lib/" CPPFLAGS="-I${BDB_PREFIX}/include/" # (other args...)
+./configure
 
 make
-
-./bata-qt or ./batad
 
 (it will instruct you to make a bata.conf file, so make the bata.conf file and place in the .bata/ folder.)
 
