@@ -1,4 +1,4 @@
-Bata Core 0.10.4
+Bata Core 0.10.5
 =====================
 
 Intro
