@@ -551,9 +551,11 @@ CBlockTreeDB *pblocktree = NULL;
 
 bool AddOrphanTx(const CTransaction& tx, NodeId peer)
 {
-    uint256 hash = tx.GetHash();
-    if (mapOrphanTransactions.count(hash))
-        return false;
+return true;
+
+    //uint256 hash = tx.GetHash();
+    //if (mapOrphanTransactions.count(hash))
+    //    return false;
 
     // Ignore big transactions, to avoid a
     // send-big-orphans memory exhaustion attack. If a peer has a legitimate
@@ -562,21 +564,21 @@ bool AddOrphanTx(const CTransaction& tx, NodeId peer)
     // have been mined or received.
     // 10,000 orphans, each of which is at most 5,000 bytes big is
     // at most 500 megabytes of orphans:
-    unsigned int sz = tx.GetSerializeSize(SER_NETWORK, CTransaction::CURRENT_VERSION);
-    if (sz > 5000)
-    {
-        LogPrint("mempool", "ignoring large orphan tx (size: %u, hash: %s)\n", sz, hash.ToString());
-        return false;
-    }
+    //unsigned int sz = tx.GetSerializeSize(SER_NETWORK, CTransaction::CURRENT_VERSION);
+    //if (sz > 5000)
+    //{
+    //    LogPrint("mempool", "ignoring large orphan tx (size: %u, hash: %s)\n", sz, hash.ToString());
+     //   return false;
+    //}
 
-    mapOrphanTransactions[hash].tx = tx;
-    mapOrphanTransactions[hash].fromPeer = peer;
-    BOOST_FOREACH(const CTxIn& txin, tx.vin)
-        mapOrphanTransactionsByPrev[txin.prevout.hash].insert(hash);
+    //mapOrphanTransactions[hash].tx = tx;
+    //mapOrphanTransactions[hash].fromPeer = peer;
+    //BOOST_FOREACH(const CTxIn& txin, tx.vin)
+   //     mapOrphanTransactionsByPrev[txin.prevout.hash].insert(hash);
 
-    LogPrint("mempool", "stored orphan tx %s (mapsz %u prevsz %u)\n", hash.ToString(),
-             mapOrphanTransactions.size(), mapOrphanTransactionsByPrev.size());
-    return true;
+   // LogPrint("mempool", "stored orphan tx %s (mapsz %u prevsz %u)\n", hash.ToString(),
+   //          mapOrphanTransactions.size(), mapOrphanTransactionsByPrev.size());
+   // return true;
 }
 
 void static EraseOrphanTx(uint256 hash)
