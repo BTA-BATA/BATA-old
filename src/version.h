@@ -41,7 +41,7 @@ static const int MIN_PEER_PROTO_VERSION = GETHEADERS_VERSION;
 
 //! nTime field added to CAddress, starting with this version;
 //! if possible, avoid requesting addresses nodes older than this
-static const int CADDR_TIME_VERSION = 31402;
+static const int CADDR_TIME_VERSION = 81402;
 
 // only request blocks from nodes outside this range of versions
 static const int NOBLKS_VERSION_START = 80000;

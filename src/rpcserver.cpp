@@ -272,10 +272,18 @@ static const CRPCCommand vRPCCommands[] =
     { "blockchain",         "invalidateblock",        &invalidateblock,        true,      true,       false },
     { "blockchain",         "reconsiderblock",        &reconsiderblock,        true,      true,       false },
 
-
+    /* Mining */
+    { "mining",             "getblocktemplate",       &getblocktemplate,       true,      false,      false },
+    { "mining",             "getmininginfo",          &getmininginfo,          true,      false,      false },
+    { "mining",             "getnetworkhashps",       &getnetworkhashps,       true,      false,      false },
+    { "mining",             "prioritisetransaction",  &prioritisetransaction,  true,      false,      false },
+    { "mining",             "submitblock",            &submitblock,            true,      true,       false },
 
 #ifdef ENABLE_WALLET
-
+    /* Coin generation */
+    { "generating",         "getgenerate",            &getgenerate,            true,      false,      false },
+    { "generating",         "gethashespersec",        &gethashespersec,        true,      false,      false },
+    { "generating",         "setgenerate",            &setgenerate,            true,      true,       false },
 #endif
 
     /* Raw transactions */
@@ -290,6 +298,8 @@ static const CRPCCommand vRPCCommands[] =
     { "util",               "createmultisig",         &createmultisig,         true,      true ,      false },
     { "util",               "validateaddress",        &validateaddress,        true,      false,      false }, /* uses wallet if enabled */
     { "util",               "verifymessage",          &verifymessage,          true,      false,      false },
+    { "util",               "estimatefee",            &estimatefee,            true,      true,       false },
+    { "util",               "estimatepriority",       &estimatepriority,       true,      true,       false },
 
     /* Not shown in help */
     { "hidden",             "invalidateblock",        &invalidateblock,        true,      true,       false },
