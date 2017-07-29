@@ -83,7 +83,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = x86_64-unknown-linux-gnu
-host_triplet = x86_64-unknown-linux-gnu
+host_triplet = i686-w64-mingw32
 am__append_1 = -I$(srcdir)/leveldb/include \
 	-I$(srcdir)/leveldb/helpers/memenv
 am__append_2 = $(builddir)/leveldb/libleveldb.a
@@ -99,8 +99,8 @@ am__append_7 = bata-cli bata-tx
 #	compat/glibcxx_compat.cpp
 am__append_9 = libbitcoin_wallet.a
 #
-#am__append_10 = bitcoind-res.rc
-#am__append_11 = bitcoin-cli-res.rc
+am__append_10 = bitcoind-res.rc
+am__append_11 = bitcoin-cli-res.rc
 #am__append_12 = compat/glibc_compat.cpp \
 #	compat/glibcxx_compat.cpp
 #am__append_13 = secp256k1/libsecp256k1.la
@@ -163,7 +163,7 @@ am__append_22 = \
   qt/walletview.cpp
 
 #am__append_23 = $(BITCOIN_MM)
-#am__append_24 = $(BITCOIN_RC)
+am__append_24 = $(BITCOIN_RC)
 am__append_25 = $(LIBBITCOIN_WALLET)
 am__append_26 = $(CLEAN_QT)
 am__append_27 = qt/test/test_bata-qt
@@ -645,7 +645,7 @@ am__EXEEXT_4 = qt/bata-qt$(EXEEXT)
 am__EXEEXT_5 = qt/test/test_bata-qt$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am__bata_cli_SOURCES_DIST = bitcoin-cli.cpp bitcoin-cli-res.rc
-#am__objects_10 = bitcoin-cli-res.$(OBJEXT)
+am__objects_10 = bitcoin-cli-res.$(OBJEXT)
 am_bata_cli_OBJECTS = bata_cli-bitcoin-cli.$(OBJEXT) $(am__objects_10)
 bata_cli_OBJECTS = $(am_bata_cli_OBJECTS)
 bata_cli_DEPENDENCIES = $(LIBBITCOIN_CLI) $(LIBBITCOIN_UTIL) \
@@ -663,7 +663,7 @@ bata_tx_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(bata_tx_LDFLAGS) $(LDFLAGS) -o $@
 am__batad_SOURCES_DIST = bitcoind.cpp bitcoind-res.rc
-#am__objects_11 = bitcoind-res.$(OBJEXT)
+am__objects_11 = bitcoind-res.$(OBJEXT)
 am_batad_OBJECTS = batad-bitcoind.$(OBJEXT) $(am__objects_11)
 batad_OBJECTS = $(am_batad_OBJECTS)
 am__DEPENDENCIES_2 = $(am__append_2)
@@ -685,8 +685,8 @@ am__objects_12 =  \
 #am__objects_13 =  \
 #	$(am__objects_12)
 am__objects_14 = qt/res/bitcoin-qt-res.$(OBJEXT)
-#am__objects_15 =  \
-#	$(am__objects_14)
+am__objects_15 =  \
+	$(am__objects_14)
 am_qt_bata_qt_OBJECTS =  \
 	qt/qt_bata_qt-bitcoin.$(OBJEXT) \
 	$(am__objects_13) $(am__objects_15)
@@ -1123,7 +1123,7 @@ RECHECK_LOGS = $(TEST_LOGS)
 am__EXEEXT_6 = test/test_bata$(EXEEXT) \
 	test/bitcoin-util-test.py
 TEST_SUITE_LOG = test-suite.log
-TEST_EXTENSIONS =  .test
+TEST_EXTENSIONS = .exe .test
 LOG_DRIVER = $(SHELL) $(top_srcdir)/build-aux/test-driver
 LOG_COMPILE = $(LOG_COMPILER) $(AM_LOG_FLAGS) $(LOG_FLAGS)
 am__set_b = \
@@ -1137,7 +1137,7 @@ am__set_b = \
       b='$*';; \
   esac
 am__test_logs1 = $(TESTS:=.log)
-am__test_logs2 = $(am__test_logs1:.log=.log)
+am__test_logs2 = $(am__test_logs1:.exe.log=.log)
 TEST_LOGS = $(am__test_logs2:.test.log=.log)
 TEST_LOG_DRIVER = $(SHELL) $(top_srcdir)/build-aux/test-driver
 TEST_LOG_COMPILE = $(TEST_LOG_COMPILER) $(AM_TEST_LOG_FLAGS) \
@@ -1168,33 +1168,33 @@ am__relativize = \
     dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
   done; \
   reldir="$$dir2"
-ACLOCAL = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/build-aux/missing aclocal-1.14
+ACLOCAL = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/build-aux/missing aclocal-1.14
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 0
-AR = /usr/bin/ar
-AUTOCONF = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/build-aux/missing autoconf
-AUTOHEADER = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/build-aux/missing autoheader
-AUTOMAKE = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/build-aux/missing automake-1.14
+AR = /usr/bin/i686-w64-mingw32-ar
+AUTOCONF = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/build-aux/missing autoconf
+AUTOHEADER = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/build-aux/missing autoheader
+AUTOMAKE = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/build-aux/missing automake-1.14
 AWK = gawk
 BDB_CPPFLAGS = 
 BDB_LIBS = -ldb_cxx-4.8
-BOOST_CHRONO_LIB = -lboost_chrono
-BOOST_CPPFLAGS = -pthread -I/usr/include
-BOOST_FILESYSTEM_LIB = -lboost_filesystem
-BOOST_LDFLAGS = -L/usr/lib/x86_64-linux-gnu
-BOOST_LIBS = -L/usr/lib/x86_64-linux-gnu -lboost_system -lboost_filesystem -lboost_program_options -lboost_thread -lboost_chrono
-BOOST_PROGRAM_OPTIONS_LIB = -lboost_program_options
-BOOST_SYSTEM_LIB = -lboost_system
-BOOST_THREAD_LIB = -lboost_thread
-BOOST_UNIT_TEST_FRAMEWORK_LIB = -lboost_unit_test_framework
+BOOST_CHRONO_LIB = -lboost_chrono-mt-s
+BOOST_CPPFLAGS = -mthreads -I/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../include
+BOOST_FILESYSTEM_LIB = -lboost_filesystem-mt-s
+BOOST_LDFLAGS = -L/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../lib
+BOOST_LIBS = -L/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../lib -lboost_system-mt-s -lboost_filesystem-mt-s -lboost_program_options-mt-s -lboost_thread_win32-mt-s -lboost_chrono-mt-s
+BOOST_PROGRAM_OPTIONS_LIB = -lboost_program_options-mt-s
+BOOST_SYSTEM_LIB = -lboost_system-mt-s
+BOOST_THREAD_LIB = -lboost_thread_win32-mt-s
+BOOST_UNIT_TEST_FRAMEWORK_LIB = -lboost_unit_test_framework-mt-s
 BREW = 
 BUILD_QT = qt
 BUILD_TEST = test
 BUILD_TEST_QT = test
-CC = gcc
-CCACHE = 
+CC = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../native/bin/ccache i686-w64-mingw32-gcc
+CCACHE = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../native/bin/ccache
 CCDEPMODE = depmode=gcc3
-CFLAGS = -g -O2
+CFLAGS = -pipe -O2 
 CLIENT_VERSION_BUILD = 0
 CLIENT_VERSION_IS_RELEASE = true
 CLIENT_VERSION_MAJOR = 0
@@ -1202,27 +1202,27 @@ CLIENT_VERSION_MINOR = 10
 CLIENT_VERSION_REVISION = 4
 COMPARISON_TOOL_REORG_TESTS = 0
 COPYRIGHT_YEAR = 2017
-CPP = gcc -E
-CPPFLAGS = -I/include/ -DBOOST_SPIRIT_THREADSAFE -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2
-CRYPTO_CFLAGS =  
-CRYPTO_LIBS = -lcrypto  
-CXX = g++
-CXXCPP = g++ -E
+CPP = i686-w64-mingw32-gcc -E
+CPPFLAGS = -I/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../include/  -DBOOST_SPIRIT_THREADSAFE -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS -D_MT -DWIN32 -D_WINDOWS -DBOOST_THREAD_USE_LIB -D_FILE_OFFSET_BITS=64  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2
+CRYPTO_CFLAGS = 
+CRYPTO_LIBS = -lcrypto
+CXX = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../native/bin/ccache i686-w64-mingw32-g++
+CXXCPP = i686-w64-mingw32-g++ -E
 CXXDEPMODE = depmode=gcc3
-CXXFLAGS = -g -O2 -Wall -Wextra -Wformat -Wformat-security -Wno-unused-parameter -Wno-self-assign  -Wstack-protector -fstack-protector-all -fPIC -fvisibility=hidden
+CXXFLAGS = -pipe -O2   -Wstack-protector -fstack-protector-all -fvisibility=hidden
 CYGPATH_W = echo
 DEFS = -DHAVE_CONFIG_H
 DEPDIR = .deps
-DLLTOOL = false
+DLLTOOL = i686-w64-mingw32-dlltool
 DSYMUTIL = 
 DUMPBIN = 
 ECHO_C = 
 ECHO_N = -n
 ECHO_T = 
 EGREP = /bin/grep -E
-EXEEXT = 
+EXEEXT = .exe
 FGREP = /bin/grep -F
-GCOV = /usr/bin/gcov
+GCOV = /usr/bin/i686-w64-mingw32-gcov
 GENHTML = 
 GENISOIMAGE = 
 GIT = /usr/bin/git
@@ -1237,36 +1237,36 @@ INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 JAVA = /usr/bin/java
 JAVA_COMPARISON_TOOL = 
 LCOV = 
-LD = /usr/bin/ld -m elf_x86_64
-LDFLAGS = -L/lib/  -Wl,-z,relro -Wl,-z,now
+LD = /usr/bin/i686-w64-mingw32-ld
+LDFLAGS = -L/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../lib  -Wl,--large-address-aware  -Wl,--dynamicbase -Wl,--nxcompat
 LEVELDB_CPPFLAGS =  $(am__append_1)
-LEVELDB_TARGET_FLAGS = 
+LEVELDB_TARGET_FLAGS = TARGET_OS=OS_WINDOWS_CROSSCOMPILE
 LIBLEVELDB =  $(am__append_2)
 LIBMEMENV =  $(am__append_3)
 LIBOBJS = 
-LIBS = -lcrypto -lanl  -lssl -lcrypto   -lcrypto  
+LIBS = -lcrypto -lQt5PlatformSupport -lssp -lcrypt32 -liphlpapi -lshlwapi -lmswsock -lws2_32 -ladvapi32 -lrpcrt4 -luuid -loleaut32 -lole32 -lcomctl32 -lshell32 -lwinmm -lwinspool -lcomdlg32 -lgdi32 -luser32 -lkernel32 -lmingwthrd 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
-LIBTOOL_APP_LDFLAGS = 
+LIBTOOL_APP_LDFLAGS =  -all-static
 LIPO = 
 LN_S = ln -s
-LRELEASE = /usr/bin/lrelease-qt4
+LRELEASE = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../native/bin/lrelease
 LTLIBOBJS = 
-LUPDATE = /usr/bin/lupdate-qt4
+LUPDATE = 
 MAINT = 
-MAKEINFO = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/build-aux/missing makeinfo
-MAKENSIS = 
+MAKEINFO = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/build-aux/missing makeinfo
+MAKENSIS = none
 MANIFEST_TOOL = :
-MINIUPNPC_CPPFLAGS = 
+MINIUPNPC_CPPFLAGS = -DSTATICLIB -DMINIUPNP_STATICLIB
 MINIUPNPC_LIBS = -lminiupnpc
 MKDIR_P = /bin/mkdir -p
-MOC = /usr/bin/moc-qt4
+MOC = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../native/bin/moc
 MOC_DEFS = -DHAVE_CONFIG_H -I$(srcdir)
-NM = /usr/bin/nm -B
+NM = i686-w64-mingw32-nm
 NMEDIT = 
-OBJCXX = g++
+OBJCXX = i686-w64-mingw32-g++
 OBJCXXDEPMODE = depmode=gcc3
-OBJCXXFLAGS = -g -O2 -Wall -Wextra -Wformat -Wformat-security -Wno-unused-parameter -Wno-self-assign  -Wstack-protector -fstack-protector-all -fPIC
-OBJDUMP = objdump
+OBJCXXFLAGS = -pipe -O2   -Wstack-protector -fstack-protector-all
+OBJDUMP = i686-w64-mingw32-objdump
 OBJEXT = o
 OTOOL = 
 OTOOL64 = 
@@ -1278,65 +1278,65 @@ PACKAGE_TARNAME = litecoin
 PACKAGE_URL = 
 PACKAGE_VERSION = 0.10.4.0
 PATH_SEPARATOR = :
-PKG_CONFIG = /usr/bin/pkg-config
-PKG_CONFIG_LIBDIR = 
-PKG_CONFIG_PATH = 
+PKG_CONFIG = /usr/bin/pkg-config --static
+PKG_CONFIG_LIBDIR = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../lib/pkgconfig
+PKG_CONFIG_PATH = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../share/pkgconfig
 PORT = 
-PROTOBUF_CFLAGS = -pthread  
-PROTOBUF_LIBS = -pthread -lprotobuf -lpthread  
-PROTOC = /usr/bin/protoc
-PTHREAD_CC = gcc
+PROTOBUF_CFLAGS = 
+PROTOBUF_LIBS = -lprotobuf
+PROTOC = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../native/bin/protoc
+PTHREAD_CC = i686-w64-mingw32-gcc
 PTHREAD_CFLAGS = -pthread
 PTHREAD_LIBS = 
-QR_CFLAGS =  
-QR_LIBS = -lqrencode  
+QR_CFLAGS = 
+QR_LIBS = -lqrencode
 QTPLATFORM_CFLAGS = 
 QTPLATFORM_LIBS = 
 QTPRINT_CFLAGS = 
 QTPRINT_LIBS = 
 QTXCBQPA_CFLAGS = 
 QTXCBQPA_LIBS = 
-QT_CFLAGS = -DQT_SHARED -I/usr/include/qt4 -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4/QtNetwork  
-QT_DBUS_CFLAGS = -DQT_SHARED -I/usr/include/qt4 -I/usr/include/qt4/QtDBus -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtXml  
-QT_DBUS_INCLUDES = -DQT_SHARED -I/usr/include/qt4 -I/usr/include/qt4/QtDBus -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtXml  
-QT_DBUS_LIBS = -lQtDBus -lQtXml -lQtCore  
-QT_INCLUDES = -DQT_SHARED -I/usr/include/qt4 -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4/QtNetwork  
-QT_LDFLAGS = 
-QT_LIBS = -lQtGui -lQtNetwork -lQtCore  
+QT_CFLAGS = 
+QT_DBUS_CFLAGS = 
+QT_DBUS_INCLUDES = 
+QT_DBUS_LIBS = -lQt5DBus -L/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../lib
+QT_INCLUDES = -I/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../include -I/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../include/QtCore -I/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../include/QtGui -I/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../include/QtWidgets -I/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../include/QtNetwork -I/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../include/QtTest -I/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../include/QtDBus
+QT_LDFLAGS =  -mwindows
+QT_LIBS = -lqwindows -lQt5Widgets -lQt5Network -lQt5Gui     -lQt5Core    -lqtharfbuzzng -lqtpcre -limm32  -L/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../lib -L/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../plugins/platforms
 QT_PIE_FLAGS = 
-QT_SELECT = qt4
-QT_TEST_CFLAGS = -DQT_SHARED -I/usr/include/qt4 -I/usr/include/qt4/QtTest  
-QT_TEST_INCLUDES = -DQT_SHARED -I/usr/include/qt4 -I/usr/include/qt4/QtTest  
-QT_TEST_LIBS = -lQtTest  
-QT_TRANSLATION_DIR = 
-RANLIB = /usr/bin/ranlib
-RCC = /usr/bin/rcc
+QT_SELECT = qt5
+QT_TEST_CFLAGS = 
+QT_TEST_INCLUDES = 
+QT_TEST_LIBS = -lQt5Test -L/home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../lib
+QT_TRANSLATION_DIR = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../translations
+RANLIB = /usr/bin/i686-w64-mingw32-ranlib
+RCC = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../native/bin/rcc
 RELDFLAGS = -Wl,--exclude-libs,ALL
 SED = /bin/sed
 SET_MAKE = 
 SHELL = /bin/bash
-SSL_CFLAGS =  
-SSL_LIBS = -lssl -lcrypto  
-STRIP = /usr/bin/strip
-TESTDEFS =  -DBOOST_TEST_DYN_LINK
-UIC = /usr/bin/uic-qt4
+SSL_CFLAGS = 
+SSL_LIBS = -lssl
+STRIP = /usr/bin/i686-w64-mingw32-strip
+TESTDEFS = 
+UIC = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32/share/../native/bin/uic
 USE_QRCODE = 
 USE_UPNP = 
 VERSION = 0.10.4.0
-WINDOWS_BITS = 
-WINDRES = 
+WINDOWS_BITS = 32
+WINDRES = /usr/bin/i686-w64-mingw32-windres
 X11XCB_CFLAGS = 
 X11XCB_LIBS = 
 XGETTEXT = /usr/bin/xgettext
-abs_builddir = /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/src
-abs_srcdir = /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/src
-abs_top_builddir = /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE
-abs_top_srcdir = /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE
-ac_ct_AR = ar
-ac_ct_CC = gcc
-ac_ct_CXX = g++
+abs_builddir = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/src
+abs_srcdir = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/src
+abs_top_builddir = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5
+abs_top_srcdir = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5
+ac_ct_AR = 
+ac_ct_CC = 
+ac_ct_CXX = 
 ac_ct_DUMPBIN = 
-ac_ct_OBJCXX = g++
+ac_ct_OBJCXX = 
 am__include = include
 am__leading_dot = .
 am__quote = 
@@ -1355,15 +1355,15 @@ datarootdir = ${prefix}/share
 docdir = ${datarootdir}/doc/${PACKAGE_TARNAME}
 dvidir = ${docdir}
 exec_prefix = ${prefix}
-host = x86_64-unknown-linux-gnu
-host_alias = 
-host_cpu = x86_64
-host_os = linux-gnu
-host_vendor = unknown
+host = i686-w64-mingw32
+host_alias = i686-w64-mingw32
+host_cpu = i686
+host_os = mingw32
+host_vendor = w64
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/build-aux/install-sh
+install_sh = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/build-aux/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -1372,7 +1372,7 @@ mandir = ${datarootdir}/man
 mkdir_p = $(MKDIR_P)
 oldincludedir = /usr/include
 pdfdir = ${docdir}
-prefix = /usr/local
+prefix = /home/justin/Software/cryptomoney/64-Bit/BATA/builds/10.5/depends/i686-w64-mingw32
 program_transform_name = s,x,x,
 psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
@@ -6453,13 +6453,13 @@ qt/test/test_bata-qt.log: qt/test/test_bata-qt$(EXEEXT)
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_TEST_LOG_DRIVER_FLAGS) $(TEST_LOG_DRIVER_FLAGS) -- $(TEST_LOG_COMPILE) \
 	"$$tst" $(AM_TESTS_FD_REDIRECT)
-#.test$(EXEEXT).log:
-#	@p='$<'; \
-#	$(am__set_b); \
-#	$(am__check_pre) $(TEST_LOG_DRIVER) --test-name "$$f" \
-#	--log-file $$b.log --trs-file $$b.trs \
-#	$(am__common_driver_flags) $(AM_TEST_LOG_DRIVER_FLAGS) $(TEST_LOG_DRIVER_FLAGS) -- $(TEST_LOG_COMPILE) \
-#	"$$tst" $(AM_TESTS_FD_REDIRECT)
+.test$(EXEEXT).log:
+	@p='$<'; \
+	$(am__set_b); \
+	$(am__check_pre) $(TEST_LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_TEST_LOG_DRIVER_FLAGS) $(TEST_LOG_DRIVER_FLAGS) -- $(TEST_LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 
 distdir: $(DISTFILES)
 	@srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
