@@ -20,13 +20,21 @@ rpc port: 5493
 
 net port: 5784
 
-### Website: https://bata.io
+### Website: 
 
-### LinkedIn: https://www.linkedin.com/company/bata-money
+https://bata.io
 
-### Slack : https://bata-blockchain.signup.team/
+### LinkedIn: 
 
-### Bootstrap: http://crypt.midnightminer.net/bootstraps/bata/bootstrap.zip
+https://www.linkedin.com/company/bata-money
+
+### Slack : 
+
+https://bata-blockchain.signup.team/
+
+### Bootstrap: 
+
+http://crypt.midnightminer.net/bootstraps/bata/bootstrap.zip
 
 Unzip the file into the same directory as the bata-qt.exe
 
@@ -38,16 +46,69 @@ bata-qt.exe -loadblock=bootstrap.dat
 
 in your bata.conf file just at this line
 
-addnode=68.71.58.226
+-addnode=68.71.58.226
+-addnode=68.71.58.229
+-addnode=149.202.98.160
+-addnode=157.161.128.61
+-addnode=158.69.248.93
+-addnode=171.25.193.78
+-addnode=172.104.140.15
+-addnode=176.126.252.12
+-addnode=178.238.224.213
+-addnode=185.173.206.30
+-addnode=188.165.203.89
+-addnode=188.165.235.208
+-addnode=197.231.221.211
+-addnode=198.27.81.114
+-addnode=36.81.211.3
+-addnode=46.4.85.241
+-addnode=52.14.92.197
+-addnode=54.149.206.22
+-addnode=73.76.129.232
+-addnode=77.247.181.163
+-addnode=85.236.188.28
+-addnode=88.99.68.228
+-addnode=95.211.110.151
+-addnode=149.202.98.160
+-addnode=157.161.128.61
+-addnode=158.69.248.93
+-addnode=171.25.193.78
+-addnode=172.104.140.15
+-addnode=176.126.252.12
+-addnode=178.238.224.213
+-addnode=185.173.206.30
+-addnode=188.165.203.89
+-addnode=188.165.235.208
+-addnode=197.231.221.211
+-addnode=198.27.81.114
+-addnode=36.81.211.3
+-addnode=46.4.85.241
+-addnode=52.14.92.197
+-addnode=54.149.206.22
+-addnode=68.71.58.226
+-addnode=68.71.58.229
+-addnode=73.76.129.232
+-addnode=77.247.181.163
+-addnode=85.236.188.28
+-addnode=88.99.68.228
+-addnode=95.211.110.151
+-addnode=138.207.159.225
+-addnode=209.37.22.54
+-addnode=47.94.45.200
+-addnode=59.11.125.143
+-addnode=69.195.231.227
+-addnode=73.11.158.217
+-addnode=86.0.36.153
+
 
 (Create in AppData\Roaming\bata)
 
 
-### For Developments visit: https://bata.io/development
+### For Developments visit: 
+https://bata.io/development
 
 
 ### What is BATA (BTA)?
-
 
 The predecessor of barter trade dollars. Soon to release new POW/POS Hybrid.
 
@@ -62,6 +123,7 @@ BTA is traded on multiple cryptocurrency exchanges right across the globe.
 ### Blockchain Explorers
 
 https://chainz.cryptoid.info/bta/
+
 http://bata.midnightminer.net/
 
 
@@ -85,15 +147,51 @@ https://www.cryptocompare.com/coins/bta/forum
 
 https://www.cryptopia.co.nz/Forum/Thread/377
 
+### Group Chat:
+
+Slack: https://bata-blockchain.slack.com
+
+Telegram: https://t.me/batacurrency
+
+### install Linux dependencies:
+
+- General: 
+
+sudo apt-get install git build-essential openssl libminiupnpc-dev  build-essential openssl libminiupnpc-dev  automake libtool libprotobuf-dev qrencode autoconf-tools cmake libevent-dev libcurl4-openssl-dev
+
+- QT Creator 4:
+
+sudo apt-get install  libqt4-dev qt4-dev-tools
+
+- QT Creator 5:
+
+sudo apt-get install libqt5-dev qt5-dev-tools qttools5-dev-tools qt5-default  libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools 
+
+- LibBoost 4.8:
+
+sudo apt-get install software-properties-common
+sudo add-apt-repository ppa:bitcoin/bitcoin
+sudo apt-get update
+sudo apt-get install libdb4.8-dev libdb4.8++-dev
+
+- Latest version of LibBoost:
+
+sudo apt-get install libboost++-dev libboost-all-dev libssl-dev libdb++-dev
+
 
 ### instructions for Linux compile: 
 
-sudo apt-get install git build-essential openssl libminiupnpc-dev libboost++-dev libboost-all-dev libssl-dev libdb++-dev automake qt4-dev-tools libtool libqt4-dev libprotobuf-dev qrencode
+
 git clone https://github.com/BTA-BATA/BATA-SOURCE
+
 cd BATA-SOURCE
+
 sudo chmod +777 *
+
 ./autogen.sh
+
 ./configure
+
 make
 
 (it will instruct you to make a bata.conf file, so make the bata.conf file and place in the .bata/ folder.)

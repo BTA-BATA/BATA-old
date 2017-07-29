@@ -15,7 +15,6 @@
 #include "compat/sanity.h"
 #include "key.h"
 #include "main.h"
-#include "miner.h"
 #include "net.h"
 #include "rpcserver.h"
 #include "script/standard.h"
@@ -153,7 +152,6 @@ void Shutdown()
 #ifdef ENABLE_WALLET
     if (pwalletMain)
         bitdb.Flush(false);
-    GenerateBitcoins(false, NULL, 0);
 #endif
     StopNode();
     UnregisterNodeSignals(GetNodeSignals());
@@ -340,8 +338,7 @@ std::string HelpMessage(HelpMessageMode mode)
         strUsage += ", qt";
     strUsage += ".\n";
 #ifdef ENABLE_WALLET
-    strUsage += "  -gen                   " + strprintf(_("Generate coins (default: %u)"), 0) + "\n";
-    strUsage += "  -genproclimit=<n>      " + strprintf(_("Set the number of threads for coin generation if enabled (-1 = all cores, default: %d)"), 1) + "\n";
+
 #endif
     strUsage += "  -help-debug            " + _("Show all debugging options (usage: --help -help-debug)") + "\n";
     strUsage += "  -logips                " + strprintf(_("Include IP addresses in debug output (default: %u)"), 0) + "\n";
@@ -399,6 +396,8 @@ std::string LicenseInfo()
     return FormatParagraph(strprintf(_("Copyright (C) 2009-%i The Bitcoin Core Developers"), COPYRIGHT_YEAR)) + "\n" +
            "\n" +
            FormatParagraph(strprintf(_("Copyright (C) 2011-%i The Litecoin Core Developers"), COPYRIGHT_YEAR)) + "\n" +
+	   "\n" +
+	   FormatParagraph(strprintf(_("Copyright (C) 2015-%i The Bata Core Developers"), COPYRIGHT_YEAR)) + "\n" +
            "\n" +
            FormatParagraph(_("This is experimental software.")) + "\n" +
            "\n" +
@@ -1292,9 +1291,7 @@ bool AppInit2(boost::thread_group& threadGroup)
     StartNode(threadGroup);
 
 #ifdef ENABLE_WALLET
-    // Generate coins in the background
-    if (pwalletMain)
-        GenerateBitcoins(GetBoolArg("-gen", false), pwalletMain, GetArg("-genproclimit", 1));
+
 #endif
 
     // ********************************************************* Step 11: finished
