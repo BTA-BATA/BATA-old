@@ -283,14 +283,14 @@ development team members to review your proposal and to provide assistance with 
 
 Guide by: Midnight Miner
 
-Based on Ubutntu 16.04
-Get your required packages to cross-compile Windows executables.
+- Based on Ubutntu 16.04
+- Get your required packages to cross-compile Windows executables.
 
-** General Dependencies **
+#### General Dependencies
 
 sudo apt-get install g++-mingw-w64-i686 mingw-w64-i686-dev g++-mingw-w64-x86-64 mingw-w64-x86-64-dev curl
 
-** Bata Source Code **
+#### Bata Source Code
 
 Clone the Github into a directory for building I will use this as an example ~/Bata-build/
 
@@ -298,7 +298,7 @@ cd ~/Bata-build
 git clone https://github.com/BTA-BATA/BATA-SOURCE.git
 cd BATA-SOURCE
 
-** Windows 32 bit **
+#### Windows 32 bit
 ==============
 
 >sh autogen.sh 
@@ -319,7 +319,7 @@ You will find the executables:
 
 Copy them to another directory before compiling another platform.
 
-** Windows 64 bit **
+#### Windows 64 bit
 ==============
 sh autogen.sh 
 cd depends/
@@ -339,7 +339,7 @@ You will find the executables:
 Copy them to another directory before compiling another platform.
 
 
-** Mac Cross-Compile **
+#### Mac Cross-Compile
 =================
 
 sudo apt install libpython-all-dev python-all python-all-dev python-pip python-pip-whl python-pkg-resources python-setuptools python-wheel cmake libcap-dev
@@ -352,7 +352,7 @@ cd ..
 ./configure --prefix=`pwd`/depends/x86_64-apple-darwin11 --with-gui=qt5
 make -j4
 
-** Linux **
+#### Linux
 =================
 
 sh autogen.sh 
@@ -366,21 +366,22 @@ make -j4
 ### Translations
 ------------
 
-**Important**: We do not accept translation changes as GitHub pull requests because the next
+Important We do not accept translation changes as GitHub pull requests because the next
 pull from Transifex would automatically overwrite them again.
 
 We only accept translation fixes that are submitted through [Bitcoin Core's Transifex page](https://www.transifex.com/projects/p/bitcoin/).
 Translations are converted to Bata periodically.
 
-Development tips and tricks
+### Development tips and tricks
 ---------------------------
 
-**compiling for debugging**
+#### compiling for debugging
 
-Run configure with the --enable-debug option, then make. Or run configure with
+- Run configure with the --enable-debug option, then make.
+- Or run configure with
 CXXFLAGS="-g -ggdb -O0" or whatever debug flags you need.
 
-**debug.log**
+#### debug.log
 
 If the code is behaving strangely, take a look in the debug.log file in the data directory;
 error and debugging messages are written there.
@@ -391,7 +392,7 @@ on all categories (and give you a very large debug.log file).
 The Qt code routes qDebug() output to debug.log under category "qt": run with -debug=qt
 to see it.
 
-**testnet and regtest modes**
+#### testnet and regtest modes 
 
 Run with the -testnet option to run with "play batas" on the test network, if you
 are testing multi-machine code that needs to operate across the internet.
@@ -400,7 +401,7 @@ If you are testing something that can run on one machine, run with the -regtest 
 In regression test mode, blocks can be created on-demand; see qa/rpc-tests/ for tests
 that run in -regtest mode.
 
-**DEBUG_LOCKORDER**
+#### DEBUG_LOCKORDER
 
 Bata Core is a multithreaded application, and deadlocks or other multithreading bugs
 can be very difficult to track down. Compiling with -DDEBUG_LOCKORDER (configure
@@ -410,6 +411,5 @@ are held, and adds warnings to the debug.log file if inconsistencies are detecte
 ### BATA License
 
 - Bata Core is released under the terms of the MIT license.
-- See [COPYING](COPYING) for more
-information or see http://opensource.org/licenses/MIT.
+- See [COPYING](COPYING) for more information or see http://opensource.org/licenses/MIT.
 
