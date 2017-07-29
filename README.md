@@ -286,13 +286,17 @@ Guide by: Midnight Miner
 Based on Ubutntu 16.04
 Get your required packages to cross-compile Windows executables.
 
+** General Dependencies
+
 sudo apt-get install g++-mingw-w64-i686 mingw-w64-i686-dev g++-mingw-w64-x86-64 mingw-w64-x86-64-dev curl
+
+** Bata Source Code
 
 Clone the Github into a directory for building I will use this as an example ~/Bata-build/
 
 cd ~/Bata-build
-git clone https://github.com/midnight-miner/BATA-Development.git
-cd Bata-Development
+git clone https://github.com/BTA-BATA/BATA-SOURCE.git
+cd BATA-SOURCE
 
 ** Windows 32 bit 
 ==============
@@ -315,7 +319,7 @@ You will find the executables:
 
 Copy them to another directory before compiling another platform.
 
-Windows 64 bit 
+** Windows 64 bit 
 ==============
 sh autogen.sh 
 cd depends/
