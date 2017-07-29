@@ -18,10 +18,10 @@
 #define CLIENT_VERSION_MINOR 10
 
 /* Build revision */
-#define CLIENT_VERSION_REVISION 5
+#define CLIENT_VERSION_REVISION 4
 
 /* Client Version Build */
-#define CLIENT_VERSION_BUILD 0
+#define CLIENT_VERSION_BUILD 1
 
 /* Version is release */
 #define COPYRIGHT_YEAR 2017
@@ -271,7 +271,7 @@
 #define PACKAGE_NAME "Bata Core"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "Bata Core 0.10.5"
+#define PACKAGE_STRING "Bata Core 0.10.4.1"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "batacoin"
@@ -280,7 +280,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.10.5"
+#define PACKAGE_VERSION "0.10.4.1"
 
 /* Define to necessary symbol if this constant uses a non-standard name on
    your system. */

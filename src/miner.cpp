@@ -361,6 +361,218 @@ void IncrementExtraNonce(CBlock* pblock, CBlockIndex* pindexPrev, unsigned int& 
 }
 
 #ifdef ENABLE_WALLET
+//////////////////////////////////////////////////////////////////////////////
+//
+// Internal miner
+//
+double dHashesPerSec = 0.0;
+int64_t nHPSTimerStart = 0;
 
+CBlockTemplate* CreateNewBlockWithKey(CReserveKey& reservekey)
+{
+    CPubKey pubkey;
+    if (!reservekey.GetReservedKey(pubkey))
+        return NULL;
+
+    CScript scriptPubKey = CScript() << ToByteVector(pubkey) << OP_CHECKSIG;
+    return CreateNewBlock(scriptPubKey);
+}
+
+bool ProcessBlockFound(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
+{
+    LogPrintf("%s\n", pblock->ToString());
+    LogPrintf("generated %s\n", FormatMoney(pblock->vtx[0].vout[0].nValue));
+
+    // Found a solution
+    {
+        LOCK(cs_main);
+        if (pblock->hashPrevBlock != chainActive.Tip()->GetBlockHash())
+            return error("BataMiner : generated block is stale");
+    }
+
+    // Remove key from key pool
+    reservekey.KeepKey();
+
+    // Track how many getdata requests this block gets
+    {
+        LOCK(wallet.cs_wallet);
+        wallet.mapRequestCount[pblock->GetHash()] = 0;
+    }
+
+    // Process this block the same as if we had received it from another node
+    CValidationState state;
+    if (!ProcessNewBlock(state, NULL, pblock))
+        return error("BataMiner : ProcessNewBlock, block not accepted");
+
+    return true;
+}
+
+void static BitcoinMiner(CWallet *pwallet)
+{
+    LogPrintf("BataMiner started\n");
+    SetThreadPriority(THREAD_PRIORITY_LOWEST);
+    RenameThread("bata-miner");
+
+    // Each thread has its own key and counter
+    CReserveKey reservekey(pwallet);
+    unsigned int nExtraNonce = 0;
+
+    try {
+        while (true) {
+            if (Params().MiningRequiresPeers()) {
+                // Busy-wait for the network to come online so we don't waste time mining
+                // on an obsolete chain. In regtest mode we expect to fly solo.
+                do {
+                    bool fvNodesEmpty;
+                    {
+                        LOCK(cs_vNodes);
+                        fvNodesEmpty = vNodes.empty();
+                    }
+                    if (!fvNodesEmpty && !IsInitialBlockDownload())
+                        break;
+                    MilliSleep(1000);
+                } while (true);
+            }
+
+            //
+            // Create new block
+            //
+            unsigned int nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
+            CBlockIndex* pindexPrev = chainActive.Tip();
+
+            auto_ptr<CBlockTemplate> pblocktemplate(CreateNewBlockWithKey(reservekey));
+            if (!pblocktemplate.get())
+            {
+                LogPrintf("Error in BataMiner: Keypool ran out, please call keypoolrefill before restarting the mining thread\n");
+                return;
+            }
+            CBlock *pblock = &pblocktemplate->block;
+            IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
+
+            LogPrintf("Running BataMiner with %u transactions in block (%u bytes)\n", pblock->vtx.size(),
+                ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
+
+            //
+            // Search
+            //
+            int64_t nStart = GetTime();
+            uint256 hashTarget = uint256().SetCompact(pblock->nBits);
+            uint256 thash;
+            while (true) {
+                unsigned int nHashesDone = 0;
+                char scratchpad[SCRYPT_SCRATCHPAD_SIZE];
+                while(true)
+                {
+                    scrypt_1024_1_1_256_sp(BEGIN(pblock->nVersion), BEGIN(thash), scratchpad);
+                    if (thash <= hashTarget)
+                    {
+                        // Found a solution
+                        SetThreadPriority(THREAD_PRIORITY_NORMAL);
+                        LogPrintf("BataMiner:\n");
+                        LogPrintf("proof-of-work found  \n  powhash: %s  \ntarget: %s\n", thash.GetHex(), hashTarget.GetHex());
+                        ProcessBlockFound(pblock, *pwallet, reservekey);
+                        SetThreadPriority(THREAD_PRIORITY_LOWEST);
+
+                        // In regression test mode, stop mining after a block is found.
+                        if (Params().MineBlocksOnDemand())
+                            throw boost::thread_interrupted();
+
+                        break;
+                    }
+                    pblock->nNonce += 1;
+                    nHashesDone += 1;
+                    if ((pblock->nNonce & 0xFF) == 0)
+                        break;
+                }
+
+                // Meter hashes/sec
+                static int64_t nHashCounter;
+                if (nHPSTimerStart == 0)
+                {
+                    nHPSTimerStart = GetTimeMillis();
+                    nHashCounter = 0;
+                }
+                else
+                    nHashCounter += nHashesDone;
+                if (GetTimeMillis() - nHPSTimerStart > 4000)
+                {
+                    static CCriticalSection cs;
+                    {
+                        LOCK(cs);
+                        if (GetTimeMillis() - nHPSTimerStart > 4000)
+                        {
+                            dHashesPerSec = 1000.0 * nHashCounter / (GetTimeMillis() - nHPSTimerStart);
+                            nHPSTimerStart = GetTimeMillis();
+                            nHashCounter = 0;
+                            static int64_t nLogTime;
+                            if (GetTime() - nLogTime > 30 * 60)
+                            {
+                                nLogTime = GetTime();
+                                LogPrintf("hashmeter %6.0f khash/s\n", dHashesPerSec/1000.0);
+                            }
+                        }
+                    }
+                }
+
+                // Check for stop or if block needs to be rebuilt
+                boost::this_thread::interruption_point();
+                // Regtest mode doesn't require peers
+                if (vNodes.empty() && Params().MiningRequiresPeers())
+                    break;
+                if (pblock->nNonce >= 0xffff0000)
+                    break;
+                if (mempool.GetTransactionsUpdated() != nTransactionsUpdatedLast && GetTime() - nStart > 60)
+                    break;
+                if (pindexPrev != chainActive.Tip())
+                    break;
+
+                // Update nTime every few seconds
+                UpdateTime(pblock, pindexPrev);
+                if (Params().AllowMinDifficultyBlocks())
+                {
+                    // Changing pblock->nTime can change work required on testnet:
+                    hashTarget.SetCompact(pblock->nBits);
+                }
+            }
+        }
+    }
+    catch (boost::thread_interrupted)
+    {
+        LogPrintf("BataMiner terminated\n");
+        throw;
+    }
+    catch (const std::runtime_error &e)
+    {
+        LogPrintf("BataMiner runtime error: %s\n", e.what());
+        return;
+    }
+}
+
+void GenerateBitcoins(bool fGenerate, CWallet* pwallet, int nThreads)
+{
+    static boost::thread_group* minerThreads = NULL;
+
+    if (nThreads < 0) {
+        // In regtest threads defaults to 1
+        if (Params().DefaultMinerThreads())
+            nThreads = Params().DefaultMinerThreads();
+        else
+            nThreads = boost::thread::hardware_concurrency();
+    }
+
+    if (minerThreads != NULL)
+    {
+        minerThreads->interrupt_all();
+        delete minerThreads;
+        minerThreads = NULL;
+    }
+
+    if (nThreads == 0 || !fGenerate)
+        return;
+
+    minerThreads = new boost::thread_group();
+    for (int i = 0; i < nThreads; i++)
+        minerThreads->create_thread(boost::bind(&BitcoinMiner, pwallet));
+}
 
 #endif // ENABLE_WALLET
