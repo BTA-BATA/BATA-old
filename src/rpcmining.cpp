@@ -9,7 +9,6 @@
 #include "init.h"
 #include "net.h"
 #include "main.h"
-#include "miner.h"
 #include "pow.h"
 #include "rpcserver.h"
 #include "util.h"

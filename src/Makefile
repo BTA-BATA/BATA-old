@@ -269,13 +269,11 @@ am_libbitcoin_server_a_OBJECTS =  \
 	libbitcoin_server_a-leveldbwrapper.$(OBJEXT) \
 	libbitcoin_server_a-main.$(OBJEXT) \
 	libbitcoin_server_a-merkleblock.$(OBJEXT) \
-	libbitcoin_server_a-miner.$(OBJEXT) \
 	libbitcoin_server_a-net.$(OBJEXT) \
 	libbitcoin_server_a-noui.$(OBJEXT) \
 	libbitcoin_server_a-pow.$(OBJEXT) \
 	libbitcoin_server_a-rest.$(OBJEXT) \
 	libbitcoin_server_a-rpcblockchain.$(OBJEXT) \
-	libbitcoin_server_a-rpcmining.$(OBJEXT) \
 	libbitcoin_server_a-rpcmisc.$(OBJEXT) \
 	libbitcoin_server_a-rpcnet.$(OBJEXT) \
 	libbitcoin_server_a-rpcrawtransaction.$(OBJEXT) \
@@ -299,15 +297,15 @@ am__libbitcoin_util_a_SOURCES_DIST = compat/strnlen.cpp \
 	coins.h compat.h compressor.h primitives/block.h \
 	primitives/transaction.h core_io.h crypter.h db.h \
 	eccryptoverify.h ecwrapper.h hash.h init.h key.h keystore.h \
-	leveldbwrapper.h limitedmap.h main.h merkleblock.h miner.h \
-	mruset.h netbase.h net.h noui.h pow.h protocol.h pubkey.h \
-	random.h rpcclient.h rpcprotocol.h rpcserver.h \
-	script/interpreter.h script/script.h script/sigcache.h \
-	script/sign.h script/standard.h script/script_error.h \
-	serialize.h streams.h sync.h threadsafety.h timedata.h \
-	tinyformat.h txdb.h txmempool.h ui_interface.h uint256.h \
-	undo.h util.h utilstrencodings.h utilmoneystr.h utiltime.h \
-	version.h wallet.h wallet_ismine.h walletdb.h compat/sanity.h \
+	leveldbwrapper.h limitedmap.h main.h merkleblock.h mruset.h \
+	netbase.h net.h noui.h pow.h protocol.h pubkey.h random.h \
+	rpcclient.h rpcprotocol.h rpcserver.h script/interpreter.h \
+	script/script.h script/sigcache.h script/sign.h \
+	script/standard.h script/script_error.h serialize.h streams.h \
+	sync.h threadsafety.h timedata.h tinyformat.h txdb.h \
+	txmempool.h ui_interface.h uint256.h undo.h util.h \
+	utilstrencodings.h utilmoneystr.h utiltime.h version.h \
+	wallet.h wallet_ismine.h walletdb.h compat/sanity.h \
 	compat/glibc_compat.cpp compat/glibcxx_compat.cpp
 #am__objects_2 = compat/libbitcoin_util_a-glibc_compat.$(OBJEXT) \
 #	compat/libbitcoin_util_a-glibcxx_compat.$(OBJEXT)
@@ -752,7 +750,6 @@ am__test_test_bata_SOURCES_DIST = test/bignum.h test/alert_tests.cpp \
 	test/compress_tests.cpp test/crypto_tests.cpp \
 	test/DoS_tests.cpp test/getarg_tests.cpp test/hash_tests.cpp \
 	test/key_tests.cpp test/main_tests.cpp test/mempool_tests.cpp \
-	test/miner_tests.cpp test/mruset_tests.cpp \
 	test/multisig_tests.cpp test/netbase_tests.cpp \
 	test/pmt_tests.cpp test/rpc_tests.cpp test/sanity_tests.cpp \
 	test/script_P2SH_tests.cpp test/script_tests.cpp \
@@ -791,8 +788,6 @@ am__objects_20 =  \
 	test/test_test_bata-key_tests.$(OBJEXT) \
 	test/test_test_bata-main_tests.$(OBJEXT) \
 	test/test_test_bata-mempool_tests.$(OBJEXT) \
-	test/test_test_bata-miner_tests.$(OBJEXT) \
-	test/test_test_bata-mruset_tests.$(OBJEXT) \
 	test/test_test_bata-multisig_tests.$(OBJEXT) \
 	test/test_test_bata-netbase_tests.$(OBJEXT) \
 	test/test_test_bata-pmt_tests.$(OBJEXT) \
@@ -1173,16 +1168,16 @@ am__relativize = \
     dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
   done; \
   reldir="$$dir2"
-ACLOCAL = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/10.4.1/build-aux/missing aclocal-1.14
+ACLOCAL = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/build-aux/missing aclocal-1.14
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 0
 AR = /usr/bin/ar
-AUTOCONF = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/10.4.1/build-aux/missing autoconf
-AUTOHEADER = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/10.4.1/build-aux/missing autoheader
-AUTOMAKE = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/10.4.1/build-aux/missing automake-1.14
+AUTOCONF = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/build-aux/missing autoconf
+AUTOHEADER = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/build-aux/missing autoheader
+AUTOMAKE = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/build-aux/missing automake-1.14
 AWK = gawk
 BDB_CPPFLAGS = 
-BDB_LIBS = -ldb_cxx
+BDB_LIBS = -ldb_cxx-4.8
 BOOST_CHRONO_LIB = -lboost_chrono
 BOOST_CPPFLAGS = -pthread -I/usr/include
 BOOST_FILESYSTEM_LIB = -lboost_filesystem
@@ -1200,7 +1195,7 @@ CC = gcc
 CCACHE = 
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
-CLIENT_VERSION_BUILD = 1
+CLIENT_VERSION_BUILD = 0
 CLIENT_VERSION_IS_RELEASE = true
 CLIENT_VERSION_MAJOR = 0
 CLIENT_VERSION_MINOR = 10
@@ -1208,7 +1203,7 @@ CLIENT_VERSION_REVISION = 4
 COMPARISON_TOOL_REORG_TESTS = 0
 COPYRIGHT_YEAR = 2017
 CPP = gcc -E
-CPPFLAGS =  -DBOOST_SPIRIT_THREADSAFE -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2
+CPPFLAGS = -I/include/ -DBOOST_SPIRIT_THREADSAFE -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS  -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2
 CRYPTO_CFLAGS =  
 CRYPTO_LIBS = -lcrypto  
 CXX = g++
@@ -1243,7 +1238,7 @@ JAVA = /usr/bin/java
 JAVA_COMPARISON_TOOL = 
 LCOV = 
 LD = /usr/bin/ld -m elf_x86_64
-LDFLAGS =   -Wl,-z,relro -Wl,-z,now
+LDFLAGS = -L/lib/  -Wl,-z,relro -Wl,-z,now
 LEVELDB_CPPFLAGS =  $(am__append_1)
 LEVELDB_TARGET_FLAGS = 
 LIBLEVELDB =  $(am__append_2)
@@ -1258,7 +1253,7 @@ LRELEASE = /usr/bin/lrelease-qt4
 LTLIBOBJS = 
 LUPDATE = /usr/bin/lupdate-qt4
 MAINT = 
-MAKEINFO = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/10.4.1/build-aux/missing makeinfo
+MAKEINFO = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/build-aux/missing makeinfo
 MAKENSIS = 
 MANIFEST_TOOL = :
 MINIUPNPC_CPPFLAGS = 
@@ -1276,12 +1271,12 @@ OBJEXT = o
 OTOOL = 
 OTOOL64 = 
 PACKAGE = litecoin
-PACKAGE_BUGREPORT = info@bata.io
+PACKAGE_BUGREPORT = info@litecoin.org
 PACKAGE_NAME = Bata Core
-PACKAGE_STRING = Bata Core 0.10.4.1
-PACKAGE_TARNAME = batacoin
+PACKAGE_STRING = Bata Core 0.10.4.0
+PACKAGE_TARNAME = litecoin
 PACKAGE_URL = 
-PACKAGE_VERSION = 0.10.4.1
+PACKAGE_VERSION = 0.10.4.0
 PATH_SEPARATOR = :
 PKG_CONFIG = /usr/bin/pkg-config
 PKG_CONFIG_LIBDIR = 
@@ -1327,16 +1322,16 @@ TESTDEFS =  -DBOOST_TEST_DYN_LINK
 UIC = /usr/bin/uic-qt4
 USE_QRCODE = 
 USE_UPNP = 
-VERSION = 0.10.4.1
+VERSION = 0.10.4.0
 WINDOWS_BITS = 
 WINDRES = 
 X11XCB_CFLAGS = 
 X11XCB_LIBS = 
 XGETTEXT = /usr/bin/xgettext
-abs_builddir = /home/justin/Software/cryptomoney/64-Bit/BATA/10.4.1/src
-abs_srcdir = /home/justin/Software/cryptomoney/64-Bit/BATA/10.4.1/src
-abs_top_builddir = /home/justin/Software/cryptomoney/64-Bit/BATA/10.4.1
-abs_top_srcdir = /home/justin/Software/cryptomoney/64-Bit/BATA/10.4.1
+abs_builddir = /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/src
+abs_srcdir = /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/src
+abs_top_builddir = /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE
+abs_top_srcdir = /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE
 ac_ct_AR = ar
 ac_ct_CC = gcc
 ac_ct_CXX = g++
@@ -1368,7 +1363,7 @@ host_vendor = unknown
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/10.4.1/build-aux/install-sh
+install_sh = ${SHELL} /home/justin/Software/cryptomoney/64-Bit/BATA/BATA-SOURCE/build-aux/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -1448,7 +1443,6 @@ BITCOIN_CORE_H = \
   limitedmap.h \
   main.h \
   merkleblock.h \
-  miner.h \
   mruset.h \
   netbase.h \
   net.h \
@@ -1511,13 +1505,11 @@ libbitcoin_server_a_SOURCES = \
   leveldbwrapper.cpp \
   main.cpp \
   merkleblock.cpp \
-  miner.cpp \
   net.cpp \
   noui.cpp \
   pow.cpp \
   rest.cpp \
   rpcblockchain.cpp \
-  rpcmining.cpp \
   rpcmisc.cpp \
   rpcnet.cpp \
   rpcrawtransaction.cpp \
@@ -1708,8 +1700,7 @@ BITCOIN_TESTS = test/bignum.h test/alert_tests.cpp \
 	test/crypto_tests.cpp test/DoS_tests.cpp \
 	test/getarg_tests.cpp test/hash_tests.cpp \
 	test/key_tests.cpp test/main_tests.cpp \
-	test/mempool_tests.cpp test/miner_tests.cpp \
-	test/mruset_tests.cpp \
+	test/mempool_tests.cpp \
 	test/multisig_tests.cpp \
 	test/netbase_tests.cpp test/pmt_tests.cpp \
 	test/rpc_tests.cpp test/sanity_tests.cpp \
@@ -2627,10 +2618,6 @@ test/test_test_bata-main_tests.$(OBJEXT): test/$(am__dirstamp) \
 	test/$(DEPDIR)/$(am__dirstamp)
 test/test_test_bata-mempool_tests.$(OBJEXT): test/$(am__dirstamp) \
 	test/$(DEPDIR)/$(am__dirstamp)
-test/test_test_bata-miner_tests.$(OBJEXT): test/$(am__dirstamp) \
-	test/$(DEPDIR)/$(am__dirstamp)
-test/test_test_bata-mruset_tests.$(OBJEXT): test/$(am__dirstamp) \
-	test/$(DEPDIR)/$(am__dirstamp)
 test/test_test_bata-multisig_tests.$(OBJEXT): test/$(am__dirstamp) \
 	test/$(DEPDIR)/$(am__dirstamp)
 test/test_test_bata-netbase_tests.$(OBJEXT): test/$(am__dirstamp) \
@@ -2726,13 +2713,11 @@ include ./$(DEPDIR)/libbitcoin_server_a-init.Po
 include ./$(DEPDIR)/libbitcoin_server_a-leveldbwrapper.Po
 include ./$(DEPDIR)/libbitcoin_server_a-main.Po
 include ./$(DEPDIR)/libbitcoin_server_a-merkleblock.Po
-include ./$(DEPDIR)/libbitcoin_server_a-miner.Po
 include ./$(DEPDIR)/libbitcoin_server_a-net.Po
 include ./$(DEPDIR)/libbitcoin_server_a-noui.Po
 include ./$(DEPDIR)/libbitcoin_server_a-pow.Po
 include ./$(DEPDIR)/libbitcoin_server_a-rest.Po
 include ./$(DEPDIR)/libbitcoin_server_a-rpcblockchain.Po
-include ./$(DEPDIR)/libbitcoin_server_a-rpcmining.Po
 include ./$(DEPDIR)/libbitcoin_server_a-rpcmisc.Po
 include ./$(DEPDIR)/libbitcoin_server_a-rpcnet.Po
 include ./$(DEPDIR)/libbitcoin_server_a-rpcrawtransaction.Po
@@ -2914,8 +2899,6 @@ include test/$(DEPDIR)/test_test_bata-hash_tests.Po
 include test/$(DEPDIR)/test_test_bata-key_tests.Po
 include test/$(DEPDIR)/test_test_bata-main_tests.Po
 include test/$(DEPDIR)/test_test_bata-mempool_tests.Po
-include test/$(DEPDIR)/test_test_bata-miner_tests.Po
-include test/$(DEPDIR)/test_test_bata-mruset_tests.Po
 include test/$(DEPDIR)/test_test_bata-multisig_tests.Po
 include test/$(DEPDIR)/test_test_bata-netbase_tests.Po
 include test/$(DEPDIR)/test_test_bata-pmt_tests.Po
@@ -3538,20 +3521,6 @@ libbitcoin_server_a-merkleblock.obj: merkleblock.cpp
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoin_server_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libbitcoin_server_a-merkleblock.obj `if test -f 'merkleblock.cpp'; then $(CYGPATH_W) 'merkleblock.cpp'; else $(CYGPATH_W) '$(srcdir)/merkleblock.cpp'; fi`
 
-libbitcoin_server_a-miner.o: miner.cpp
-	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoin_server_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libbitcoin_server_a-miner.o -MD -MP -MF $(DEPDIR)/libbitcoin_server_a-miner.Tpo -c -o libbitcoin_server_a-miner.o `test -f 'miner.cpp' || echo '$(srcdir)/'`miner.cpp
-	$(AM_V_at)$(am__mv) $(DEPDIR)/libbitcoin_server_a-miner.Tpo $(DEPDIR)/libbitcoin_server_a-miner.Po
-#	$(AM_V_CXX)source='miner.cpp' object='libbitcoin_server_a-miner.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoin_server_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libbitcoin_server_a-miner.o `test -f 'miner.cpp' || echo '$(srcdir)/'`miner.cpp
-
-libbitcoin_server_a-miner.obj: miner.cpp
-	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoin_server_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libbitcoin_server_a-miner.obj -MD -MP -MF $(DEPDIR)/libbitcoin_server_a-miner.Tpo -c -o libbitcoin_server_a-miner.obj `if test -f 'miner.cpp'; then $(CYGPATH_W) 'miner.cpp'; else $(CYGPATH_W) '$(srcdir)/miner.cpp'; fi`
-	$(AM_V_at)$(am__mv) $(DEPDIR)/libbitcoin_server_a-miner.Tpo $(DEPDIR)/libbitcoin_server_a-miner.Po
-#	$(AM_V_CXX)source='miner.cpp' object='libbitcoin_server_a-miner.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoin_server_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libbitcoin_server_a-miner.obj `if test -f 'miner.cpp'; then $(CYGPATH_W) 'miner.cpp'; else $(CYGPATH_W) '$(srcdir)/miner.cpp'; fi`
-
 libbitcoin_server_a-net.o: net.cpp
 	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoin_server_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libbitcoin_server_a-net.o -MD -MP -MF $(DEPDIR)/libbitcoin_server_a-net.Tpo -c -o libbitcoin_server_a-net.o `test -f 'net.cpp' || echo '$(srcdir)/'`net.cpp
 	$(AM_V_at)$(am__mv) $(DEPDIR)/libbitcoin_server_a-net.Tpo $(DEPDIR)/libbitcoin_server_a-net.Po
@@ -3621,20 +3590,6 @@ libbitcoin_server_a-rpcblockchain.obj: rpcblockchain.cpp
 #	$(AM_V_CXX)source='rpcblockchain.cpp' object='libbitcoin_server_a-rpcblockchain.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoin_server_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libbitcoin_server_a-rpcblockchain.obj `if test -f 'rpcblockchain.cpp'; then $(CYGPATH_W) 'rpcblockchain.cpp'; else $(CYGPATH_W) '$(srcdir)/rpcblockchain.cpp'; fi`
-
-libbitcoin_server_a-rpcmining.o: rpcmining.cpp
-	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoin_server_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libbitcoin_server_a-rpcmining.o -MD -MP -MF $(DEPDIR)/libbitcoin_server_a-rpcmining.Tpo -c -o libbitcoin_server_a-rpcmining.o `test -f 'rpcmining.cpp' || echo '$(srcdir)/'`rpcmining.cpp
-	$(AM_V_at)$(am__mv) $(DEPDIR)/libbitcoin_server_a-rpcmining.Tpo $(DEPDIR)/libbitcoin_server_a-rpcmining.Po
-#	$(AM_V_CXX)source='rpcmining.cpp' object='libbitcoin_server_a-rpcmining.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoin_server_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libbitcoin_server_a-rpcmining.o `test -f 'rpcmining.cpp' || echo '$(srcdir)/'`rpcmining.cpp
-
-libbitcoin_server_a-rpcmining.obj: rpcmining.cpp
-	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoin_server_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libbitcoin_server_a-rpcmining.obj -MD -MP -MF $(DEPDIR)/libbitcoin_server_a-rpcmining.Tpo -c -o libbitcoin_server_a-rpcmining.obj `if test -f 'rpcmining.cpp'; then $(CYGPATH_W) 'rpcmining.cpp'; else $(CYGPATH_W) '$(srcdir)/rpcmining.cpp'; fi`
-	$(AM_V_at)$(am__mv) $(DEPDIR)/libbitcoin_server_a-rpcmining.Tpo $(DEPDIR)/libbitcoin_server_a-rpcmining.Po
-#	$(AM_V_CXX)source='rpcmining.cpp' object='libbitcoin_server_a-rpcmining.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoin_server_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libbitcoin_server_a-rpcmining.obj `if test -f 'rpcmining.cpp'; then $(CYGPATH_W) 'rpcmining.cpp'; else $(CYGPATH_W) '$(srcdir)/rpcmining.cpp'; fi`
 
 libbitcoin_server_a-rpcmisc.o: rpcmisc.cpp
 	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libbitcoin_server_a_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libbitcoin_server_a-rpcmisc.o -MD -MP -MF $(DEPDIR)/libbitcoin_server_a-rpcmisc.Tpo -c -o libbitcoin_server_a-rpcmisc.o `test -f 'rpcmisc.cpp' || echo '$(srcdir)/'`rpcmisc.cpp
@@ -5833,34 +5788,6 @@ test/test_test_bata-mempool_tests.obj: test/mempool_tests.cpp
 #	$(AM_V_CXX)source='test/mempool_tests.cpp' object='test/test_test_bata-mempool_tests.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_test_bata_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test/test_test_bata-mempool_tests.obj `if test -f 'test/mempool_tests.cpp'; then $(CYGPATH_W) 'test/mempool_tests.cpp'; else $(CYGPATH_W) '$(srcdir)/test/mempool_tests.cpp'; fi`
-
-test/test_test_bata-miner_tests.o: test/miner_tests.cpp
-	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_test_bata_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test/test_test_bata-miner_tests.o -MD -MP -MF test/$(DEPDIR)/test_test_bata-miner_tests.Tpo -c -o test/test_test_bata-miner_tests.o `test -f 'test/miner_tests.cpp' || echo '$(srcdir)/'`test/miner_tests.cpp
-	$(AM_V_at)$(am__mv) test/$(DEPDIR)/test_test_bata-miner_tests.Tpo test/$(DEPDIR)/test_test_bata-miner_tests.Po
-#	$(AM_V_CXX)source='test/miner_tests.cpp' object='test/test_test_bata-miner_tests.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_test_bata_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test/test_test_bata-miner_tests.o `test -f 'test/miner_tests.cpp' || echo '$(srcdir)/'`test/miner_tests.cpp
-
-test/test_test_bata-miner_tests.obj: test/miner_tests.cpp
-	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_test_bata_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test/test_test_bata-miner_tests.obj -MD -MP -MF test/$(DEPDIR)/test_test_bata-miner_tests.Tpo -c -o test/test_test_bata-miner_tests.obj `if test -f 'test/miner_tests.cpp'; then $(CYGPATH_W) 'test/miner_tests.cpp'; else $(CYGPATH_W) '$(srcdir)/test/miner_tests.cpp'; fi`
-	$(AM_V_at)$(am__mv) test/$(DEPDIR)/test_test_bata-miner_tests.Tpo test/$(DEPDIR)/test_test_bata-miner_tests.Po
-#	$(AM_V_CXX)source='test/miner_tests.cpp' object='test/test_test_bata-miner_tests.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_test_bata_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test/test_test_bata-miner_tests.obj `if test -f 'test/miner_tests.cpp'; then $(CYGPATH_W) 'test/miner_tests.cpp'; else $(CYGPATH_W) '$(srcdir)/test/miner_tests.cpp'; fi`
-
-test/test_test_bata-mruset_tests.o: test/mruset_tests.cpp
-	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_test_bata_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test/test_test_bata-mruset_tests.o -MD -MP -MF test/$(DEPDIR)/test_test_bata-mruset_tests.Tpo -c -o test/test_test_bata-mruset_tests.o `test -f 'test/mruset_tests.cpp' || echo '$(srcdir)/'`test/mruset_tests.cpp
-	$(AM_V_at)$(am__mv) test/$(DEPDIR)/test_test_bata-mruset_tests.Tpo test/$(DEPDIR)/test_test_bata-mruset_tests.Po
-#	$(AM_V_CXX)source='test/mruset_tests.cpp' object='test/test_test_bata-mruset_tests.o' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_test_bata_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test/test_test_bata-mruset_tests.o `test -f 'test/mruset_tests.cpp' || echo '$(srcdir)/'`test/mruset_tests.cpp
-
-test/test_test_bata-mruset_tests.obj: test/mruset_tests.cpp
-	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_test_bata_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test/test_test_bata-mruset_tests.obj -MD -MP -MF test/$(DEPDIR)/test_test_bata-mruset_tests.Tpo -c -o test/test_test_bata-mruset_tests.obj `if test -f 'test/mruset_tests.cpp'; then $(CYGPATH_W) 'test/mruset_tests.cpp'; else $(CYGPATH_W) '$(srcdir)/test/mruset_tests.cpp'; fi`
-	$(AM_V_at)$(am__mv) test/$(DEPDIR)/test_test_bata-mruset_tests.Tpo test/$(DEPDIR)/test_test_bata-mruset_tests.Po
-#	$(AM_V_CXX)source='test/mruset_tests.cpp' object='test/test_test_bata-mruset_tests.obj' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_test_bata_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o test/test_test_bata-mruset_tests.obj `if test -f 'test/mruset_tests.cpp'; then $(CYGPATH_W) 'test/mruset_tests.cpp'; else $(CYGPATH_W) '$(srcdir)/test/mruset_tests.cpp'; fi`
 
 test/test_test_bata-multisig_tests.o: test/multisig_tests.cpp
 	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(test_test_bata_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT test/test_test_bata-multisig_tests.o -MD -MP -MF test/$(DEPDIR)/test_test_bata-multisig_tests.Tpo -c -o test/test_test_bata-multisig_tests.o `test -f 'test/multisig_tests.cpp' || echo '$(srcdir)/'`test/multisig_tests.cpp
