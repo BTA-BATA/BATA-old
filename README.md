@@ -383,7 +383,7 @@ Copy them to another directory before compiling another platform.
 
 >cd ..
 
->./configure --prefix=`pwd`/depends/x86_64-unknown-linux-gn --with-gui=qt5
+>./configure --prefix=`pwd`/depends/x86_64-unknown-linux-gnu --with-gui=qt5
 
 >make -j4
 
