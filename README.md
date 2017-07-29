@@ -137,96 +137,100 @@ https://www.linkedin.com/company/bata-money
 
 - General: 
 
-sudo apt-get install git build-essential openssl libminiupnpc-dev  build-essential openssl libminiupnpc-dev  automake libtool libprotobuf-dev qrencode autoconf-tools cmake libevent-dev libcurl4-openssl-dev
+>sudo apt-get install git build-essential openssl libminiupnpc-dev  build-essential openssl libminiupnpc-dev  automake libtool libprotobuf-dev qrencode autoconf-tools cmake libevent-dev libcurl4-openssl-dev
 
 - QT Creator 4:
 
-sudo apt-get install  libqt4-dev qt4-dev-tools
+>sudo apt-get install  libqt4-dev qt4-dev-tools
 
 - QT Creator 5:
 
-sudo apt-get install libqt5-dev qt5-dev-tools qttools5-dev-tools qt5-default  libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools 
+>sudo apt-get install libqt5-dev qt5-dev-tools qttools5-dev-tools qt5-default  libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools 
 
 - LibBoost 4.8:
 
-sudo apt-get install software-properties-common
-sudo add-apt-repository ppa:bitcoin/bitcoin
-sudo apt-get update
-sudo apt-get install libdb4.8-dev libdb4.8++-dev
+>sudo apt-get install software-properties-common
+
+>sudo add-apt-repository ppa:bitcoin/bitcoin
+
+>sudo apt-get update
+
+>sudo apt-get install libdb4.8-dev libdb4.8++-dev
+
 
 - Latest version of LibBoost:
 
-sudo apt-get install libboost++-dev libboost-all-dev libssl-dev libdb++-dev
+>sudo apt-get install libboost++-dev libboost-all-dev libssl-dev libdb++-dev
 
 
 ### instructions for Linux compile: 
 
 
-git clone https://github.com/BTA-BATA/BATA-SOURCE
+>git clone https://github.com/BTA-BATA/BATA-SOURCE
 
-cd BATA-SOURCE
+>cd BATA-SOURCE
 
-sudo chmod +777 *
+>sudo chmod +777 *
 
-./autogen.sh
+>./autogen.sh
 
-./configure
+>./configure
 
-make
+>make
 
 (it will instruct you to make a bata.conf file, so make the bata.conf file and place in the .bata/ folder.)
 
 ### example regular internet users' bata.conf:
 
-rpcuser=BATAusername
+>rpcuser=BATAusername
 
-rpcpassword=BATAuserpass
+>rpcpassword=BATAuserpass
 
 ### example for i2P users' BATA.conf:
 
 (you will need to download the latest i2p software)
 https://geti2p.net/en/download
 
-rpcuser=BATAusername
+>rpcuser=BATAusername
 
-rpcpassword=BATAuserpass
+>rpcpassword=BATAuserpass
 
-i2p=1
+>i2p=1
 
-proxy=127.0.0.1:3643
+>proxy=127.0.0.1:3643
 
-connect=lv4llpu75ydlfwxgx3ej5t6dpcnyi47px4wnluf7pyxpncd5trca.b32.i2p
+>connect=lv4llpu75ydlfwxgx3ej5t6dpcnyi47px4wnluf7pyxpncd5trca.b32.i2p
 
 ### example for tor users' bata.conf:
 
 (you will need to download tor software)
 https://www.torproject.org/download/
 
-rpcuser=BATAusername
+>rpcuser=BATAusername
 
-rpcpassword=BATAuserpass
+>rpcpassword=BATAuserpass
 
-tor=1
+>tor=1
 
-proxy=127.0.0.1:9050
+>proxy=127.0.0.1:9050
 
-connect=eoekwl6m56nus2a7.onion
+>connect=eoekwl6m56nus2a7.onion
 
 ### possible errors during compile:
 
-virtual memory exhausted: Cannot allocate memory
+>virtual memory exhausted: Cannot allocate memory
 
-make: [obj/bitcoinrpc.o] Error 1
+>make: [obj/bitcoinrpc.o] Error 1
 
 here, we just need to set up a swap file, because we ran out of memory:
 
-sudo fallocate -l 4G /swapfile
+>sudo fallocate -l 4G /swapfile
 
-sudo chmod 600 /swapfile
+>sudo chmod 600 /swapfile
 
-sudo mkswap /swapfile
+>sudo mkswap /swapfile
 
-sudo swapon /swapfile
+>sudo swapon /swapfile
 
 ### Make the Swap File Permanent
 
@@ -234,11 +238,11 @@ We have our swap file enabled, but when we reboot, the server will not automatic
 
 Edit the file with root privileges in your text editor:
 
-sudo nano /etc/fstab
+>sudo nano /etc/fstab
 
 At the bottom of the file, you need to add a line that will tell the operating system to automatically use the file you created:
 
-/swapfile   none    swap    sw    0   0
+>/swapfile   none    swap    sw    0   0
 
 Save and close the file when you are finished.
 
@@ -291,18 +295,26 @@ Guide by: Midnight Miner
 Clone the Github into a directory for building I will use this as an example ~/Bata-build/
 
 >cd ~/Bata-build
+
 >git clone https://github.com/BTA-BATA/BATA-SOURCE.git
+
 >cd BATA-SOURCE
 
 #### Windows 32 bit
 ==============
 
 >sudo apt-get install g++-mingw-w64-i686 mingw-w64-i686-dev g++-mingw-w64-x86-64 mingw-w64-x86-64-dev curl
+
 >sh autogen.sh 
+
 >cd depends/
+
 >make HOST=i686-w64-mingw32 -j4
+
 >cd ..
+
 >./configure --prefix=`pwd`/depends/i686-w64-mingw32 --with-gui=qt5
+
 >make -j4
 
 You will find the executables:
@@ -319,10 +331,15 @@ Copy them to another directory before compiling another platform.
 ==============
 
 >sh autogen.sh 
+
 >cd depends/
+
 >make HOST=x86_64-w64-mingw32 -j4
+
 >cd ..
+
 >./configure --prefix=`pwd`/depends/x86_64-w64-mingw32 --with-gui=qt5
+
 >make -j4
 
 You will find the executables:
@@ -342,21 +359,32 @@ Copy them to another directory before compiling another platform.
 >sudo apt install libpython-all-dev python-all python-all-dev python-pip python-pip-whl python-pkg-resources python-setuptools python-wheel cmake libcap-dev
 
 >make download-osx
+
 >sh autogen.sh 
+
 >cd depends/
+
 >make HOST=x86_64-apple-darwin11 -j4
+
 >cd ..
+
 >./configure --prefix=`pwd`/depends/x86_64-apple-darwin11 --with-gui=qt5
+
 >make -j4
 
 #### Linux
 =================
 
 >sh autogen.sh 
+
 >cd depends/
+
 >make HOST=x86_64-unknown-linux-gnu -j4
+
 >cd ..
+
 >./configure --prefix=`pwd`/depends/x86_64-unknown-linux-gn --with-gui=qt5
+
 >make -j4
 
 You will find the executables:
