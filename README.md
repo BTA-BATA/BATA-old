@@ -1,36 +1,34 @@
 ![BATA](https://bata.money/images/bta_square.png)
 
-Coin Type: POW
+- Coin Type: POW
+- Hashing Algorithm: SCRYPT
+- Difficulty Retargeting: Dark Gravity Wave
+- Time Between Blocks  90
+- Block Reward: 25
+- Block Reward Halving Rate: 100000
+- Premine: No
+- Total Coins: 5,000,000
+- rpc port: 5493
+- net port: 5784
 
-Hashing Algorithm: SCRYPT
+### What is BATA (BTA)?
 
-Difficulty Retargeting: Dark Gravity Wave
+The predecessor of barter trade dollars. Soon to release new POW/POS Hybrid.
 
-Time Between Blocks  90
+Bata (BTA) is a currency that has been developed to replace trade dollars in traditional Barter Systems. As the "Sharing Economy" grows, so does the decentralized market.
 
-Block Reward: 25
+Bata aims to change way the way we trade, by introducing Barter on the Blockchain.
 
-Block Reward Halving Rate: 100000
+A Barter Currency has been re-invented on a blockchain, decentralized, secure and widely available in the form of BTA, replacing a Trade Dollar. Trade Dollars are just like cash and for that matter are based on regular currency, but in current Barter Systems they are controlled and issued by a central party.
 
-Premine: No
-
-Total Coins: 5,000,000
-
-rpc port: 5493
-
-net port: 5784
+BTA is traded on multiple cryptocurrency exchanges right across the globe.
 
 ### Website: 
 
 https://bata.io
 
-### LinkedIn: 
-
-https://www.linkedin.com/company/bata-money
-
-### Slack : 
-
-https://bata-blockchain.signup.team/
+### For Developments info: 
+https://bata.io/development
 
 ### Bootstrap: 
 
@@ -103,55 +101,37 @@ in your bata.conf file just at this line
 
 (Create in AppData\Roaming\bata)
 
+### LinkedIn: 
 
-### For Developments visit: 
-https://bata.io/development
-
-
-### What is BATA (BTA)?
-
-The predecessor of barter trade dollars. Soon to release new POW/POS Hybrid.
-
-Bata (BTA) is a currency that has been developed to replace trade dollars in traditional Barter Systems. As the "Sharing Economy" grows, so does the decentralized market.
-
-Bata aims to change way the way we trade, by introducing Barter on the Blockchain.
-
-A Barter Currency has been re-invented on a blockchain, decentralized, secure and widely available in the form of BTA, replacing a Trade Dollar. Trade Dollars are just like cash and for that matter are based on regular currency, but in current Barter Systems they are controlled and issued by a central party.
-
-BTA is traded on multiple cryptocurrency exchanges right across the globe.
+https://www.linkedin.com/company/bata-money
 
 ### Blockchain Explorers
 
-https://chainz.cryptoid.info/bta/
-
-http://bata.midnightminer.net/
+- https://chainz.cryptoid.info/bta/
+- http://bata.midnightminer.net/
 
 
 ### Official Social Media
 
-https://twitter.com/Bata_Money
+- https://twitter.com/Bata_Money
+- https://www.facebook.com/batacurrency
+- https://www.reddit.com/r/batamoney
 
-https://www.facebook.com/batacurrency
-
-https://www.reddit.com/r/batamoney
 
 ### Forums:
 
-https://bitcointalk.org/index.php?topic=1040956
+- https://bitcointalk.org/index.php?topic=1040956
+- https://cryptocointalk.com/topic/37776-pre-annbta-bata-scrypt-pow-modern-day-trade/
+- http://bitcoingarden.tk/forum/index.php?topic=3479.msg90749#msg90749
+- https://www.cryptocompare.com/coins/bta/forum
+- https://www.cryptopia.co.nz/Forum/Thread/377
 
-https://cryptocointalk.com/topic/37776-pre-annbta-bata-scrypt-pow-modern-day-trade/
-
-http://bitcoingarden.tk/forum/index.php?topic=3479.msg90749#msg90749
-
-https://www.cryptocompare.com/coins/bta/forum
-
-https://www.cryptopia.co.nz/Forum/Thread/377
 
 ### Group Chat:
 
-Slack: https://bata-blockchain.slack.com
+- Slack: https://bata-blockchain.slack.com
+- Telegram: https://t.me/batacurrency
 
-Telegram: https://t.me/batacurrency
 
 ### install Linux dependencies:
 
@@ -203,6 +183,7 @@ rpcuser=BATAusername
 rpcpassword=BATAuserpass
 
 ### example for i2P users' BATA.conf:
+
 (you will need to download the latest i2p software)
 https://geti2p.net/en/download
 
@@ -217,6 +198,7 @@ proxy=127.0.0.1:3643
 connect=lv4llpu75ydlfwxgx3ej5t6dpcnyi47px4wnluf7pyxpncd5trca.b32.i2p
 
 ### example for tor users' bata.conf:
+
 (you will need to download tor software)
 https://www.torproject.org/download/
 
@@ -234,7 +216,7 @@ connect=eoekwl6m56nus2a7.onion
 
 virtual memory exhausted: Cannot allocate memory
 
-make: *** [obj/bitcoinrpc.o] Error 1
+make: [obj/bitcoinrpc.o] Error 1
 
 here, we just need to set up a swap file, because we ran out of memory:
 
@@ -260,13 +242,7 @@ At the bottom of the file, you need to add a line that will tell the operating s
 
 Save and close the file when you are finished.
 
-License
--------
-
-Bata Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
-information or see http://opensource.org/licenses/MIT.
-
-Development process
+### Development process
 -------------------
 
 Developers work in their own trees, then submit pull requests when they think
@@ -288,7 +264,7 @@ The `master-0.10` branch is regularly built and tested, but is not guaranteed to
 completely stable. [Tags](https://github.com/bata-project/bata/tags) are created
 regularly to indicate new official, stable release versions of Bata.
 
-Testing
+### Testing
 -------
 
 Testing and code review is the bottleneck for development; we get more pull
@@ -427,4 +403,9 @@ can be very difficult to track down. Compiling with -DDEBUG_LOCKORDER (configure
 CXXFLAGS="-DDEBUG_LOCKORDER -g") inserts run-time checks to keep track of which locks
 are held, and adds warnings to the debug.log file if inconsistencies are detected.
 
+### BATA License
+
+- Bata Core is released under the terms of the MIT license.
+- See [COPYING](COPYING) for more
+information or see http://opensource.org/licenses/MIT.
 
