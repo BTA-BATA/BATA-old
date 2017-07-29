@@ -303,8 +303,87 @@ than the developer who wrote the code.
 Creating a thread in the [Bata discussion forum](https://bitcointalk.org/index.php?topic=1040956.0) will allow the Bata
 development team members to review your proposal and to provide assistance with creating a test plan. 
 
+### Bata Cross-compile Instructions
 
-Translations
+Guide by: Midnight Miner
+
+Based on Ubutntu 16.04
+Get your required packages to cross-compile Windows executables.
+
+sudo apt-get install g++-mingw-w64-i686 mingw-w64-i686-dev g++-mingw-w64-x86-64 mingw-w64-x86-64-dev curl
+
+Clone the Github into a directory for building I will use this as an example ~/Bata-build/
+
+cd ~/Bata-build
+git clone https://github.com/midnight-miner/BATA-Development.git
+cd Bata-Development
+
+** Windows 32 bit 
+==============
+
+>sh autogen.sh 
+
+>cd depends/
+>make HOST=i686-w64-mingw32 -j4
+>cd ..
+>./configure --prefix=`pwd`/depends/i686-w64-mingw32 --with-gui=qt5
+>make -j4
+
+You will find the executables:
+ ./src/batad.exe
+ ./src/bata-cli.exe
+ ./src/bata-tx.exe
+ ./src/test/test_bata.exe
+ ./src/qt/test/test_bata-qt.exe
+ ./src/qt/bata-qt.exe
+
+Copy them to another directory before compiling another platform.
+
+Windows 64 bit 
+==============
+sh autogen.sh 
+cd depends/
+make HOST=x86_64-w64-mingw32 -j4
+cd ..
+./configure --prefix=`pwd`/depends/x86_64-w64-mingw32 --with-gui=qt5
+make -j4
+
+You will find the executables:
+ ./src/batad.exe
+ ./src/bata-cli.exe
+ ./src/bata-tx.exe
+ ./src/test/test_bata.exe
+ ./src/qt/test/test_bata-qt.exe
+ ./src/qt/bata-qt.exe
+
+Copy them to another directory before compiling another platform.
+
+
+** Mac Cross-Compile
+=================
+
+sudo apt install libpython-all-dev python-all python-all-dev python-pip python-pip-whl python-pkg-resources python-setuptools python-wheel cmake libcap-dev
+
+make download-osx
+sh autogen.sh 
+cd depends/
+make HOST=x86_64-apple-darwin11 -j4
+cd ..
+./configure --prefix=`pwd`/depends/x86_64-apple-darwin11 --with-gui=qt5
+make -j4
+
+*** Linux
+=================
+
+sh autogen.sh 
+cd depends/
+make HOST=x86_64-unknown-linux-gnu -j4
+cd ..
+./configure --prefix=`pwd`/depends/x86_64-unknown-linux-gn --with-gui=qt5
+make -j4
+
+
+### Translations
 ------------
 
 **Important**: We do not accept translation changes as GitHub pull requests because the next
@@ -347,3 +426,5 @@ Bata Core is a multithreaded application, and deadlocks or other multithreading 
 can be very difficult to track down. Compiling with -DDEBUG_LOCKORDER (configure
 CXXFLAGS="-DDEBUG_LOCKORDER -g") inserts run-time checks to keep track of which locks
 are held, and adds warnings to the debug.log file if inconsistencies are detected.
+
+
