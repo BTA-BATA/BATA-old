@@ -286,23 +286,19 @@ Guide by: Midnight Miner
 - Based on Ubutntu 16.04
 - Get your required packages to cross-compile Windows executables.
 
-#### General Dependencies
-
-sudo apt-get install g++-mingw-w64-i686 mingw-w64-i686-dev g++-mingw-w64-x86-64 mingw-w64-x86-64-dev curl
-
 #### Bata Source Code
 
 Clone the Github into a directory for building I will use this as an example ~/Bata-build/
 
-cd ~/Bata-build
-git clone https://github.com/BTA-BATA/BATA-SOURCE.git
-cd BATA-SOURCE
+>cd ~/Bata-build
+>git clone https://github.com/BTA-BATA/BATA-SOURCE.git
+>cd BATA-SOURCE
 
 #### Windows 32 bit
 ==============
 
+>sudo apt-get install g++-mingw-w64-i686 mingw-w64-i686-dev g++-mingw-w64-x86-64 mingw-w64-x86-64-dev curl
 >sh autogen.sh 
-
 >cd depends/
 >make HOST=i686-w64-mingw32 -j4
 >cd ..
@@ -310,31 +306,32 @@ cd BATA-SOURCE
 >make -j4
 
 You will find the executables:
- ./src/batad.exe
- ./src/bata-cli.exe
- ./src/bata-tx.exe
- ./src/test/test_bata.exe
- ./src/qt/test/test_bata-qt.exe
- ./src/qt/bata-qt.exe
+- ./src/batad.exe
+- ./src/bata-cli.exe
+- ./src/bata-tx.exe
+- ./src/test/test_bata.exe
+- ./src/qt/test/test_bata-qt.exe
+- ./src/qt/bata-qt.exe
 
 Copy them to another directory before compiling another platform.
 
 #### Windows 64 bit
 ==============
-sh autogen.sh 
-cd depends/
-make HOST=x86_64-w64-mingw32 -j4
-cd ..
-./configure --prefix=`pwd`/depends/x86_64-w64-mingw32 --with-gui=qt5
-make -j4
+
+>sh autogen.sh 
+>cd depends/
+>make HOST=x86_64-w64-mingw32 -j4
+>cd ..
+>./configure --prefix=`pwd`/depends/x86_64-w64-mingw32 --with-gui=qt5
+>make -j4
 
 You will find the executables:
- ./src/batad.exe
- ./src/bata-cli.exe
- ./src/bata-tx.exe
- ./src/test/test_bata.exe
- ./src/qt/test/test_bata-qt.exe
- ./src/qt/bata-qt.exe
+- ./src/batad.exe
+- ./src/bata-cli.exe
+- ./src/bata-tx.exe
+- ./src/test/test_bata.exe
+- ./src/qt/test/test_bata-qt.exe
+- ./src/qt/bata-qt.exe
 
 Copy them to another directory before compiling another platform.
 
@@ -342,25 +339,33 @@ Copy them to another directory before compiling another platform.
 #### Mac Cross-Compile
 =================
 
-sudo apt install libpython-all-dev python-all python-all-dev python-pip python-pip-whl python-pkg-resources python-setuptools python-wheel cmake libcap-dev
+>sudo apt install libpython-all-dev python-all python-all-dev python-pip python-pip-whl python-pkg-resources python-setuptools python-wheel cmake libcap-dev
 
-make download-osx
-sh autogen.sh 
-cd depends/
-make HOST=x86_64-apple-darwin11 -j4
-cd ..
-./configure --prefix=`pwd`/depends/x86_64-apple-darwin11 --with-gui=qt5
-make -j4
+>make download-osx
+>sh autogen.sh 
+>cd depends/
+>make HOST=x86_64-apple-darwin11 -j4
+>cd ..
+>./configure --prefix=`pwd`/depends/x86_64-apple-darwin11 --with-gui=qt5
+>make -j4
 
 #### Linux
 =================
 
-sh autogen.sh 
-cd depends/
-make HOST=x86_64-unknown-linux-gnu -j4
-cd ..
-./configure --prefix=`pwd`/depends/x86_64-unknown-linux-gn --with-gui=qt5
-make -j4
+>sh autogen.sh 
+>cd depends/
+>make HOST=x86_64-unknown-linux-gnu -j4
+>cd ..
+>./configure --prefix=`pwd`/depends/x86_64-unknown-linux-gn --with-gui=qt5
+>make -j4
+
+You will find the executables:
+- ./src/batad
+- ./src/bata-cli
+- ./src/bata-tx
+- ./src/test/test_bata
+- ./src/qt/test/test_bata-qt
+- ./src/qt/bata-qt
 
 
 ### Translations
