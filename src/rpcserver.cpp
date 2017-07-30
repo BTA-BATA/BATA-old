@@ -275,7 +275,9 @@ static const CRPCCommand vRPCCommands[] =
 
 
 #ifdef ENABLE_WALLET
-
+    { "mining",             "getblocktemplate",       &getblocktemplate,       true,      false,      false },
+    { "mining",             "getnetworkhashps",       &getnetworkhashps,       true,      false,      false },
+    { "mining",             "prioritisetransaction",  &prioritisetransaction,  true,      false,      false },
 #endif
 
     /* Raw transactions */
