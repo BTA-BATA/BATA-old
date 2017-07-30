@@ -15,6 +15,7 @@
 #include "compat/sanity.h"
 #include "key.h"
 #include "main.h"
+#include "miner.h"
 #include "net.h"
 #include "rpcserver.h"
 #include "script/standard.h"
@@ -152,6 +153,7 @@ void Shutdown()
 #ifdef ENABLE_WALLET
     if (pwalletMain)
         bitdb.Flush(false);
+    GenerateBitcoins(false, NULL, 0);
 #endif
     StopNode();
     UnregisterNodeSignals(GetNodeSignals());
@@ -338,7 +340,8 @@ std::string HelpMessage(HelpMessageMode mode)
         strUsage += ", qt";
     strUsage += ".\n";
 #ifdef ENABLE_WALLET
-
+    strUsage += "  -gen                   " + strprintf(_("Generate coins (default: %u)"), 0) + "\n";
+    strUsage += "  -genproclimit=<n>      " + strprintf(_("Set the number of threads for coin generation if enabled (-1 = all cores, default: %d)"), 1) + "\n";
 #endif
     strUsage += "  -help-debug            " + _("Show all debugging options (usage: --help -help-debug)") + "\n";
     strUsage += "  -logips                " + strprintf(_("Include IP addresses in debug output (default: %u)"), 0) + "\n";
@@ -353,10 +356,11 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += "  -printtoconsole        " + _("Send trace/debug info to console instead of debug.log file") + "\n";
     if (GetBoolArg("-help-debug", false))
     {
+        strUsage += "  -printpriority         " + strprintf(_("Log transaction priority and fee per kB when mining blocks (default: %u)"), 0) + "\n";
         strUsage += "  -privdb                " + strprintf(_("Sets the DB_PRIVATE flag in the wallet db environment (default: %u)"), 1) + "\n";
         strUsage += "  -regtest               " + _("Enter regression test mode, which uses a special chain in which blocks can be solved instantly.") + "\n";
         strUsage += "                         " + _("This is intended for regression testing tools and app development.") + "\n";
-    
+        strUsage += "                         " + _("In this mode -genproclimit controls how many blocks are generated immediately.") + "\n";
     }
     strUsage += "  -shrinkdebugfile       " + _("Shrink debug.log file on client startup (default: 1 when no -debug)") + "\n";
     strUsage += "  -testnet               " + _("Use the test network") + "\n";
@@ -1290,7 +1294,9 @@ bool AppInit2(boost::thread_group& threadGroup)
     StartNode(threadGroup);
 
 #ifdef ENABLE_WALLET
-
+    // Generate coins in the background
+    if (pwalletMain)
+        GenerateBitcoins(GetBoolArg("-gen", false), pwalletMain, GetArg("-genproclimit", 1));
 #endif
 
     // ********************************************************* Step 11: finished
