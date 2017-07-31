@@ -358,9 +358,9 @@ Copy them to another directory before compiling another platform.
 
 >sudo apt install libpython-all-dev python-all python-all-dev python-pip python-pip-whl python-pkg-resources python-setuptools python-wheel cmake libcap-dev
 
->make download-osx
+>sh autogen.sh
 
->sh autogen.sh 
+>make download-osx
 
 >cd depends/
 
