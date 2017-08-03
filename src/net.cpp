@@ -1703,8 +1703,8 @@ else
     LastRefreshstamp = CurrentTimestamp;
 }
 
-    if (RefreshesDone > 0)
-    {
+if (RefreshesDone > 0)
+{
     //--------------------------------------------
     // Load addresses for peers.dat
     int64_t nStart = GetTimeMillis();
@@ -1747,9 +1747,11 @@ else
     LogPrintf("%d addresses found from DNS seeds\n", found);
 
     //--------------------------------------------
-    }
 
     DumpAddresses();
+
+}  
+
     RefreshesDone = RefreshesDone + 1;
 
         CSemaphoreGrant grant(*semOutbound);
