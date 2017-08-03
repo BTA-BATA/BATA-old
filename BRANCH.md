@@ -5,5 +5,11 @@
 
 Results:
 0/64 - bata-qt.exe https://virustotal.com/en/file/411632683a428b0a281e42e11ddd5bab03f4034e0b41385338664e4800914907/analysis/1501485086/
-
 1/64 - batad.exe https://virustotal.com/en/file/f3cd9fabcb9eb7d45c8e0d749bd85d16aef4f185c853752b2745dc4585b90144/analysis/1501484870/
+
+- RefreshRecentConnections(Minutes) function
+Commit:
+https://github.com/JustinPercy/BATA-Development/commit/eb0ad7bbbabd6cfed79d8b62c87ab002deba972d
+
+Results:
+Maintains long-term out-going connections to peers/nodes with at a set interval automatically (avoiding wallet-restart for peer discovery).
