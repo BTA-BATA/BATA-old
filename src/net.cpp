@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2017 Batacoin developers (RefreshRecentConnections)
+// Copyright (c) 2017 BATA developers (RefreshRecentConnections)
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -1680,12 +1680,12 @@ void ThreadOpenConnections()
 
 int LastRefreshstamp = 0;
 
-void RefreshRecentConnections(int64_t RefreshMinutes)
+void RefreshRecentConnections(int RefreshMinutes)
 {
 time_t timer;
-int64_t SecondsPassed = 0;
-int64_t MinutesPassed = 0;
-int64_t CurrentTimestamp = time(&timer);
+int SecondsPassed = 0;
+int MinutesPassed = 0;
+int CurrentTimestamp = time(&timer);
 
 if (LastRefreshstamp > 0){
     SecondsPassed = CurrentTimestamp - LastRefreshstamp;
