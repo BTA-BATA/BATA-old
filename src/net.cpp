@@ -1679,6 +1679,7 @@ void ThreadOpenConnections()
 }
 
 int LastRefreshstamp = 0;
+int RefreshesDone = 0;
 
 void RefreshRecentConnections(int RefreshMinutes)
 {
@@ -1701,6 +1702,55 @@ else
 {
     LastRefreshstamp = CurrentTimestamp;
 }
+
+    if (RefreshesDone > 0)
+    {
+    //--------------------------------------------
+    // Load addresses for peers.dat
+    int64_t nStart = GetTimeMillis();
+    {
+        CAddrDB adb;
+        if (!adb.Read(addrman))
+            LogPrintf("Invalid or missing peers.dat; recreating\n");
+    }
+    LogPrintf("Loaded %i addresses from peers.dat  %dms\n",
+           addrman.size(), GetTimeMillis() - nStart);
+    //--------------------------------------------
+
+    //--------------------------------------------
+    const vector<CDNSSeedData> &vSeeds = Params().DNSSeeds();
+    int found = 0;
+
+    LogPrintf("Loading addresses from DNS seeds (could take a while)\n");
+
+    BOOST_FOREACH(const CDNSSeedData &seed, vSeeds) {
+        if (HaveNameProxy()) {
+            AddOneShot(seed.host);
+        } else {
+            vector<CNetAddr> vIPs;
+            vector<CAddress> vAdd;
+            if (LookupHost(seed.host.c_str(), vIPs))
+            {
+                BOOST_FOREACH(CNetAddr& ip, vIPs)
+                {
+                    int nOneDay = 24*3600;
+                    CAddress addr = CAddress(CService(ip, Params().GetDefaultPort()));
+                    addr.nTime = GetTime() - 3*nOneDay - GetRand(4*nOneDay); // use a random age between 3 and 7 days old
+                    vAdd.push_back(addr);
+                    found++;
+                }
+            }
+            addrman.Add(vAdd, CNetAddr(seed.name, true));
+        }
+    }
+
+    LogPrintf("%d addresses found from DNS seeds\n", found);
+
+    //--------------------------------------------
+    }
+
+    DumpAddresses();
+    RefreshesDone = RefreshesDone + 1;
 
         CSemaphoreGrant grant(*semOutbound);
         boost::this_thread::interruption_point();
