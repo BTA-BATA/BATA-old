@@ -108,352 +108,328 @@ static CSemaphore *semOutbound = NULL;
 //  July 1, 2017 - Biznatch Enterprises
 // https://github.com/BiznatchEnterprises/BitcoinFirewall
 
-    // * BlackList node/peers Array
-    string BLACKLIST[256];
-    int blacklist_cnt = 1;
-    // * FireWall Controls *
-    bool Show_DebugOutput = false;
-    bool BlackList_NetFlood = true;
-    // * Global Firewall Variables *
-    int CurrentAverageHeight = 0;
-    int CurrentAverageHeight_Min = 0;
-    int CurrentAverageHeight_Max = 0;
-    int Debug_OutputDelay = 100;
-    int Debug_OutputTimer = 0;
-    int Debug_OutputHeight = 0;
-    bool DebugOutput = false;
-    string Debug_OutputText;
-    string Debug_OutputIP;
-    string Module_Name = "[Bitcoin Firewall 1.0]";
-    // * NetFlood Detection Settings *
-    // 900 KB send/receive size
-    int NetFlood_Rule1 = 9000;
-    // 2 Blocks tolerance
-    int AverageTolerance = 2;    // 
-    // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
-    int AverageRange = 20;   // + or -
-    // *******************************
+// * BlackList node/peers Array
+string BLACKLIST[256];
+int blacklist_cnt = 1;
+// * FireWall Controls *
+bool Show_DebugOutput = false;
+bool BlackList_NetFlood = true;
+// * Global Firewall Variables *
+int CurrentAverageHeight = 0;
+int CurrentAverageHeight_Min = 0;
+int CurrentAverageHeight_Max = 0;
+int Debug_OutputDelay = 100;
+int Debug_OutputTimer = 0;
+int Debug_OutputHeight = 0;
+bool DebugOutput = false;
+string Debug_OutputText;
+string Debug_OutputIP;
+string Module_Name = "[Bitcoin Firewall 1.0]";
+// * NetFlood Detection Settings *
+// 900 KB send/receive size
+int NetFlood_Rule1 = 9000;
+// 2 Blocks tolerance
+int AverageTolerance = 2;    // 
+// Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
+int AverageRange = 20;   // + or -
 
-    // ######## ########
-    bool AddTo_BlackList(CNode *pnode)
+
+bool AddTo_BlackList(CNode *pnode)
+{
+    // [AddTo Blacklist]
+    //
+    // Append new IP to list
+
+    // Node/peer IP Name
+    string tNodeIP = pnode->addrName;
+
+    // Restart Blacklist count
+    if (blacklist_cnt > 255)
     {
-
-         // Node/peer IP Name
-        string tNodeIP = pnode->addrName;
-
-        // Restart Blacklist count
-        if (blacklist_cnt > 255)
-        {
-            blacklist_cnt = 1;
-        }
-
-        blacklist_cnt = blacklist_cnt + 1;
-        BLACKLIST[blacklist_cnt] = tNodeIP;
-
-        if (Show_DebugOutput == true)
-        {
-            if (Debug_OutputText != "Blacklist")
-            {
-                cout <<"        " + Module_Name + " - Blacklisted: "<<tNodeIP<<endl;
-                Debug_OutputIP = tNodeIP;
-                Debug_OutputText = "Blacklist";
-            }
-        }
-       
-        LogPrintf("Firewall - Blacklisted: %s\n", tNodeIP.c_str());
-    
-    return true;
-
+        blacklist_cnt = 1;
     }
-    // ######## ########
 
-    // ######## ########
-    bool CheckForBannedIP(CNode *pnode)
+    blacklist_cnt = blacklist_cnt + 1;
+    BLACKLIST[blacklist_cnt] = tNodeIP;
+
+    if (Show_DebugOutput == true)
     {
-
-        for (int i = 1; i < blacklist_cnt; i++)
-        {  
-            if (pnode->addrName == BLACKLIST[i])
-            {
-                return true;
-            }
-        }
-
-    // Banned IP not found
-    return false;
-
-    }
-    // ######## ########
-
-   // ######## ########
-    void NewHeightAverage(CNode *pnode)
-    {
-        // Node/peer IP Name
-        string tNodeIP = pnode->addrName;
-        // Dynamic Blockchain Checkpoint
-        int NodeHeight = pnode->nStartingHeight;
-        // total time of connected node
-        int tTimeConnected = GetTime() - pnode->nTimeConnected;
-
-        // ** Update current average if increased ****
-        if (NodeHeight > CurrentAverageHeight) 
+        if (Debug_OutputText != "Blacklist")
         {
-            CurrentAverageHeight = CurrentAverageHeight + NodeHeight; 
-            CurrentAverageHeight = CurrentAverageHeight / 2;
-            CurrentAverageHeight = CurrentAverageHeight - AverageTolerance;      // reduce with tolerance
-            CurrentAverageHeight_Min = CurrentAverageHeight - AverageRange;
-            CurrentAverageHeight_Max = CurrentAverageHeight + AverageRange;
+            cout <<"        " + Module_Name + " - Blacklisted: "<<tNodeIP<<endl;
+            Debug_OutputIP = tNodeIP;
+            Debug_OutputText = "Blacklist";
         }
-        // ********************************************
+    }
+
+    LogPrintf("Firewall - Blacklisted: %s\n", tNodeIP.c_str());
+
+return true;
+}
+
+
+bool CheckForBannedIP(CNode *pnode)
+{
+    // [Check for banned IP]
+    //
+    // Compare Node IP to session Blacklist
+
+    for (int i = 1; i < blacklist_cnt; i++)
+    {  
+        if (pnode->addrName == BLACKLIST[i])
+        {
+// Banned IP Found!
+return true;
+        }
+    }
+
+// Banned IP not found
+return false;
+}
+
+
+void NewHeightAverage(CNode *pnode)
+{
+    // [New Height Average]
+    //
+    // Calculate new Height Average from all peers connected
+
+    // Node/peer IP Name
+    string tNodeIP = pnode->addrName;
+    // Dynamic Blockchain Checkpoint
+    int NodeHeight = pnode->nStartingHeight;
+    // total time of connected node
+    int tTimeConnected = GetTime() - pnode->nTimeConnected;
+
+    // ** Update current average if increased ****
+    if (NodeHeight > CurrentAverageHeight) 
+    {
+        CurrentAverageHeight = CurrentAverageHeight + NodeHeight; 
+        CurrentAverageHeight = CurrentAverageHeight / 2;
+        CurrentAverageHeight = CurrentAverageHeight - AverageTolerance;      // reduce with tolerance
+        CurrentAverageHeight_Min = CurrentAverageHeight - AverageRange;
+        CurrentAverageHeight_Max = CurrentAverageHeight + AverageRange;
+    }
+
+    if (Show_DebugOutput == true) {
+
+        // ** No Change since last Height Output ****
+        if (Debug_OutputHeight == CurrentAverageHeight)
+        {
+            DebugOutput = false;
+        }
+        else
+        {
+            Debug_OutputHeight = CurrentAverageHeight;
+            DebugOutput = true;
+        }      
         
-        // ********************************************
-        if (Show_DebugOutput == true) {
-
-            // ** No Change since last Height Output ****
-            if (Debug_OutputHeight == CurrentAverageHeight)
-            {
-                DebugOutput = false;
-            }
-            else
-            {
-                Debug_OutputHeight = CurrentAverageHeight;
-                DebugOutput = true;
-            }
-            
-            // ** Prevent output from flooding screen ****
-            if (Debug_OutputTimer > Debug_OutputDelay)
-            {
-                DebugOutput = false;
-                Debug_OutputTimer = 0;
-            }
-            else
-            {
-                Debug_OutputTimer = Debug_OutputTimer + 1;
-                DebugOutput = true;
-            }
-
-            // ** Debug Output ON/OFF ****
-            if (DebugOutput == true) {
-
-                cout <<"        " + Module_Name + " (Blacklisted: " + to_string(blacklist_cnt - 1) + ") - Examination: "<<endl;
-                cout<<"         -------------"<<endl;
-                cout<<"         Average StartHeight: "<<CurrentAverageHeight<<endl;
-                cout<<"         Average StartHeight Min: "<<CurrentAverageHeight_Min<<endl;
-                cout<<"         Average StartHeight Max: "<<CurrentAverageHeight_Max<<endl;
-                cout<<"         Connected Node StartHeight: "<<NodeHeight<<endl;
-                cout<<"         Connected Node: "<<pnode->addrName<<endl;
-                cout<<"         Time Connected (sec): "<<tTimeConnected<<endl;
-                cout<<"         -------------"<<endl;
-            }
-
-        }
-        // ********************************************
- 
-    }
-   // ######## ########
-
-    // ######## ########
-    bool Check_NetFloodAttack(CNode *pnode)
-    {
-        // [NetFlood Protection]
-        //
-        //      Prevent Network Flooding trying to sync old wallets
-        //      HIGH bandwidth use triggers verify CORE10 CHECKPOINT
-        //      after active conntaction disconnection and removal if startheight is below checkpoint
-
-        bool Detected = false;
-        int tSendSize = pnode->nSendSize;
-        int tRecBytes = pnode->nRecvBytes;
-        int tTimeConnected = GetTime() - pnode->nTimeConnected;
-        string NetFlood_Type = "";
-
-        // Node/peer IP Name
-        string tNodeIP = pnode->addrName;
-  
-        NewHeightAverage(pnode);
-
-        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        // * Netflood Attack detection #1 -> (Send: 900 KB, Rec: 900 KB, StartingBlockHeight is lower/above than Average checkpoint)
-
-        // Check for large send data packets
-        if (tSendSize > NetFlood_Rule1)
-        { 
-            // Check for large receive data packets
-            if (tRecBytes > NetFlood_Rule1)
-            { 
-                
-                // Check for below average blockheight minimum
-                if (pnode->nStartingHeight < CurrentAverageHeight_Min)
-                { 
-                    Detected = true;
-                    NetFlood_Type = "1";
-
-                }
-                //-----------------------------------------
-
-                // Check for above average blockheight max
-                if (pnode->nStartingHeight > CurrentAverageHeight_Max)
-                { 
-                    Detected = true;
-                    NetFlood_Type = "1";
-                }
-                //-----------------------------------------
-      
-            }
-
-        }
-        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-        // * Netflood Attack detection #2 -> (tRecBytes, tSendSize overload in less than 30 Seconds after connection)
-        if (tTimeConnected < 30)
+        // ** Prevent output from flooding screen ****
+        if (Debug_OutputTimer > Debug_OutputDelay)
         {
-	
+            DebugOutput = false;
+            Debug_OutputTimer = 0;
+        }
+        else
+        {
+            Debug_OutputTimer = Debug_OutputTimer + 1;
+            DebugOutput = true;
+        }
+
+        // ** Debug Output ON/OFF ****
+        if (DebugOutput == true) {
+            cout <<"        " + Module_Name + " (Blacklisted: " + to_string(blacklist_cnt - 1) + ") - Examination: "<<endl;
+            cout<<"         -------------"<<endl;
+            cout<<"         Average StartHeight: "<<CurrentAverageHeight<<endl;
+            cout<<"         Average StartHeight Min: "<<CurrentAverageHeight_Min<<endl;
+            cout<<"         Average StartHeight Max: "<<CurrentAverageHeight_Max<<endl;
+            cout<<"         Connected Node StartHeight: "<<NodeHeight<<endl;
+            cout<<"         Connected Node: "<<pnode->addrName<<endl;
+            cout<<"         Time Connected (sec): "<<tTimeConnected<<endl;
+            cout<<"         -------------"<<endl;
+        }
+    }
+}
+
+
+bool Check_NetFloodAttack(CNode *pnode)
+{
+    // [NetFlood Protection]
+    //
+    //      Prevent Network Flooding trying to sync old wallets
+    //      HIGH bandwidth use triggers verify CORE10 CHECKPOINT
+    //      after active conntaction disconnection and removal if startheight is below checkpoint
+
+    bool Detected = false;
+    int tSendSize = pnode->nSendSize;
+    int tRecBytes = pnode->nRecvBytes;
+    int tTimeConnected = GetTime() - pnode->nTimeConnected;
+    string NetFlood_Type = "";
+
+    // Node/peer IP Name
+    string tNodeIP = pnode->addrName;
+
+    // Calculate Average Start Height
+    NewHeightAverage(pnode);
+
+    // * Netflood Attack detection #1 -> (Send: 900 KB, Rec: 900 KB, StartingBlockHeight is lower/above than Average checkpoint)
+    // Check for large send data packets
+    if (tSendSize > NetFlood_Rule1)
+    { 
+        // Check for large receive data packets
+        if (tRecBytes > NetFlood_Rule1)
+        {      
+            // Check for below average blockheight minimum
+            if (pnode->nStartingHeight < CurrentAverageHeight_Min)
+            { 
+                Detected = true;
+                NetFlood_Type = "1";
+            }
+
+            // Check for above average blockheight max
+            if (pnode->nStartingHeight > CurrentAverageHeight_Max)
+            { 
+                Detected = true;
+                NetFlood_Type = "1";
+            }
+        }
+    }
+
+    // * Netflood Attack detection #2 -> (tRecBytes, tSendSize overload in less than 30 Seconds after connection)
+    if (tTimeConnected < 30)
+    {
 		int NetFlood_Rule2 = NetFlood_Rule1 * 4;
 
-        	if (tRecBytes > NetFlood_Rule2) {
-
-                	// Check for below average blockheight minimum
-                	if (pnode->nStartingHeight < CurrentAverageHeight_Min)
-                	{ 
-
-                    		Detected = true;
-                    		NetFlood_Type = "2";
-
-                	}
-                	//-----------------------------------------
-
-            	}
-
-		if (tSendSize > NetFlood_Rule2) {
-
-                	// Check for below average blockheight minimum
-                	if (pnode->nStartingHeight < CurrentAverageHeight_Min)
-                	{ 
-
-                    		Detected = true;
-                    		NetFlood_Type = "2";
-
-                	}
-                //-----------------------------------------
-
-     
-            }
-
-        }
-        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        // ATTACK DETECTED!
-        if (Detected == true)
+        if (tRecBytes > NetFlood_Rule2)
         {
-            // ----------------------------
-            // Output to screen debug information
-            if (Show_DebugOutput == true)
+            // Check for below average blockheight minimum
+            if (pnode->nStartingHeight < CurrentAverageHeight_Min)
             {
-
-                if (Debug_OutputText != "NetFlood")
-                {
-                    if (Debug_OutputIP != tNodeIP)
-                    {
-
-                        cout <<"        " + Module_Name + " - NetFlood #" + NetFlood_Type + " Attack Detected: "<<tNodeIP<<endl;
-                        Debug_OutputIP = tNodeIP;
-                        Debug_OutputText = "NetFlood";
-
-                    }
-
-                }
-
+                // Trigger Blacklisting
+                Detected = true;
+                NetFlood_Type = "2";
             }
-
-            LogPrintf("Firewall - Netflood Detected: %s\n", tNodeIP.c_str());
-
-            // ----------------------------
-            // Blacklist IP on Netflood detection
-            if (BlackList_NetFlood == true)
-            {
-                // * add node/peer IP to blacklist
-                AddTo_BlackList(pnode);
-
-            }
-                       
-        return true;
-        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-        } else
-        {
-
-        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        //NO NETFLOOD ATTACK DETECTED...
-        return false;
-
         }
-        // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+		if (tSendSize > NetFlood_Rule2)
+        {
+            // Check for below average blockheight minimum
+            if (pnode->nStartingHeight < CurrentAverageHeight_Min)
+            {
+                // Trigger Blacklisting
+                Detected = true;
+                NetFlood_Type = "2";
+            }
+        }
     }
-    // ######## ########
 
-    // ######## ########
-    bool Force_DisconnectNode(CNode *pnode)
+    // * Netflood Attack detection #3 -> (Start Height = -1, over 30 seconds connection length)
+    // Check for more than 30 seconds connection length
+    if (tTimeConnected > 30)
     {
+        // Check for -1 blockheight
+        if (pnode->nStartingHeight == -1)
+        {
+            // Trigger Blacklisting
+            Detected = true;
+            NetFlood_Type = "3";
+        }
+    }
+
+    // ATTACK DETECTED (TRIGGER)!
+    if (Detected == true)
+    {
+        // Output to screen debug information
+        if (Show_DebugOutput == true)
+        {
+            if (Debug_OutputText != "NetFlood")
+            {
+                if (Debug_OutputIP != tNodeIP)
+                {
+                    cout <<"        " + Module_Name + " - NetFlood #" + NetFlood_Type + " Attack Detected: "<<tNodeIP<<endl;
+                    Debug_OutputIP = tNodeIP;
+                    Debug_OutputText = "NetFlood";
+                }
+            }
+        }
+
+        LogPrintf("Firewall - Netflood Detected: %s\n", tNodeIP.c_str());
+
+        // ----------------------------
+        // Blacklist IP on Netflood detection
+        if (BlackList_NetFlood == true)
+        {
+            // * add node/peer IP to blacklist
+            AddTo_BlackList(pnode);
+
+        }
+//NETFLOOD ATTACK DETECTED!
+return true;
+    }
+    else
+    {
+//NO NETFLOOD ATTACK DETECTED...
+return false;
+    }
+}
+
+
+bool Force_DisconnectNode(CNode *pnode)
+{
     // [Force Disconnection of node/peer]
     //
     //      Hard-disconnection function (Panic)
 
     // Node/peer IP Name
-     string tNodeIP = pnode->addrName;
+    string tNodeIP = pnode->addrName;
 
-        if (Show_DebugOutput == true) {   
-
-            if (Debug_OutputText != "Panic"){
-
-                cout <<"        " + Module_Name + " - Disconnected: "<<tNodeIP<<endl;
-                Debug_OutputIP = tNodeIP;
-                Debug_OutputText = "Panic";
-
-            }
-
+    if (Show_DebugOutput == true) {   
+        if (Debug_OutputText != "Panic"){
+            cout <<"        " + Module_Name + " - Disconnected: "<<tNodeIP<<endl;
+            Debug_OutputIP = tNodeIP;
+            Debug_OutputText = "Panic";
         }
-
-            LogPrintf("Firewall - Panic Disconnect: %s\n", tNodeIP.c_str());
-
-        // remove from vNodes
-        vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());        
-        // close socket and cleanup
-        pnode->CloseSocketDisconnect();
-        return true;
-        
     }
-    // ######## ########
 
-    // ######## ########
-    void FireWall(CNode *pnode, string FromFunction)
+    LogPrintf("Firewall - Panic Disconnect: %s\n", tNodeIP.c_str());
+
+    // remove from vNodes
+    vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());        
+    // close socket and cleanup
+    pnode->CloseSocketDisconnect();
+    return true;  
+}
+
+
+void FireWall(CNode *pnode, string FromFunction)
+{
+    // Node/peer IP Name
+    string tNodeIP = pnode->addrName;
+
+    if (Show_DebugOutput == true)
     {
-        // Node/peer IP Name
-        string tNodeIP = pnode->addrName;
-
-        if (Show_DebugOutput == true)
+        if (Debug_OutputText != "Init")
         {
-            if (Debug_OutputText != "Init")
-            {
-                cout <<"        " + Module_Name + " - Initialized from: " + FromFunction<<endl;
-                Debug_OutputText = "Init";
-            }
+            cout <<"        " + Module_Name + " - Initialized from: " + FromFunction<<endl;
+            Debug_OutputText = "Init";
         }
-
-        if (CheckForBannedIP(pnode) == true)
-        { 
-            Force_DisconnectNode(pnode);
-        }
-
-        if (Check_NetFloodAttack(pnode) == true)
-        { 
-            Force_DisconnectNode(pnode);
-        }
-
     }
-    // ######## ########
 
+    if (CheckForBannedIP(pnode) == true)
+    { 
+        Force_DisconnectNode(pnode);
+// Peer/Node firewalled
+return;
+    }
+
+    if (Check_NetFloodAttack(pnode) == true)
+    { 
+        Force_DisconnectNode(pnode);
+// Peer/Node firewalled
+return;
+    }
+
+}
 // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 
@@ -1104,6 +1080,8 @@ else
     if (FirstCycle == false)
     {
 
+        RefreshesDone = RefreshesDone + 1;
+
         cout<<"         Last refresh: "<<LastRefreshstamp<<endl;
         cout<<"         Minutes ago: "<<MinutesPassed<<endl;
         cout<<"         Peer/node refresh cycles: "<<RefreshesDone<<endl;
@@ -1219,7 +1197,6 @@ return;
         }
 
         LastRefreshstamp = CurrentTimestamp;
-        RefreshesDone = RefreshesDone + 1;
 
     }
 }
