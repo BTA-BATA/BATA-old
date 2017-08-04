@@ -1087,7 +1087,7 @@ if (LastRefreshstamp > 0){
     SecondsPassed = CurrentTimestamp - LastRefreshstamp;
     MinutesPassed = SecondsPassed / 60;
 
-    if (MinutesPassed == RefreshMinutes) 
+    if (MinutesPassed < RefreshMinutes) 
     {
 return;
     }
@@ -1096,11 +1096,10 @@ return;
 else
 {
     LastRefreshstamp = CurrentTimestamp;
-    
-    
+    RefreshesDone = RefreshesDone + 1;
 }
 
-    if (RefreshesDone > 0)
+    if (RefreshesDone > 2)
     {
 
         cout<<"         Minutes passed: "<<MinutesPassed<<endl;
