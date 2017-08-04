@@ -9,7 +9,7 @@ Results:
 
 - RefreshRecentConnections(Minutes) function
 Commit:
-https://github.com/JustinPercy/BATA-Development/commit/eb0ad7bbbabd6cfed79d8b62c87ab002deba972d
+https://github.com/JustinPercy/BATA-Development/commit/68703b29b8b11fb3fd98ddced7c4bb7da5ff9cd6
 
 Results:
 Maintains long-term out-going connections to peers/nodes with at a set interval automatically (avoiding wallet-restart for peer discovery).
