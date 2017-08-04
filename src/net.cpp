@@ -1072,6 +1072,7 @@ void DumpAddresses()
 
 int LastRefreshstamp = 0;
 int RefreshesDone = 0;
+bool FirstCycle = true;
 
 void RefreshRecentConnections(int RefreshMinutes)
 {
@@ -1079,7 +1080,6 @@ time_t timer;
 int SecondsPassed = 0;
 int MinutesPassed = 0;
 int CurrentTimestamp = time(&timer);
-bool FirstCycle = true;
 
 if (LastRefreshstamp > 0){
 
