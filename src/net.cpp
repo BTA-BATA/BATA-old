@@ -1057,8 +1057,6 @@ void SocketSendData(CNode *pnode)
     }
     pnode->vSendMsg.erase(pnode->vSendMsg.begin(), it);
 
-
-
 }
 
 void DumpAddresses()
@@ -1081,9 +1079,10 @@ time_t timer;
 int SecondsPassed = 0;
 int MinutesPassed = 0;
 int CurrentTimestamp = time(&timer);
-
+bool FirstCycle = true;
 
 if (LastRefreshstamp > 0){
+
     SecondsPassed = CurrentTimestamp - LastRefreshstamp;
     MinutesPassed = SecondsPassed / 60;
 
@@ -1091,19 +1090,22 @@ if (LastRefreshstamp > 0){
     {
 return;
     }
+    else
+    {
+        FirstCycle = false;
+    }
 
 }
-else
-{
+
+if (LastRefreshstamp == 0){
     LastRefreshstamp = CurrentTimestamp;
-    RefreshesDone = RefreshesDone + 1;
 }
 
-    if (RefreshesDone > 2)
+    if (FirstCycle == false)
     {
 
-        cout<<"         Minutes passed: "<<MinutesPassed<<endl;
-        cout<<"         Last refresh stamp: "<<LastRefreshstamp<<endl;
+        cout<<"         Last refresh: "<<LastRefreshstamp<<endl;
+        cout<<"         Minutes ago: "<<MinutesPassed<<endl;
         cout<<"         Peer/node refresh cycles: "<<RefreshesDone<<endl;
 
         //--------------------------------------------
@@ -1149,8 +1151,6 @@ else
         DumpAddresses();
 
         //--------------------------------------------
-
-        RefreshesDone = RefreshesDone + 1;   
 
         CSemaphoreGrant grant(*semOutbound);
         boost::this_thread::interruption_point();
@@ -1219,7 +1219,8 @@ return;
         }
 
         LastRefreshstamp = CurrentTimestamp;
-     
+        RefreshesDone = RefreshesDone + 1;
+
     }
 }
 
