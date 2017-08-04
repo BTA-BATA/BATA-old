@@ -1147,9 +1147,8 @@ cout<<"         Peer/node refresh cycles: "<<RefreshesDone<<endl;
         DumpAddresses();
 
         //--------------------------------------------
-    }
 
-    RefreshesDone = RefreshesDone + 1;
+        RefreshesDone = RefreshesDone + 1;
 
         CSemaphoreGrant grant(*semOutbound);
         boost::this_thread::interruption_point();
@@ -1216,6 +1215,8 @@ return;
         if (addrConnect.IsValid()){
             OpenNetworkConnection(addrConnect, &grant);
         }
+
+    }
 
 }
 
