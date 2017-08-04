@@ -1096,8 +1096,8 @@ return;
     }
 
 }
-
-if (LastRefreshstamp == 0){
+else
+{
     LastRefreshstamp = CurrentTimestamp;
 }
 
