@@ -1087,7 +1087,7 @@ if (LastRefreshstamp > 0){
     SecondsPassed = CurrentTimestamp - LastRefreshstamp;
     MinutesPassed = SecondsPassed / 60;
 
-    if (MinutesPassed < RefreshMinutes) 
+    if (MinutesPassed == RefreshMinutes) 
     {
 return;
     }
@@ -1097,13 +1097,16 @@ else
 {
     LastRefreshstamp = CurrentTimestamp;
     
+    
 }
-cout<<"         Minutes passed: "<<MinutesPassed<<endl;
-cout<<"         Last refresh stamp: "<<LastRefreshstamp<<endl;
-cout<<"         Peer/node refresh cycles: "<<RefreshesDone<<endl;
 
     if (RefreshesDone > 0)
     {
+
+        cout<<"         Minutes passed: "<<MinutesPassed<<endl;
+        cout<<"         Last refresh stamp: "<<LastRefreshstamp<<endl;
+        cout<<"         Peer/node refresh cycles: "<<RefreshesDone<<endl;
+
         //--------------------------------------------
         // Load addresses for peers.dat
         int64_t nStart = GetTimeMillis();
@@ -1148,7 +1151,7 @@ cout<<"         Peer/node refresh cycles: "<<RefreshesDone<<endl;
 
         //--------------------------------------------
 
-        RefreshesDone = RefreshesDone + 1;
+        RefreshesDone = RefreshesDone + 1;   
 
         CSemaphoreGrant grant(*semOutbound);
         boost::this_thread::interruption_point();
@@ -1216,8 +1219,9 @@ return;
             OpenNetworkConnection(addrConnect, &grant);
         }
 
+        LastRefreshstamp = CurrentTimestamp;
+     
     }
-
 }
 
 
