@@ -102,9 +102,10 @@ NodeId nLastNodeId = 0;
 CCriticalSection cs_nLastNodeId;
 
 static CSemaphore *semOutbound = NULL;
+static list<CNode*> vNodesDisconnected;
 
 // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-// [Bitcoin Firewall 1.0 - Initial Release: Bata.io (BTA)]
+// [Bitcoin Firewall 1.1 - Initial Release: Bata.io (BTA)]
 //  July 1, 2017 - Biznatch Enterprises
 // https://github.com/BiznatchEnterprises/BitcoinFirewall
 
@@ -394,9 +395,20 @@ bool Force_DisconnectNode(CNode *pnode)
     LogPrintf("Firewall - Panic Disconnect: %s\n", tNodeIP.c_str());
 
     // remove from vNodes
-    vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());        
+    vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());
+
+    // release outbound grant (if any)
+    pnode->grantOutbound.Release();
+
     // close socket and cleanup
     pnode->CloseSocketDisconnect();
+
+    // hold in disconnected pool until all refs are released
+    if (pnode->fNetworkNode || pnode->fInbound)
+    {
+       pnode->Release();
+    }    
+    vNodesDisconnected.push_back(pnode);
     return true;  
 }
 
@@ -1086,7 +1098,8 @@ else
         cout<<"         Minutes ago: "<<MinutesPassed<<endl;
         cout<<"         Peer/node refresh cycles: "<<RefreshesDone<<endl;
 
-        //--------------------------------------------
+        LastRefreshstamp = CurrentTimestamp;
+
         // Load addresses for peers.dat
         int64_t nStart = GetTimeMillis();
         {
@@ -1096,9 +1109,7 @@ else
         }
             LogPrintf("Loaded %i addresses from peers.dat  %dms\n",
             addrman.size(), GetTimeMillis() - nStart);
-        //--------------------------------------------
 
-        //--------------------------------------------
         const vector<CDNSSeedData> &vSeeds = Params().DNSSeeds();
         int found = 0;
         LogPrintf("Loading addresses from DNS seeds (could take a while)\n");
@@ -1128,13 +1139,9 @@ else
 
         DumpAddresses();
 
-        //--------------------------------------------
-
         CSemaphoreGrant grant(*semOutbound);
         boost::this_thread::interruption_point();
 
-        //-------------------------------------
-        //
         // Choose an address to connect to based on most recently seen
         //
         CAddress addrConnect;
@@ -1155,7 +1162,6 @@ else
                 if (CheckForBannedIP(pnode) == true){
 return;
                 }
-
             }
         }
 
@@ -1196,13 +1202,10 @@ return;
             OpenNetworkConnection(addrConnect, &grant);
         }
 
-        LastRefreshstamp = CurrentTimestamp;
-
     }
 }
 
 
-static list<CNode*> vNodesDisconnected;
 
 void ThreadSocketHandler()
 {
