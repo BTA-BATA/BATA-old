@@ -1075,11 +1075,15 @@ if (LastRefreshstamp > 0){
     SecondsPassed = CurrentTimestamp - LastRefreshstamp;
     MinutesPassed = SecondsPassed / 60;
 
+    if (MinutesPassed > RefreshMinutes - 2) 
+    {
+        FirstCycle = false;
+    }
+
 }
 else
 {
     LastRefreshstamp = CurrentTimestamp;
-    FirstCycle = false;
 return;
 }
 
@@ -1094,9 +1098,9 @@ return;
 
         RefreshesDone = RefreshesDone + 1;
 
-        cout<<"         Last refresh: "<<LastRefreshstamp<<endl;
-        cout<<"         Minutes ago: "<<MinutesPassed<<endl;
-        cout<<"         Peer/node refresh cycles: "<<RefreshesDone<<endl;
+        //cout<<"         Last refresh: "<<LastRefreshstamp<<endl;
+        //cout<<"         Minutes ago: "<<MinutesPassed<<endl;
+        //cout<<"         Peer/node refresh cycles: "<<RefreshesDone<<endl;
 
         LastRefreshstamp = CurrentTimestamp;
 
