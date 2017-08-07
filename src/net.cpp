@@ -125,7 +125,7 @@ int Debug_OutputHeight = 0;
 bool DebugOutput = false;
 string Debug_OutputText;
 string Debug_OutputIP;
-string Module_Name = "[Bitcoin Firewall 1.0]";
+string Module_Name = "[Bitcoin Firewall 1.1]";
 // * NetFlood Detection Settings *
 // 900 KB send/receive size
 int NetFlood_Rule1 = 9000;
