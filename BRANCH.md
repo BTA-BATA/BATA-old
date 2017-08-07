@@ -1,5 +1,6 @@
 
 # 10.5.1 Change Log:
+- Firewall bug fixed: socket send error Bad file descriptor (9)
 - Bitcoin Miner code removal
 
 (SAFE) Miner Removal - Commit: https://github.com/JustinPercy/BATA-Development/commit/5f1f79b5e4a64d1abd306872050c107f6194ae7f
@@ -14,10 +15,4 @@ https://github.com/JustinPercy/BATA-Development/commit/68703b29b8b11fb3fd98ddced
 
 Results:
 Maintains long-term out-going connections to peers/nodes with at a set interval automatically (avoiding wallet-restart for peer discovery).
-=======
-# 10.5 Change Log
-- Protocol Version: 80008
-- Fixed random crashing from net.cpp (Windows & Linux)
-- Bitcoin Firewall - Debug.log output
-- Optimized Bitcoin Firewall 1.0 settings
 
