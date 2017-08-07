@@ -313,7 +313,7 @@ Clone the Github into a directory for building I will use this as an example ~/B
 
 >cd ..
 
->./configure --prefix=`pwd`/depends/i686-w64-mingw32 --with-gui=qt5
+>./configure --prefix=\`pwd\`/depends/i686-w64-mingw32 --with-gui=qt5
 
 >make -j4
 
@@ -338,7 +338,7 @@ Copy them to another directory before compiling another platform.
 
 >cd ..
 
->./configure --prefix=`pwd`/depends/x86_64-w64-mingw32 --with-gui=qt5
+>./configure --prefix=\`pwd\`/depends/x86_64-w64-mingw32 --with-gui=qt5
 
 >make -j4
 
@@ -358,7 +358,8 @@ Copy them to another directory before compiling another platform.
 
 >sudo apt install libpython-all-dev python-all python-all-dev python-pip python-pip-whl python-pkg-resources python-setuptools python-wheel cmake libcap-dev
 
->sh autogen.sh 
+
+>sh autogen.sh
 
 >make download-osx
 
@@ -368,7 +369,7 @@ Copy them to another directory before compiling another platform.
 
 >cd ..
 
->./configure --prefix=`pwd`/depends/x86_64-apple-darwin11 --with-gui=qt5
+>./configure --prefix=\`pwd\`/depends/x86_64-apple-darwin11 --with-gui=qt5
 
 >make -j4
 
@@ -379,11 +380,11 @@ Copy them to another directory before compiling another platform.
 
 >cd depends/
 
->make HOST=x86_64-unknown-linux-gnu -j4
+>make HOST=x86_64-unknown-linux -j4
 
 >cd ..
 
->./configure --prefix=`pwd`/depends/x86_64-unknown-linux-gnu --with-gui=qt5
+>./configure --prefix=\`pwd\`/depends/x86_64-unknown-linux --with-gui=qt5
 
 >make -j4
 
