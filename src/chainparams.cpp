@@ -153,13 +153,13 @@ public:
         vSeeds.push_back(CDNSSeedData("midnightnet.net", "batadnsseed.midnightminer.net"));
         vSeeds.push_back(CDNSSeedData("bata.io", "batadnsseed.bata.io"));
 
-        base58Prefixes[PUBKEY_ADDRESS] = list_of(25);						// Bata addresses start with 'B'
-        base58Prefixes[SCRIPT_ADDRESS] = list_of(5);						// Bata script addresses start with '3'
-        base58Prefixes[SCRIPT_ADDRESS2] = list_of(85);						// Bata script addresses start with 'b'
-        base58Prefixes[SECRET_KEY] =     list_of(188);						// Bata private keys start with '2'
-        base58Prefixes[EXT_PUBLIC_KEY] = list_of(0xA4)(0x0C)(0x86)(0xFA);	// Bata BIP32 pubkeys start with 'bpub'
-        base58Prefixes[EXT_SECRET_KEY] = list_of(0xA4)(0x0B)(0x91)(0xBD);	// Bata BIP32 prvkeys start with 'bprv'
-		base58Prefixes[EXT_COIN_TYPE]  = list_of(0x8000000b);				// Bata BIP44 coin type is 'b'
+        base58Prefixes[PUBKEY_ADDRESS] = boost::assign::list_of(25).convert_to_container<std::vector<unsigned char> >();						// Bata addresses start with 'B'
+        base58Prefixes[SCRIPT_ADDRESS] = boost::assign::list_of(5)(85).convert_to_container<std::vector<unsigned char> >();						// Bata script addresses start with '3'
+//        base58Prefixes[SCRIPT_ADDRESS2] = list_of(85);						// Bata script addresses start with 'b'
+        base58Prefixes[SECRET_KEY] =     boost::assign::list_of(188).convert_to_container<std::vector<unsigned char> >();						// Bata private keys start with '2'
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0xA4)(0x0C)(0x86)(0xFA).convert_to_container<std::vector<unsigned char> >();	// Bata BIP32 pubkeys start with 'bpub'
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0xA4)(0x0B)(0x91)(0xBD).convert_to_container<std::vector<unsigned char> >();	// Bata BIP32 prvkeys start with 'bprv'
+		base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x8000000b).convert_to_container<std::vector<unsigned char> >();				// Bata BIP44 coin type is 'b'
 
         convertSeed6(vFixedSeeds, pnSeed6_main, ARRAYLEN(pnSeed6_main));
 
@@ -217,11 +217,11 @@ public:
         vSeeds.push_back(CDNSSeedData("midnightminer.net", "testnet-bata.midnightminer.net"));
 //        vSeeds.push_back(CDNSSeedData("wemine-testnet.com", "dnsseed.wemine-testnet.com"));
 
-        base58Prefixes[PUBKEY_ADDRESS] = list_of(111);
-        base58Prefixes[SCRIPT_ADDRESS] = list_of(196);
-        base58Prefixes[SECRET_KEY]     = list_of(239);
-        base58Prefixes[EXT_PUBLIC_KEY] = list_of(0x04)(0x35)(0x87)(0xCF);
-        base58Prefixes[EXT_SECRET_KEY] = list_of(0x04)(0x35)(0x83)(0x94);
+        base58Prefixes[PUBKEY_ADDRESS] = boost::assign::list_of(111).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[SCRIPT_ADDRESS] = boost::assign::list_of(196).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[SECRET_KEY]     = boost::assign::list_of(239).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
         convertSeed6(vFixedSeeds, pnSeed6_test, ARRAYLEN(pnSeed6_test));
 

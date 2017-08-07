@@ -23,14 +23,14 @@ NOTE: Building with Qt4 is still supported, however, could result in a broken UI
 Build Litecoin Core
 ------------------------
 
-1. Clone the litecoin source code and cd into `bata`
+1. Clone the bata source code and cd into `bata`
 
         git clone https://github.com/BTA-BATA/BATA-SOURCE
         cd bata
 
 2.  Build bata:
 
-    Configure and build the headless litecoin binaries as well as the GUI (if Qt is found).
+    Configure and build the headless bata binaries as well as the GUI (if Qt is found).
 
     You can disable the GUI build by passing `--without-gui` to configure.
 
@@ -49,30 +49,30 @@ Build Litecoin Core
 Running
 -------
 
-Litecoin Core is now available at `./src/litecoind`
+Bata Core is now available at `./src/batad`
 
 Before running, it's recommended you create an RPC configuration file.
 
-    echo -e "rpcuser=litecoinrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/Litecoin/litecoin.conf"
+    echo -e "rpcuser=batarpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/Bata/bata.conf"
 
-    chmod 600 "/Users/${USER}/Library/Application Support/Litecoin/litecoin.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/Bata/bata.conf"
 
-The first time you run litecoind, it will start downloading the blockchain. This process could take several hours.
+The first time you run batad, it will start downloading the blockchain. This process could take several hours.
 
 You can monitor the download process by looking at the debug.log file:
 
-    tail -f $HOME/Library/Application\ Support/Litecoin/debug.log
+    tail -f $HOME/Library/Application\ Support/Bata/debug.log
 
 Other commands:
 -------
 
-    ./src/litecoind -daemon # Starts the litecoin daemon.
-    ./src/litecoin-cli --help # Outputs a list of command-line options.
-    ./src/litecoin-cli help # Outputs a list of RPC commands when the daemon is running.
+    ./src/batad -daemon # Starts the Bata daemon.
+    ./src/bata-cli --help # Outputs a list of command-line options.
+    ./src/bata-cli help # Outputs a list of RPC commands when the daemon is running.
 
 Using Qt Creator as IDE
 ------------------------
-You can use Qt Creator as an IDE, for litecoin development.
+You can use Qt Creator as an IDE, for Bata development.
 Download and install the community edition of [Qt Creator](https://www.qt.io/download/).
 Uncheck everything except Qt Creator during the installation process.
 
