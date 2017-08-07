@@ -379,11 +379,11 @@ Copy them to another directory before compiling another platform.
 
 >cd depends/
 
->make HOST=x86_64-unknown-linux-gnu -j4
+>make HOST=x86_64-unknown-linux -j4
 
 >cd ..
 
->./configure --prefix=`pwd`/depends/x86_64-unknown-linux-gnu --with-gui=qt5
+>./configure --prefix=`pwd`/depends/x86_64-unknown-linux --with-gui=qt5
 
 >make -j4
 
