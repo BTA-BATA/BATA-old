@@ -1507,7 +1507,7 @@ void ThreadSocketHandler()
             // Inactivity checking
             //
             int64_t nTime = GetTime();
-            if (nTime - pnode->nTimeConnected > TIMEOUT_INTERVAL)
+            if (nTime - pnode->nTimeConnected > PING_INTERVAL)
             {
                 if (pnode->nLastRecv == 0 || pnode->nLastSend == 0)
                 {
