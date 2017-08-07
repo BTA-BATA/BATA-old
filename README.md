@@ -362,11 +362,6 @@ Copy them to another directory before compiling another platform.
 >sh autogen.sh
 
 >make download-osx
-=======
->sh autogen.sh 
-
-
->make download-osx
 
 >cd depends/
 
