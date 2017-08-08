@@ -325,8 +325,8 @@ bool Check_NetFloodAttack(CNode *pnode)
     }
 
     // * Netflood Attack detection #3 -> (Start Height = -1, over 30 seconds connection length)
-    // Check for more than 30 seconds connection length
-    if (tTimeConnected > 30)
+    // Check for more than 60 seconds connection length
+    if (tTimeConnected > 60)
     {
         // Check for -1 blockheight
         if (pnode->nStartingHeight == -1)
@@ -1214,6 +1214,8 @@ return;
 
 void ThreadSocketHandler()
 {
+    int64_t nTime = GetTime();
+    bool DisconnectIdle = false;
 
     unsigned int nPrevNodeCount = 0;
     while (true)
@@ -1227,9 +1229,37 @@ void ThreadSocketHandler()
             vector<CNode*> vNodesCopy = vNodes;
             BOOST_FOREACH(CNode* pnode, vNodesCopy)
             {
+                DisconnectIdle = false;
+
                 if (pnode->fDisconnect ||
                     (pnode->GetRefCount() <= 0 && pnode->vRecvMsg.empty() && pnode->nSendSize == 0 && pnode->ssSend.empty()))
                 {
+                    DisconnectIdle = true;
+                }
+
+                if (pnode->nTimeConnected > IDLE_TIMEOUT)
+                {
+                    if (pnode->GetRefCount() <= 0)
+                    {
+                        if (pnode->nSendSize == 0)
+                        {
+                            if (nTime - pnode->nLastSend > DATA_TIMEOUT)
+                            {      
+                                DisconnectIdle = true;
+                            }
+                
+                            if (nTime - pnode->nLastRecv > DATA_TIMEOUT)
+                            {
+                                DisconnectIdle = true;
+                            }
+                        }
+                    }
+                }       
+
+                if (DisconnectIdle == true)
+                {
+                    pnode->fDisconnect = true;
+
                     // remove from vNodes
                     vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());
 
@@ -1506,40 +1536,62 @@ void ThreadSocketHandler()
             //
             // Inactivity checking
             //
-            int64_t nTime = GetTime();
+
             if (nTime - pnode->nTimeConnected > IDLE_TIMEOUT)
             {
                 if (pnode->nLastRecv == 0 || pnode->nLastSend == 0)
                 {
                     LogPrint("net", "socket no message in first 60 seconds, %d %d from %d\n", pnode->nLastRecv != 0, pnode->nLastSend != 0, pnode->id);
-                    pnode->CloseSocketDisconnect();
-                    pnode->Release();
+                    DisconnectIdle = true;
                 }
-                if (nTime - pnode->nLastSend > IDLE_TIMEOUT)
+                if (nTime - pnode->nLastSend > DATA_TIMEOUT)
                 {
                     LogPrintf("socket sending timeout: %is\n", nTime - pnode->nLastSend);
-                    pnode->CloseSocketDisconnect();
-                    pnode->Release();
+                    DisconnectIdle = true;
                 }
-                if (nTime - pnode->nLastRecv > IDLE_TIMEOUT)
+                if (nTime - pnode->nLastRecv > DATA_TIMEOUT)
                 {
                     LogPrintf("socket receive timeout: %is\n", nTime - pnode->nLastRecv);
-                    pnode->CloseSocketDisconnect();
-                    pnode->Release();
+                    DisconnectIdle = true;
                 }
                 if (pnode->nPingNonceSent && pnode->nPingUsecStart + TIMEOUT_INTERVAL * 1000000 < GetTimeMicros())
                 {
                     LogPrintf("ping timeout: %fs\n", 0.000001 * (GetTimeMicros() - pnode->nPingUsecStart));
-                    pnode->CloseSocketDisconnect();
-                    pnode->Release();
+                    DisconnectIdle = true;
                 }
+
+                if (DisconnectIdle == true)
+                {
+                    // remove from vNodes
+                    vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());
+
+                    // release outbound grant (if any)
+                    pnode->grantOutbound.Release();
+
+                    // close socket and cleanup
+                    pnode->CloseSocketDisconnect();
+
+                    // hold in disconnected pool until all refs are released
+                    if (pnode->fNetworkNode || pnode->fInbound)
+                        pnode->Release();
+                    vNodesDisconnected.push_back(pnode);
+                }
+                
             }
         }
+        {		
+            LOCK(cs_vNodes);		
+            BOOST_FOREACH(CNode* pnode, vNodesCopy)		
+                pnode->Release();		
+        }
+
+
+
+    }
 
     // Refresh nodes/peers every X minutes
     RefreshRecentConnections(REFRESH_CONNECTIONS);
 
-    }
 }
 
 #ifdef USE_UPNP
@@ -2597,6 +2649,5 @@ void CNode::EndMessage() UNLOCK_FUNCTION(cs_vSend)
 }
 
     
-
 
 
