@@ -1507,7 +1507,7 @@ void ThreadSocketHandler()
             // Inactivity checking
             //
             int64_t nTime = GetTime();
-            if (nTime - pnode->nTimeConnected > PING_INTERVAL)
+            if (nTime - pnode->nTimeConnected > IDLE_TIMEOUT)
             {
                 if (pnode->nLastRecv == 0 || pnode->nLastSend == 0)
                 {
@@ -1515,13 +1515,13 @@ void ThreadSocketHandler()
                     pnode->CloseSocketDisconnect();
                     pnode->Release();
                 }
-                if (nTime - pnode->nLastSend > TIMEOUT_INTERVAL)
+                if (nTime - pnode->nLastSend > IDLE_TIMEOUT)
                 {
                     LogPrintf("socket sending timeout: %is\n", nTime - pnode->nLastSend);
                     pnode->CloseSocketDisconnect();
                     pnode->Release();
                 }
-                if (nTime - pnode->nLastRecv > TIMEOUT_INTERVAL)
+                if (nTime - pnode->nLastRecv > IDLE_TIMEOUT)
                 {
                     LogPrintf("socket receive timeout: %is\n", nTime - pnode->nLastRecv);
                     pnode->CloseSocketDisconnect();
@@ -1537,7 +1537,7 @@ void ThreadSocketHandler()
         }
 
     // Refresh nodes/peers every X minutes
-    RefreshRecentConnections(TIMEOUT_INTERVAL);
+    RefreshRecentConnections(REFRESH_CONNECTIONS);
 
     }
 }
