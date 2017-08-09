@@ -1234,6 +1234,32 @@ void ThreadSocketHandler()
                 if (pnode->fDisconnect ||
                     (pnode->GetRefCount() <= 0 && pnode->vRecvMsg.empty() && pnode->nSendSize == 0 && pnode->ssSend.empty()))
                 {
+                    DisconnectIdle = true;
+                }
+
+                if (pnode->nTimeConnected > IDLE_TIMEOUT)
+                {
+                    if (pnode->GetRefCount() <= 0)
+                    {
+                        if (pnode->nSendSize == 0)
+                        {
+                            if (nTime - pnode->nLastSend > DATA_TIMEOUT)
+                            {      
+                                DisconnectIdle = true;
+                            }
+                
+                            if (nTime - pnode->nLastRecv > DATA_TIMEOUT)
+                            {
+                                DisconnectIdle = true;
+                            }
+                        }
+                    }
+                }       
+
+                if (DisconnectIdle == true)
+                {
+                    pnode->fDisconnect = true;
+
                     // remove from vNodes
                     vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());
 
@@ -1561,7 +1587,7 @@ void ThreadSocketHandler()
 
 
 
-        }
+    }
 
     // Refresh nodes/peers every X minutes
     RefreshRecentConnections(REFRESH_CONNECTIONS);
@@ -2623,6 +2649,5 @@ void CNode::EndMessage() UNLOCK_FUNCTION(cs_vSend)
 }
 
     
-
 
 
