@@ -12,7 +12,7 @@
 //
 // client versioning
 // There were multiple releases with the same protocol version creating many Orphan Txs
-// Updated minimum version for GETHEADER -> 80008 to avoid conflicts and flooding.
+// Updated minimum version for GETHEADER -> 80007 to avoid conflicts and flooding.
 //
 // added stuff for gravity update ( changed proto version to 80005, 80003 unsupported )
 
