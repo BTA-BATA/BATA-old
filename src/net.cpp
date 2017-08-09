@@ -413,7 +413,7 @@ bool Force_DisconnectNode(CNode *pnode)
 }
 
 
-void FireWall(CNode *pnode, string FromFunction)
+bool FireWall(CNode *pnode, string FromFunction)
 {
     // Node/peer IP Name
     string tNodeIP = pnode->addrName;
@@ -429,18 +429,18 @@ void FireWall(CNode *pnode, string FromFunction)
 
     if (CheckForBannedIP(pnode) == true)
     { 
-        Force_DisconnectNode(pnode);
 // Peer/Node firewalled
-return;
+return Force_DisconnectNode(pnode);
     }
 
     if (Check_NetFloodAttack(pnode) == true)
     { 
-        Force_DisconnectNode(pnode);
 // Peer/Node firewalled
-return;
+return Force_DisconnectNode(pnode);
     }
 
+// Peer/Node Safe    
+return false;
 }
 // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
@@ -995,7 +995,7 @@ void SocketSendData(CNode *pnode)
     {
         const CSerializeData &data = *it;
 
-        FireWall(pnode, "SendData");
+        if (FireWall(pnode, "SendData") == true) { return; }
 
                 assert(data.size() > pnode->nSendOffset);
                     int nBytes = send(pnode->hSocket, &data[pnode->nSendOffset], data.size() - pnode->nSendOffset, MSG_NOSIGNAL | MSG_DONTWAIT);
@@ -1717,7 +1717,7 @@ void ThreadDNSAddressSeed()
         MilliSleep(11 * 1000);
 
         LOCK(cs_vNodes);
-        if (vNodes.size() >= 2) {
+        if (vNodes.size() >= 10) {
             LogPrintf("P2P peers available. Skipped DNS seeding.\n");
             return;
         }
@@ -1964,7 +1964,7 @@ bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOu
         return false;
     if (grantOutbound)
 
-        FireWall(pnode, "Connected");
+        if (FireWall(pnode, "OpenNetConnection") == true) { return false; }
 
         grantOutbound->MoveTo(pnode->grantOutbound);
     pnode->fNetworkNode = true;
@@ -2009,7 +2009,7 @@ void ThreadMessageHandler()
                     if (!g_signals.ProcessMessages(pnode))
                         pnode->CloseSocketDisconnect();
 
-                            FireWall(pnode, "GetData");
+                            if (FireWall(pnode, "GetData") == true) { continue; }
 
                     if (pnode->nSendSize < SendBufferSize())
                     {
