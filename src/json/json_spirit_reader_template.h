@@ -521,7 +521,7 @@ namespace json_spirit
      
         const spirit_namespace::parse_info< Iter_type > info = 
                             spirit_namespace::parse( begin, end, 
-                                                    Json_grammer< Value_type, Iter_type >( semantic_actions ), 
+                                                    Json_grammer< Value_type, Iter_type >( semantic_actions ) >> spirit_namespace::end_p,
                                                     spirit_namespace::space_p );
 
         if( !info.hit )

@@ -101,6 +101,9 @@ public:
     //! pointer to the index of the predecessor of this block
     CBlockIndex* pprev;
 
+    //! pointer to the index of the predecessor of this block
+    CBlockIndex* pnext;
+
     //! pointer to the index of some further predecessor of this block
     CBlockIndex* pskip;
 
@@ -145,6 +148,7 @@ public:
     {
         phashBlock = NULL;
         pprev = NULL;
+        pnext = NULL;     // Bata: Added for CheckpointSync
         pskip = NULL;
         nHeight = 0;
         nFile = 0;
@@ -239,6 +243,14 @@ public:
 
         std::sort(pbegin, pend);
         return pbegin[(pend - pbegin)/2];
+    }
+
+	/*
+	 * Bata: This is a carry over from core 0.8.7 to get CheckpointSync working
+	*/
+    bool IsInMainChain() const
+        {
+            return (pnext || this == pindexBest);
     }
 
     /**
