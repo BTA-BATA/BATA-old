@@ -1,6 +1,8 @@
 
 # 10.5.1 Change Log:
 - Firewall bug fixed: socket send error Bad file descriptor (9)
+- Inactivity checking syntax changed
+- ThreadSocketHandler - Disconnect unused nodes
 - Bitcoin Miner code removal
 
 (SAFE) Miner Removal - Commit: https://github.com/JustinPercy/BATA-Development/commit/5f1f79b5e4a64d1abd306872050c107f6194ae7f

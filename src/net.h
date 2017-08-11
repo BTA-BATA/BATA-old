@@ -42,6 +42,12 @@ namespace boost {
 static const int PING_INTERVAL = 2 * 60;
 /** Time after which to disconnect, after waiting for a ping response (or inactivity). */
 static const int TIMEOUT_INTERVAL = 20 * 60;
+/** Time between cycles to check for idle nodes, force disconnect (seconds) **/ 
+static const int IDLE_TIMEOUT = 4 * 60;
+/** Time between cycles to check for idle nodes, force disconnect (seconds) **/ 
+static const int DATA_TIMEOUT = 3 * 60;
+/** Time between cycles force reconnection of disconnections from peers.dat (minutes) **/ 
+static const int REFRESH_CONNECTIONS = 25;
 /** The maximum number of entries in an 'inv' protocol message */
 static const unsigned int MAX_INV_SZ = 50000;
 /** The maximum number of new addresses to accumulate before announcing. */
@@ -325,7 +331,7 @@ public:
 
     int GetRefCount()
     {
-        assert(nRefCount >= 0);
+        //assert(nRefCount >= 0);
         return nRefCount;
     }
 
