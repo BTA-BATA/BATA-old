@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2017 BATA developers (RefreshRecentConnections)
+// Copyright (c) 2017 BATA Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -125,7 +125,7 @@ int Debug_OutputHeight = 0;
 bool DebugOutput = false;
 string Debug_OutputText;
 string Debug_OutputIP;
-string Module_Name = "[Bitcoin Firewall 1.0]";
+string Module_Name = "[Bitcoin Firewall 1.1]";
 // * NetFlood Detection Settings *
 // 900 KB send/receive size
 int NetFlood_Rule1 = 9000;
@@ -997,7 +997,9 @@ void SocketSendData(CNode *pnode)
 
         if (FireWall(pnode, "SendData") == true) { return; }
 
-                assert(data.size() > pnode->nSendOffset);
+                //assert(data.size() > pnode->nSendOffset);
+                if (data.size() > pnode->nSendOffset) { return; }
+
                     int nBytes = send(pnode->hSocket, &data[pnode->nSendOffset], data.size() - pnode->nSendOffset, MSG_NOSIGNAL | MSG_DONTWAIT);
 
                         if (nBytes > 0) //nBytes bigger than 0
@@ -1040,8 +1042,11 @@ void SocketSendData(CNode *pnode)
     }    
 
     if (it == pnode->vSendMsg.end()) {
-        assert(pnode->nSendOffset == 0);
-        assert(pnode->nSendSize == 0);
+        //assert(pnode->nSendOffset == 0);
+        //assert(pnode->nSendSize == 0);
+        if (pnode->nSendOffset == 0) { return; }
+        if (pnode->nSendSize == 0) { return; }
+
     }
     pnode->vSendMsg.erase(pnode->vSendMsg.begin(), it);
 
@@ -1064,6 +1069,9 @@ bool FirstCycle = true;
 
 void RefreshRecentConnections(int RefreshMinutes)
 {
+
+if (vNodes.size() >= 4) { return; }
+
 time_t timer;
 int SecondsPassed = 0;
 int MinutesPassed = 0;
@@ -2593,7 +2601,8 @@ void CNode::AskFor(const CInv& inv)
 void CNode::BeginMessage(const char* pszCommand) EXCLUSIVE_LOCK_FUNCTION(cs_vSend)
 {
     ENTER_CRITICAL_SECTION(cs_vSend);
-    assert(ssSend.size() == 0);
+    //assert(ssSend.size() == 0);
+    if (ssSend.size() == 0) { return; }
     ssSend << CMessageHeader(pszCommand, 0);
     LogPrint("net", "sending: %s ", SanitizeString(pszCommand));
 }
@@ -2632,7 +2641,8 @@ void CNode::EndMessage() UNLOCK_FUNCTION(cs_vSend)
     uint256 hash = Hash(ssSend.begin() + CMessageHeader::HEADER_SIZE, ssSend.end());
     unsigned int nChecksum = 0;
     memcpy(&nChecksum, &hash, sizeof(nChecksum));
-    assert(ssSend.size () >= CMessageHeader::CHECKSUM_OFFSET + sizeof(nChecksum));
+    //assert(ssSend.size () >= CMessageHeader::CHECKSUM_OFFSET + sizeof(nChecksum));
+    if (ssSend.size () >= CMessageHeader::CHECKSUM_OFFSET + sizeof(nChecksum) { return; }
     memcpy((char*)&ssSend[CMessageHeader::CHECKSUM_OFFSET], &nChecksum, sizeof(nChecksum));
 
     LogPrint("net", "(%d bytes) peer=%d\n", nSize, id);
@@ -2649,5 +2659,6 @@ void CNode::EndMessage() UNLOCK_FUNCTION(cs_vSend)
 }
 
     
+
 
 
