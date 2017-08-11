@@ -248,10 +248,12 @@ public:
 	/*
 	 * Bata: This is a carry over from core 0.8.7 to get CheckpointSync working
 	*/
+/*
     bool IsInMainChain() const
         {
             return (pnext || this == pindexBest);
     }
+*/
 
     /**
      * Returns true if there are nRequired or more blocks of minVersion or above
