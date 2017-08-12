@@ -304,8 +304,8 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += "  -disablewallet         " + _("Do not load the wallet and disable wallet RPC calls") + "\n";
     strUsage += "  -keypool=<n>           " + strprintf(_("Set key pool size to <n> (default: %u)"), 100) + "\n";
     if (GetBoolArg("-help-debug", false))
-        strUsage += "  -mintxfee=<amt>        " + strprintf(_("Fees (in LTC/Kb) smaller than this are considered zero fee for transaction creation (default: %s)"), FormatMoney(CWallet::minTxFee.GetFeePerK())) + "\n";
-    strUsage += "  -paytxfee=<amt>        " + strprintf(_("Fee (in LTC/kB) to add to transactions you send (default: %s)"), FormatMoney(payTxFee.GetFeePerK())) + "\n";
+        strUsage += "  -mintxfee=<amt>        " + strprintf(_("Fees (in BTA/Kb) smaller than this are considered zero fee for transaction creation (default: %s)"), FormatMoney(CWallet::minTxFee.GetFeePerK())) + "\n";
+    strUsage += "  -paytxfee=<amt>        " + strprintf(_("Fee (in BTA/kB) to add to transactions you send (default: %s)"), FormatMoney(payTxFee.GetFeePerK())) + "\n";
     strUsage += "  -mininput=<amt>        " + _("Wallet ignores inputs with value less than this (default: 0.0001)") + "\n";
     strUsage += "  -rescan                " + _("Rescan the block chain for missing wallet transactions") + " " + _("on startup") + "\n";
     strUsage += "  -salvagewallet         " + _("Attempt to recover private keys from a corrupt wallet.dat") + " " + _("on startup") + "\n";
