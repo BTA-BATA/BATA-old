@@ -995,10 +995,12 @@ void SocketSendData(CNode *pnode)
     {
         const CSerializeData &data = *it;
 
-        if (FireWall(pnode, "SendData") == true) { return; }
+        if (FireWall(pnode, "SendData") == true) {
+            pnode->vSendMsg.erase(pnode->vSendMsg.begin(), it);
+             return;
+        }
 
-                //assert(data.size() > pnode->nSendOffset);
-                if (data.size() > pnode->nSendOffset) { return; }
+                assert(data.size() > pnode->nSendOffset);
 
                     int nBytes = send(pnode->hSocket, &data[pnode->nSendOffset], data.size() - pnode->nSendOffset, MSG_NOSIGNAL | MSG_DONTWAIT);
 
@@ -1042,11 +1044,8 @@ void SocketSendData(CNode *pnode)
     }    
 
     if (it == pnode->vSendMsg.end()) {
-        //assert(pnode->nSendOffset == 0);
-        //assert(pnode->nSendSize == 0);
-        if (pnode->nSendOffset == 0) { return; }
-        if (pnode->nSendSize == 0) { return; }
-
+        assert(pnode->nSendOffset == 0);
+        assert(pnode->nSendSize == 0);
     }
     pnode->vSendMsg.erase(pnode->vSendMsg.begin(), it);
 
@@ -2601,8 +2600,7 @@ void CNode::AskFor(const CInv& inv)
 void CNode::BeginMessage(const char* pszCommand) EXCLUSIVE_LOCK_FUNCTION(cs_vSend)
 {
     ENTER_CRITICAL_SECTION(cs_vSend);
-    //assert(ssSend.size() == 0);
-    if (ssSend.size() == 0) { return; }
+    assert(ssSend.size() == 0);
     ssSend << CMessageHeader(pszCommand, 0);
     LogPrint("net", "sending: %s ", SanitizeString(pszCommand));
 }
@@ -2641,8 +2639,7 @@ void CNode::EndMessage() UNLOCK_FUNCTION(cs_vSend)
     uint256 hash = Hash(ssSend.begin() + CMessageHeader::HEADER_SIZE, ssSend.end());
     unsigned int nChecksum = 0;
     memcpy(&nChecksum, &hash, sizeof(nChecksum));
-    //assert(ssSend.size () >= CMessageHeader::CHECKSUM_OFFSET + sizeof(nChecksum));
-    if (ssSend.size () >= CMessageHeader::CHECKSUM_OFFSET + sizeof(nChecksum) { return; }
+    assert(ssSend.size () >= CMessageHeader::CHECKSUM_OFFSET + sizeof(nChecksum));
     memcpy((char*)&ssSend[CMessageHeader::CHECKSUM_OFFSET], &nChecksum, sizeof(nChecksum));
 
     LogPrint("net", "(%d bytes) peer=%d\n", nSize, id);
