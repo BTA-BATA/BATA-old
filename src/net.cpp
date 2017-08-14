@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2017 BATA developers (RefreshRecentConnections)
+// Copyright (c) 2017 BATA Developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -125,7 +125,7 @@ int Debug_OutputHeight = 0;
 bool DebugOutput = false;
 string Debug_OutputText;
 string Debug_OutputIP;
-string Module_Name = "[Bitcoin Firewall 1.0]";
+string Module_Name = "[Bitcoin Firewall 1.1]";
 // * NetFlood Detection Settings *
 // 900 KB send/receive size
 int NetFlood_Rule1 = 9000;
@@ -164,6 +164,8 @@ bool AddTo_BlackList(CNode *pnode)
     }
 
     LogPrintf("Firewall - Blacklisted: %s\n", tNodeIP.c_str());
+
+    CNode::Ban(pnode->addr);
 
 return true;
 }
@@ -995,9 +997,13 @@ void SocketSendData(CNode *pnode)
     {
         const CSerializeData &data = *it;
 
-        if (FireWall(pnode, "SendData") == true) { return; }
+        if (FireWall(pnode, "SendData") == true) {
+            pnode->vSendMsg.erase(pnode->vSendMsg.begin(), it);
+             return;
+        }
 
                 assert(data.size() > pnode->nSendOffset);
+
                     int nBytes = send(pnode->hSocket, &data[pnode->nSendOffset], data.size() - pnode->nSendOffset, MSG_NOSIGNAL | MSG_DONTWAIT);
 
                         if (nBytes > 0) //nBytes bigger than 0
@@ -1064,6 +1070,9 @@ bool FirstCycle = true;
 
 void RefreshRecentConnections(int RefreshMinutes)
 {
+
+if (vNodes.size() >= 4) { return; }
+
 time_t timer;
 int SecondsPassed = 0;
 int MinutesPassed = 0;
@@ -2649,5 +2658,6 @@ void CNode::EndMessage() UNLOCK_FUNCTION(cs_vSend)
 }
 
     
+
 
 
