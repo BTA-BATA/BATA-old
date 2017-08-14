@@ -165,6 +165,8 @@ bool AddTo_BlackList(CNode *pnode)
 
     LogPrintf("Firewall - Blacklisted: %s\n", tNodeIP.c_str());
 
+    CNode::Ban(pnode->addr);
+
 return true;
 }
 
