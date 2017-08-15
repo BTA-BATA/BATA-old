@@ -105,7 +105,7 @@ static CSemaphore *semOutbound = NULL;
 static list<CNode*> vNodesDisconnected;
 
 // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-// [Bitcoin Firewall 1.1 - Initial Release: Bata.io (BTA)]
+// [Bitcoin Firewall 1.2 - Initial Release: Bata.io (BTA)]
 //  July 1, 2017 - Biznatch Enterprises
 // https://github.com/BiznatchEnterprises/BitcoinFirewall
 
@@ -125,14 +125,14 @@ int Debug_OutputHeight = 0;
 bool DebugOutput = false;
 string Debug_OutputText;
 string Debug_OutputIP;
-string Module_Name = "[Bitcoin Firewall 1.1]";
+string Module_Name = "[Bitcoin Firewall 1.2]";
 // * NetFlood Detection Settings *
 // 900 KB send/receive size
 int NetFlood_Rule1 = 9000;
 // 2 Blocks tolerance
 int AverageTolerance = 2;    // 
 // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
-int AverageRange = 20;   // + or -
+int AverageRange = 100;   // + or -
 
 
 bool AddTo_BlackList(CNode *pnode)
@@ -265,6 +265,7 @@ bool Check_NetFloodAttack(CNode *pnode)
 
     bool Detected = false;
     int tSendSize = pnode->nSendSize;
+    int tSendBytes = pnode->nSendBytes;
     int tRecBytes = pnode->nRecvBytes;
     int tTimeConnected = GetTime() - pnode->nTimeConnected;
     string NetFlood_Type = "";
@@ -288,20 +289,29 @@ bool Check_NetFloodAttack(CNode *pnode)
                 Detected = true;
                 NetFlood_Type = "1";
             }
+        }
+    }
 
-            // Check for above average blockheight max
-            if (pnode->nStartingHeight > CurrentAverageHeight_Max)
-            { 
-                Detected = true;
-                NetFlood_Type = "1";
+    // * Netflood Attack detection #1 FALSE POSITIVE PROTECTION
+    if (pnode->nStartingHeight < CurrentAverageHeight_Min)
+    {
+        if (tSendBytes > tRecBytes)
+        {
+             if (pnode->nStartingHeight > 0)
+             {
+                if (pnode->nRecvVersion > PROTOCOL_VERSION - 3)
+                {
+                    Detected = false;
+                    NetFlood_Type = "";
+                }
             }
         }
     }
 
-    // * Netflood Attack detection #2 -> (tRecBytes, tSendSize overload in less than 30 Seconds after connection)
-    if (tTimeConnected < 30)
+    // * Netflood Attack detection #2 -> (tRecBytes, tSendSize X 2 overload in less than 90 Seconds after connection)
+    if (tTimeConnected < 90)
     {
-		int NetFlood_Rule2 = NetFlood_Rule1 * 4;
+		int NetFlood_Rule2 = NetFlood_Rule1 * 2;
 
         if (tRecBytes > NetFlood_Rule2)
         {
@@ -310,25 +320,26 @@ bool Check_NetFloodAttack(CNode *pnode)
             {
                 // Trigger Blacklisting
                 Detected = true;
-                NetFlood_Type = "2";
+                NetFlood_Type = "2A";
+                
             }
         }
 
-		if (tSendSize > NetFlood_Rule2)
+		if (tSendBytes > NetFlood_Rule2)
         {
             // Check for below average blockheight minimum
             if (pnode->nStartingHeight < CurrentAverageHeight_Min)
             {
                 // Trigger Blacklisting
                 Detected = true;
-                NetFlood_Type = "2";
+                NetFlood_Type = "2B";
             }
         }
     }
 
     // * Netflood Attack detection #3 -> (Start Height = -1, over 30 seconds connection length)
-    // Check for more than 60 seconds connection length
-    if (tTimeConnected > 60)
+    // Check for more than 600 seconds connection length
+    if (tTimeConnected > 600)
     {
         // Check for -1 blockheight
         if (pnode->nStartingHeight == -1)
@@ -356,7 +367,7 @@ bool Check_NetFloodAttack(CNode *pnode)
             }
         }
 
-        LogPrintf("Firewall - Netflood Detected: %s\n", tNodeIP.c_str());
+        LogPrintf("Firewall - Netflood %s Detected: %s\n", NetFlood_Type, tNodeIP.c_str());
 
         // ----------------------------
         // Blacklist IP on Netflood detection
@@ -395,6 +406,8 @@ bool Force_DisconnectNode(CNode *pnode)
     }
 
     LogPrintf("Firewall - Panic Disconnect: %s\n", tNodeIP.c_str());
+
+    pnode->fDisconnect = true;
 
     // remove from vNodes
     vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());
