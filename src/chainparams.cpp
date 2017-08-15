@@ -151,8 +151,8 @@ public:
         assert(hashGenesisBlock == uint256("0xb4bee36fd54a6176fd832f462641415c142d50e4b378f71c041870c2b1186bc8"));
         assert(genesis.hashMerkleRoot == uint256("0x3164764afd26106715d7e58de57468e236b167d639095be545459d2bcf94afe7"));
 
-        vSeeds.push_back(CDNSSeedData("midnightnet.net", "batadnsseed.midnightminer.net"));
         vSeeds.push_back(CDNSSeedData("bata.io", "batadnsseed.bata.io"));
+        vSeeds.push_back(CDNSSeedData("midnightnet.net", "batadnsseed.midnightminer.net"));
 
         base58Prefixes[PUBKEY_ADDRESS] = boost::assign::list_of(25).convert_to_container<std::vector<unsigned char> >();						// Bata addresses start with 'B'
         base58Prefixes[SCRIPT_ADDRESS] = boost::assign::list_of(5)(85).convert_to_container<std::vector<unsigned char> >();						// Bata script addresses start with '3'
