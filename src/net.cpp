@@ -106,7 +106,7 @@ static list<CNode*> vNodesDisconnected;
 
 // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 // [Bitcoin Firewall 1.2 - Initial Release: Bata.io (BTA)]
-//  July 1, 2017 - Biznatch Enterprises
+//  July 1, 2017 - Biznatch Enterprises & Bata Development
 // https://github.com/BiznatchEnterprises/BitcoinFirewall
 
 // * BlackList node/peers Array
@@ -360,14 +360,14 @@ bool Check_NetFloodAttack(CNode *pnode)
             {
                 if (Debug_OutputIP != tNodeIP)
                 {
-                    cout <<"        " + Module_Name + " - NetFlood #" + NetFlood_Type + " Attack Detected: "<<tNodeIP<<endl;
+                    cout <<"        " + Module_Name + " - NetFlood: " + NetFlood_Type + " Attack Detected: "<<tNodeIP<<endl;
                     Debug_OutputIP = tNodeIP;
                     Debug_OutputText = "NetFlood";
                 }
             }
         }
 
-        LogPrintf("Firewall - Netflood %s Detected: %s\n", NetFlood_Type, tNodeIP.c_str());
+        LogPrintf("Firewall - Netflood: %s Detected from: %s\n", NetFlood_Type, tNodeIP.c_str());
 
         // ----------------------------
         // Blacklist IP on Netflood detection
