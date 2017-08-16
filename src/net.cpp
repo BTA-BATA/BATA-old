@@ -105,8 +105,8 @@ static CSemaphore *semOutbound = NULL;
 static list<CNode*> vNodesDisconnected;
 
 // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-// [Bitcoin Firewall 1.1 - Initial Release: Bata.io (BTA)]
-//  July 1, 2017 - Biznatch Enterprises
+// [Bitcoin Firewall 1.2 - Initial Release: Bata.io (BTA)]
+//  July 1, 2017 - Biznatch Enterprises & Bata Development
 // https://github.com/BiznatchEnterprises/BitcoinFirewall
 
 // * BlackList node/peers Array
@@ -114,7 +114,8 @@ string BLACKLIST[256];
 int blacklist_cnt = 1;
 // * FireWall Controls *
 bool Show_DebugOutput = false;
-bool BlackList_NetFlood = true;
+bool BlackList_Attacks = true;
+bool Ban_Attacker = true;
 // * Global Firewall Variables *
 int CurrentAverageHeight = 0;
 int CurrentAverageHeight_Min = 0;
@@ -125,70 +126,16 @@ int Debug_OutputHeight = 0;
 bool DebugOutput = false;
 string Debug_OutputText;
 string Debug_OutputIP;
-string Module_Name = "[Bitcoin Firewall 1.1]";
-// * NetFlood Detection Settings *
+string Module_Name = "[Bitcoin Firewall 1.2]";
+// * Attack Detection Settings *
+// Max send/receive bytes
+int Attack_Rule1 = 9000;
 // 900 KB send/receive size
-int NetFlood_Rule1 = 9000;
+int Attack_Rule2 = Attack_Rule1 * 10;
 // 2 Blocks tolerance
 int AverageTolerance = 2;    // 
 // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
-int AverageRange = 20;   // + or -
-
-
-bool AddTo_BlackList(CNode *pnode)
-{
-    // [AddTo Blacklist]
-    //
-    // Append new IP to list
-
-    // Node/peer IP Name
-    string tNodeIP = pnode->addrName;
-
-    // Restart Blacklist count
-    if (blacklist_cnt > 255)
-    {
-        blacklist_cnt = 1;
-    }
-
-    blacklist_cnt = blacklist_cnt + 1;
-    BLACKLIST[blacklist_cnt] = tNodeIP;
-
-    if (Show_DebugOutput == true)
-    {
-        if (Debug_OutputText != "Blacklist")
-        {
-            cout <<"        " + Module_Name + " - Blacklisted: "<<tNodeIP<<endl;
-            Debug_OutputIP = tNodeIP;
-            Debug_OutputText = "Blacklist";
-        }
-    }
-
-    LogPrintf("Firewall - Blacklisted: %s\n", tNodeIP.c_str());
-
-    CNode::Ban(pnode->addr);
-
-return true;
-}
-
-
-bool CheckForBannedIP(CNode *pnode)
-{
-    // [Check for banned IP]
-    //
-    // Compare Node IP to session Blacklist
-
-    for (int i = 1; i < blacklist_cnt; i++)
-    {  
-        if (pnode->addrName == BLACKLIST[i])
-        {
-// Banned IP Found!
-return true;
-        }
-    }
-
-// Banned IP not found
-return false;
-}
+int AverageRange = 100;   // + or -
 
 
 void NewHeightAverage(CNode *pnode)
@@ -255,19 +202,71 @@ void NewHeightAverage(CNode *pnode)
 }
 
 
-bool Check_NetFloodAttack(CNode *pnode)
+bool AddTo_BlackList(CNode *pnode)
 {
-    // [NetFlood Protection]
+    // [AddTo Blacklist]
     //
-    //      Prevent Network Flooding trying to sync old wallets
-    //      HIGH bandwidth use triggers verify CORE10 CHECKPOINT
-    //      after active conntaction disconnection and removal if startheight is below checkpoint
+    // Append new IP to list
+
+    // Node/peer IP Name
+    string tNodeIP = pnode->addrName;
+
+    // Restart Blacklist count
+    if (blacklist_cnt > 255)
+    {
+        blacklist_cnt = 1;
+    }
+
+    blacklist_cnt = blacklist_cnt + 1;
+    BLACKLIST[blacklist_cnt] = tNodeIP;
+
+    if (Show_DebugOutput == true)
+    {
+        if (Debug_OutputText != "Blacklist")
+        {
+            cout <<"        " + Module_Name + " - Blacklisted: "<<tNodeIP<<endl;
+            Debug_OutputIP = tNodeIP;
+            Debug_OutputText = "Blacklist";
+        }
+    }
+
+    LogPrintf("Firewall - Blacklisted: %s\n", tNodeIP.c_str());
+
+return true;
+}
+
+
+bool Check_BlacklistedIP(CNode *pnode)
+{
+    // [Check for blacklisted IP]
+    //
+    // Compare Node IP to session Blacklist
+
+    for (int i = 1; i < blacklist_cnt; i++)
+    {  
+        if (pnode->addrName == BLACKLIST[i])
+        {
+// Banned IP Found!
+return true;
+        }
+    }
+
+// Banned IP not found
+return false;
+}
+
+
+bool Check_Attack(CNode *pnode)
+{
+    // [Intelligent Attack Protection]
+    //
 
     bool Detected = false;
     int tSendSize = pnode->nSendSize;
+    int tSendBytes = pnode->nSendBytes;
     int tRecBytes = pnode->nRecvBytes;
     int tTimeConnected = GetTime() - pnode->nTimeConnected;
-    string NetFlood_Type = "";
+    string Attack_Type = "";
 
     // Node/peer IP Name
     string tNodeIP = pnode->addrName;
@@ -275,67 +274,55 @@ bool Check_NetFloodAttack(CNode *pnode)
     // Calculate Average Start Height
     NewHeightAverage(pnode);
 
-    // * Netflood Attack detection #1 -> (Send: 900 KB, Rec: 900 KB, StartingBlockHeight is lower/above than Average checkpoint)
+    // * Netflood Attack detection #1
+    // (Send: 900 KB, Rec: 900 KB, StartingBlockHeight is lower Average checkpoint)
     // Check for large send data packets
-    if (tSendSize > NetFlood_Rule1)
+    if (tSendSize > Attack_Rule1)
     { 
         // Check for large receive data packets
-        if (tRecBytes > NetFlood_Rule1)
+        if (tRecBytes > Attack_Rule1)
         {      
             // Check for below average blockheight minimum
             if (pnode->nStartingHeight < CurrentAverageHeight_Min)
             { 
                 Detected = true;
-                NetFlood_Type = "1";
-            }
-
-            // Check for above average blockheight max
-            if (pnode->nStartingHeight > CurrentAverageHeight_Max)
-            { 
-                Detected = true;
-                NetFlood_Type = "1";
+                Attack_Type = "1";
             }
         }
     }
 
-    // * Netflood Attack detection #2 -> (tRecBytes, tSendSize overload in less than 30 Seconds after connection)
-    if (tTimeConnected < 30)
+    // * Netflood Attack detection #2
+    // (tRecBytes, tSendSize X 2 overload in less than 90 Seconds after connection)
+    if (tTimeConnected < 90)
     {
-		int NetFlood_Rule2 = NetFlood_Rule1 * 4;
 
-        if (tRecBytes > NetFlood_Rule2)
+        if (tRecBytes > Attack_Rule2)
         {
-            // Check for below average blockheight minimum
-            if (pnode->nStartingHeight < CurrentAverageHeight_Min)
+            if (tSendBytes > Attack_Rule2)
             {
-                // Trigger Blacklisting
-                Detected = true;
-                NetFlood_Type = "2";
-            }
-        }
+                // Check for below average blockheight minimum
+                if (pnode->nStartingHeight < CurrentAverageHeight_Min)
+                {
+                    // Trigger Blacklisting
+                    Detected = true;
+                    Attack_Type = "2";
+                }
 
-		if (tSendSize > NetFlood_Rule2)
-        {
-            // Check for below average blockheight minimum
-            if (pnode->nStartingHeight < CurrentAverageHeight_Min)
-            {
-                // Trigger Blacklisting
-                Detected = true;
-                NetFlood_Type = "2";
-            }
+            }              
         }
     }
 
-    // * Netflood Attack detection #3 -> (Start Height = -1, over 30 seconds connection length)
-    // Check for more than 60 seconds connection length
-    if (tTimeConnected > 60)
+    // * Attack detection #3
+    // (Start Height = -1, over 30 seconds connection length)
+    // Check for more than 600 seconds connection length
+    if (tTimeConnected > 600)
     {
         // Check for -1 blockheight
         if (pnode->nStartingHeight == -1)
         {
             // Trigger Blacklisting
             Detected = true;
-            NetFlood_Type = "3";
+            Attack_Type = "3";
         }
     }
 
@@ -345,39 +332,39 @@ bool Check_NetFloodAttack(CNode *pnode)
         // Output to screen debug information
         if (Show_DebugOutput == true)
         {
-            if (Debug_OutputText != "NetFlood")
+            if (Debug_OutputText != "Attack")
             {
                 if (Debug_OutputIP != tNodeIP)
                 {
-                    cout <<"        " + Module_Name + " - NetFlood #" + NetFlood_Type + " Attack Detected: "<<tNodeIP<<endl;
+                    cout <<"        " + Module_Name + " - Attack Type: " + Attack_Type + " Detected from: "<<tNodeIP<<endl;
                     Debug_OutputIP = tNodeIP;
-                    Debug_OutputText = "NetFlood";
+                    Debug_OutputText = "Attack";
                 }
             }
         }
 
-        LogPrintf("Firewall - Netflood Detected: %s\n", tNodeIP.c_str());
+        LogPrintf("Firewall - Attack Type: %s Detected from: %s\n", Attack_Type, tNodeIP.c_str());
 
         // ----------------------------
-        // Blacklist IP on Netflood detection
-        if (BlackList_NetFlood == true)
+        // Blacklist IP on Attack detection
+        if (BlackList_Attacks == true)
         {
             // * add node/peer IP to blacklist
             AddTo_BlackList(pnode);
 
         }
-//NETFLOOD ATTACK DETECTED!
+// ATTACK DETECTED!
 return true;
     }
     else
     {
-//NO NETFLOOD ATTACK DETECTED...
+//NO ATTACK DETECTED...
 return false;
     }
 }
 
 
-bool Force_DisconnectNode(CNode *pnode)
+bool Force_DisconnectNode(CNode *pnode, string FromFunction)
 {
     // [Force Disconnection of node/peer]
     //
@@ -394,7 +381,9 @@ bool Force_DisconnectNode(CNode *pnode)
         }
     }
 
-    LogPrintf("Firewall - Panic Disconnect: %s\n", tNodeIP.c_str());
+    LogPrintf("Firewall - (%s) Panic Disconnect: %s\n", FromFunction, tNodeIP.c_str());
+
+    pnode->fDisconnect = true;
 
     // remove from vNodes
     vNodes.erase(remove(vNodes.begin(), vNodes.end(), pnode), vNodes.end());
@@ -415,6 +404,15 @@ bool Force_DisconnectNode(CNode *pnode)
 }
 
 
+bool Check_FalsePositive(CNode *pnode)
+{
+
+// Not Implemented yet
+
+return false;
+
+}
+
 bool FireWall(CNode *pnode, string FromFunction)
 {
     // Node/peer IP Name
@@ -429,20 +427,30 @@ bool FireWall(CNode *pnode, string FromFunction)
         }
     }
 
-    if (CheckForBannedIP(pnode) == true)
+    if (Check_BlacklistedIP(pnode) == true)
     { 
-// Peer/Node firewalled
-return Force_DisconnectNode(pnode);
+        // Peer/Node Ban
+        if (Ban_Attacker == true){
+            CNode::Ban(pnode->addr);
+            LogPrintf("Firewall - Banned %s\n", tNodeIP.c_str());
+        }
+
+// Peer/Node Panic Disconnect
+return Force_DisconnectNode(pnode, FromFunction);
+
     }
 
-    if (Check_NetFloodAttack(pnode) == true)
-    { 
-// Peer/Node firewalled
-return Force_DisconnectNode(pnode);
+    if (Check_FalsePositive(pnode) == false) {
+        if (Check_Attack(pnode) == true)
+        { 
+// Peer/Node Panic Disconnect
+return Force_DisconnectNode(pnode, FromFunction);
+        }
     }
 
 // Peer/Node Safe    
 return false;
+
 }
 // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
@@ -1172,9 +1180,6 @@ return;
                         nOutbound++;
                     }
 
-                    if (CheckForBannedIP(pnode) == true){
-return;
-                    }
                 }
             }
 
