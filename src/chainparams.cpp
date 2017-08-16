@@ -27,6 +27,8 @@ struct SeedSpec6 {
  * Main network
  */
 
+
+
 //! Convert the pnSeeds6 array into usable address objects.
 static void convertSeed6(std::vector<CAddress> &vSeedsOut, const SeedSpec6 *data, unsigned int count)
 {
@@ -150,10 +152,6 @@ public:
         hashGenesisBlock = genesis.GetHash();
         assert(hashGenesisBlock == uint256("0xb4bee36fd54a6176fd832f462641415c142d50e4b378f71c041870c2b1186bc8"));
         assert(genesis.hashMerkleRoot == uint256("0x3164764afd26106715d7e58de57468e236b167d639095be545459d2bcf94afe7"));
-
-        vSeeds.push_back(CDNSSeedData("bata.io", "batadnsseed.bata.io"));
-        vSeeds.push_back(CDNSSeedData("midnightnet.net", "batadnsseed.midnightminer.net"));
-
         base58Prefixes[PUBKEY_ADDRESS] = boost::assign::list_of(25).convert_to_container<std::vector<unsigned char> >();						// Bata addresses start with 'B'
         base58Prefixes[SCRIPT_ADDRESS] = boost::assign::list_of(5)(85).convert_to_container<std::vector<unsigned char> >();						// Bata script addresses start with '3'
 //        base58Prefixes[SCRIPT_ADDRESS2] = list_of(85);						// Bata script addresses start with 'b'
@@ -162,6 +160,10 @@ public:
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0xA4)(0x0B)(0x91)(0xBD).convert_to_container<std::vector<unsigned char> >();	// Bata BIP32 prvkeys start with 'bprv'
 		base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x8000000b).convert_to_container<std::vector<unsigned char> >();				// Bata BIP44 coin type is 'b'
 
+        vFixedSeeds.clear();
+        vSeeds.clear();
+        vSeeds.push_back(CDNSSeedData("bata.io", "batadnsseed.bata.io"));
+        vSeeds.push_back(CDNSSeedData("midnightnet.net", "batadnsseed.midnightminer.net"));
         convertSeed6(vFixedSeeds, pnSeed6_main, ARRAYLEN(pnSeed6_main));
 
         fRequireRPCPassword = true;
