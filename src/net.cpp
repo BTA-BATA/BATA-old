@@ -124,8 +124,6 @@ bool Detect_NETFLOOD2 = true;
 bool BlackList_NETFLOOD2 = true;
 bool Detect_INVALIDHEIGHT = true;
 bool Blacklist_INVALIDHEIGHT = true;
-bool Detect_OLDPROTOCOL = true;
-bool Blacklist_OLDPROTOCOL = true;
 // * Global Firewall Variables *
 int CurrentAverageHeight = 0;
 int CurrentAverageHeight_Min = 0;
@@ -360,25 +358,6 @@ bool Check_Attack(CNode *pnode)
         }
     }
 
-    if (Detect_OLDPROTOCOL == true)
-    {
-        // * Attack detection #4
-        // Node Protocol version can't be less than current - 2
-
-        if (pnode->nVersion > PROTOCOL_VERSION - 3)
-        {
-
-            if (Blacklist_OLDPROTOCOL == true)
-            {
-                // Trigger Blacklisting
-                Detected = true;
-                Attack_Type = "4";
-            }
-
-        }
-
-    }
-
     // ATTACK DETECTED (TRIGGER)!
     if (Detected == true)
     {
@@ -468,6 +447,7 @@ bool Check_FalsePositive(CNode *pnode)
 
 return false;
 }
+
 
 bool FireWall(CNode *pnode, string FromFunction)
 {
@@ -2724,3 +2704,4 @@ void CNode::EndMessage() UNLOCK_FUNCTION(cs_vSend)
 
     LEAVE_CRITICAL_SECTION(cs_vSend);
 }
+
