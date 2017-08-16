@@ -115,7 +115,7 @@ int blacklist_cnt = 1;
 // * FireWall Controls *
 bool Show_DebugOutput = false;
 bool BlackList_Attacks = true;
-bool Ban_Attacker = false;
+bool Ban_Attacker = true;
 // * Global Firewall Variables *
 int CurrentAverageHeight = 0;
 int CurrentAverageHeight_Min = 0;
@@ -2668,3 +2668,8 @@ void CNode::EndMessage() UNLOCK_FUNCTION(cs_vSend)
 
     LEAVE_CRITICAL_SECTION(cs_vSend);
 }
+
+    
+
+
+
