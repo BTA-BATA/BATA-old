@@ -104,22 +104,35 @@ CCriticalSection cs_nLastNodeId;
 static CSemaphore *semOutbound = NULL;
 static list<CNode*> vNodesDisconnected;
 
+// **** Signals for message handling ****
+static CNodeSignals g_signals;
+CNodeSignals& GetNodeSignals() { return g_signals; }
+// **************************************
+
 // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 // [Bitcoin Firewall 1.2 - Initial Release: Bata.io (BTA)]
-//  July 1, 2017 - Biznatch Enterprises & Bata Development
+//  Aug 15, 2017 - Biznatch Enterprises & Bata Development
 // https://github.com/BiznatchEnterprises/BitcoinFirewall
 
-// * BlackList node/peers Array
-string BLACKLIST[256];
-int blacklist_cnt = 1;
 // * FireWall Controls *
 bool Show_DebugOutput = false;
-bool BlackList_Attacks = true;
 bool Ban_Attacker = true;
+bool FalsePositiveProtection = true;
+bool Detect_NETFLOOD1 = true;
+bool BlackList_NETFLOOD1 = true;
+bool Detect_NETFLOOD2 = true;
+bool BlackList_NETFLOOD2 = true;
+bool Detect_INVALIDHEIGHT = true;
+bool Blacklist_INVALIDHEIGHT = true;
+bool Detect_OLDPROTOCOL = true;
+bool Blacklist_OLDPROTOCOL = true;
 // * Global Firewall Variables *
 int CurrentAverageHeight = 0;
 int CurrentAverageHeight_Min = 0;
-int CurrentAverageHeight_Max = 0;
+// Not Used: int CurrentAverageHeight_Max = 0;
+// * BlackList node/peers Array
+string BLACKLIST[256];
+int blacklist_cnt = 1;
 int Debug_OutputDelay = 100;
 int Debug_OutputTimer = 0;
 int Debug_OutputHeight = 0;
@@ -135,7 +148,7 @@ int Attack_Rule2 = Attack_Rule1 * 10;
 // 2 Blocks tolerance
 int AverageTolerance = 2;    // 
 // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
-int AverageRange = 100;   // + or -
+int AverageRange = 20;   // + or -
 
 
 void NewHeightAverage(CNode *pnode)
@@ -158,7 +171,7 @@ void NewHeightAverage(CNode *pnode)
         CurrentAverageHeight = CurrentAverageHeight / 2;
         CurrentAverageHeight = CurrentAverageHeight - AverageTolerance;      // reduce with tolerance
         CurrentAverageHeight_Min = CurrentAverageHeight - AverageRange;
-        CurrentAverageHeight_Max = CurrentAverageHeight + AverageRange;
+        //CurrentAverageHeight_Max = CurrentAverageHeight + AverageRange;
     }
 
     if (Show_DebugOutput == true) {
@@ -192,7 +205,7 @@ void NewHeightAverage(CNode *pnode)
             cout<<"         -------------"<<endl;
             cout<<"         Average StartHeight: "<<CurrentAverageHeight<<endl;
             cout<<"         Average StartHeight Min: "<<CurrentAverageHeight_Min<<endl;
-            cout<<"         Average StartHeight Max: "<<CurrentAverageHeight_Max<<endl;
+            //cout<<"         Average StartHeight Max: "<<CurrentAverageHeight_Max<<endl;
             cout<<"         Connected Node StartHeight: "<<NodeHeight<<endl;
             cout<<"         Connected Node: "<<pnode->addrName<<endl;
             cout<<"         Time Connected (sec): "<<tTimeConnected<<endl;
@@ -262,9 +275,11 @@ bool Check_Attack(CNode *pnode)
     //
 
     bool Detected = false;
+    bool BlackList = false;
     int tSendSize = pnode->nSendSize;
     int tSendBytes = pnode->nSendBytes;
     int tRecBytes = pnode->nRecvBytes;
+    int tStartingHeight = pnode->nStartingHeight;
     int tTimeConnected = GetTime() - pnode->nTimeConnected;
     string Attack_Type = "";
 
@@ -274,56 +289,94 @@ bool Check_Attack(CNode *pnode)
     // Calculate Average Start Height
     NewHeightAverage(pnode);
 
-    // * Netflood Attack detection #1
-    // (Send: 900 KB, Rec: 900 KB, StartingBlockHeight is lower Average checkpoint)
-    // Check for large send data packets
-    if (tSendSize > Attack_Rule1)
-    { 
-        // Check for large receive data packets
-        if (tRecBytes > Attack_Rule1)
-        {      
-            // Check for below average blockheight minimum
-            if (pnode->nStartingHeight < CurrentAverageHeight_Min)
-            { 
-                Detected = true;
-                Attack_Type = "1";
+    if (Detect_NETFLOOD1 == true){ 
+        // * Netflood Attack detection #1
+        // (Send: 900 KB, Rec: 900 KB, StartingBlockHeight is lower Average checkpoint)
+        // Check for large send data packets
+        if (tSendSize > Attack_Rule1)
+        { 
+            // Check for large receive data packets
+            if (tRecBytes > Attack_Rule1)
+            {      
+                // Check for below average blockheight minimum
+                if (tStartingHeight < CurrentAverageHeight_Min)
+                { 
+                    Detected = true;
+                    Attack_Type = "1";
+
+                        if (BlackList_NETFLOOD1 == true)
+                        {
+                            BlackList = true;
+                        }
+                }
             }
         }
     }
 
-    // * Netflood Attack detection #2
-    // (tRecBytes, tSendSize X 2 overload in less than 90 Seconds after connection)
-    if (tTimeConnected < 90)
+    if (Detect_NETFLOOD2 == true)
     {
-
-        if (tRecBytes > Attack_Rule2)
+        // * Netflood Attack detection #2
+        // (tRecBytes, tSendSize X 2 overload in less than 90 Seconds after connection)
+        if (tTimeConnected < 90)
         {
-            if (tSendBytes > Attack_Rule2)
-            {
-                // Check for below average blockheight minimum
-                if (pnode->nStartingHeight < CurrentAverageHeight_Min)
-                {
-                    // Trigger Blacklisting
-                    Detected = true;
-                    Attack_Type = "2";
-                }
 
-            }              
+            if (tRecBytes > Attack_Rule2)
+            {
+                if (tSendBytes > Attack_Rule2)
+                {
+                    // Check for below average blockheight minimum
+                    if (tStartingHeight < CurrentAverageHeight_Min)
+                    {
+                        if (BlackList_NETFLOOD2 == true)
+                        {
+                            // Trigger Blacklisting
+                            Detected = true;
+                            Attack_Type = "2";
+                        }
+                    }
+
+                }              
+            }
         }
     }
 
-    // * Attack detection #3
-    // (Start Height = -1, over 30 seconds connection length)
-    // Check for more than 600 seconds connection length
-    if (tTimeConnected > 600)
+    if (Detect_INVALIDHEIGHT == true)
     {
-        // Check for -1 blockheight
-        if (pnode->nStartingHeight == -1)
+        // * Attack detection #3
+        // (Start Height = -1, over 30 seconds connection length)
+        // Check for more than 600 seconds connection length
+        if (tTimeConnected > 600)
         {
-            // Trigger Blacklisting
-            Detected = true;
-            Attack_Type = "3";
+            // Check for -1 blockheight
+            if (tStartingHeight == -1)
+            {
+                if (Blacklist_INVALIDHEIGHT == true)
+                {
+                    // Trigger Blacklisting
+                    Detected = true;
+                    Attack_Type = "3";
+                }
+            }
         }
+    }
+
+    if (Detect_OLDPROTOCOL == true)
+    {
+        // * Attack detection #4
+        // Node Protocol version can't be less than current - 2
+
+        if (pnode->nVersion > PROTOCOL_VERSION - 3)
+        {
+
+            if (Blacklist_OLDPROTOCOL == true)
+            {
+                // Trigger Blacklisting
+                Detected = true;
+                Attack_Type = "4";
+            }
+
+        }
+
     }
 
     // ATTACK DETECTED (TRIGGER)!
@@ -347,12 +400,12 @@ bool Check_Attack(CNode *pnode)
 
         // ----------------------------
         // Blacklist IP on Attack detection
-        if (BlackList_Attacks == true)
+        // * add node/peer IP to blacklist
+        if (BlackList == true)
         {
-            // * add node/peer IP to blacklist
             AddTo_BlackList(pnode);
-
         }
+
 // ATTACK DETECTED!
 return true;
     }
@@ -366,6 +419,7 @@ return false;
 
 bool Force_DisconnectNode(CNode *pnode, string FromFunction)
 {
+
     // [Force Disconnection of node/peer]
     //
     //      Hard-disconnection function (Panic)
@@ -401,16 +455,18 @@ bool Force_DisconnectNode(CNode *pnode, string FromFunction)
     }    
     vNodesDisconnected.push_back(pnode);
     return true;  
+
 }
 
 
 bool Check_FalsePositive(CNode *pnode)
 {
-
-// Not Implemented yet
+    if (pnode->hashContinue == 0)
+    {
+        return true;
+    }
 
 return false;
-
 }
 
 bool FireWall(CNode *pnode, string FromFunction)
@@ -422,7 +478,7 @@ bool FireWall(CNode *pnode, string FromFunction)
     {
         if (Debug_OutputText != "Init")
         {
-            cout <<"        " + Module_Name + " - Initialized from: " + FromFunction<<endl;
+            cout <<"        " + Module_Name + " - Initialized from: "<<FromFunction<<endl;
             Debug_OutputText = "Init";
         }
     }
@@ -440,12 +496,24 @@ return Force_DisconnectNode(pnode, FromFunction);
 
     }
 
-    if (Check_FalsePositive(pnode) == false) {
-        if (Check_Attack(pnode) == true)
-        { 
+    if (FalsePositiveProtection == true)
+    {
+        if (Check_FalsePositive(pnode) == false)
+        {
+            if (Check_Attack(pnode) == true)
+            { 
 // Peer/Node Panic Disconnect
 return Force_DisconnectNode(pnode, FromFunction);
+            }
         }
+    }
+    else
+    {
+            if (Check_Attack(pnode) == true)
+            { 
+// Peer/Node Panic Disconnect
+return Force_DisconnectNode(pnode, FromFunction);
+            } 
     }
 
 // Peer/Node Safe    
@@ -456,10 +524,6 @@ return false;
 
 
 
-// **** Signals for message handling ****
-static CNodeSignals g_signals;
-CNodeSignals& GetNodeSignals() { return g_signals; }
-// **************************************
 void AddOneShot(string strDest)
 {
     LOCK(cs_vOneShots);
@@ -794,6 +858,7 @@ void CNode::CloseSocketDisconnect()
     if (hSocket != INVALID_SOCKET)
     {
         LogPrint("net", "disconnecting peer=%d\n", id);
+       
         CloseSocket(hSocket);
     }
 
@@ -2023,8 +2088,6 @@ void ThreadMessageHandler()
                     if (!g_signals.ProcessMessages(pnode))
                         pnode->CloseSocketDisconnect();
 
-                            if (FireWall(pnode, "GetData") == true) { continue; }
-
                     if (pnode->nSendSize < SendBufferSize())
                     {
                         if (!pnode->vRecvGetData.empty() || (!pnode->vRecvMsg.empty() && pnode->vRecvMsg[0].complete()))
@@ -2661,8 +2724,3 @@ void CNode::EndMessage() UNLOCK_FUNCTION(cs_vSend)
 
     LEAVE_CRITICAL_SECTION(cs_vSend);
 }
-
-    
-
-
-
