@@ -275,7 +275,7 @@ bool Check_Attack(CNode *pnode)
     NewHeightAverage(pnode);
 
     // * Netflood Attack detection #1
-    // (Send: 900 KB, Rec: 900 KB, StartingBlockHeight is lower/above than Average checkpoint)
+    // (Send: 900 KB, Rec: 900 KB, StartingBlockHeight is lower Average checkpoint)
     // Check for large send data packets
     if (tSendSize > Attack_Rule1)
     { 
@@ -305,16 +305,9 @@ bool Check_Attack(CNode *pnode)
                 {
                     // Trigger Blacklisting
                     Detected = true;
-                    Attack_Type = "2A";
+                    Attack_Type = "2";
                 }
 
-                // Check for above average blockheight max
-                if (pnode->nStartingHeight < CurrentAverageHeight_Max)
-                {
-                    // Trigger Blacklisting
-                    Detected = true;
-                    Attack_Type = "2B";
-                }
             }              
         }
     }
