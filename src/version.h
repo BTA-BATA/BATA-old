@@ -13,6 +13,8 @@
 // client versioning
 // There were multiple releases with the same protocol version creating many Orphan Txs
 // Updated minimum version for GETHEADER -> 80007 to avoid conflicts and flooding.
+// GETHEADERS_VERSION was implemented with 80007 however there are other nodes with 80007
+// that do not support GETHEADERS therefore NOBLKS_VERSION_END increased to 80007
 //
 // added stuff for gravity update ( changed proto version to 80005, 80003 unsupported )
 
@@ -47,7 +49,7 @@ static const int CADDR_TIME_VERSION = 31402;
 
 // only request blocks from nodes outside this range of versions
 static const int NOBLKS_VERSION_START = 80000;
-static const int NOBLKS_VERSION_END = 80006;
+static const int NOBLKS_VERSION_END = 80007;
 
 // BIP 0031, pong message, is enabled for all versions AFTER this one
 static const int BIP0031_VERSION = 60000;
