@@ -24,7 +24,7 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle) 
     QWidget(0, f), curAlignment(0)
 {
     // set reference point, paddings
-    int paddingRight            = 260;
+    int paddingRight            = 340;
     int paddingRightCopyright   = 300;
     int paddingTop              = 260;
     int paddingCopyrightTop     = 20;
@@ -49,17 +49,17 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle) 
     pixPaint.setFont(QFont(font, 8*fontFactor));
 
     // check font size and drawing with
-    pixPaint.setFont(QFont(font, 33*fontFactor));
+    pixPaint.setFont(QFont(font, 16*fontFactor));
     QFontMetrics fm = pixPaint.fontMetrics();
     int titleTextWidth  = fm.width(titleText);
     if(titleTextWidth > 160) {
         // strange font rendering, Arial probably not found
-        fontFactor = 0.75;
+        fontFactor = 0.5;
     }
 
     // draw version
 //    pixPaint.drawText(pixmap.width()-paddingRight+2,paddingTop,versionText);
-    pixPaint.drawText(pixmap.width()-paddingRight+2,20,versionText);
+    pixPaint.drawText(pixmap.width()-paddingRight,20,versionText);
 
     // draw copyright stuff
     pixPaint.setFont(QFont(font, 8*fontFactor));
