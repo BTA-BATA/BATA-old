@@ -7,11 +7,7 @@
 #   IPv6 support
 
 sudo: required
-dist: precise
-group: legacy
-
-sudo: required
-dist: precise
+# dist: precise
 group: legacy
 
 os: linux
