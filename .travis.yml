@@ -10,6 +10,10 @@ sudo: required
 dist: precise
 group: legacy
 
+sudo: required
+dist: precise
+group: legacy
+
 os: linux
 language: cpp
 compiler: gcc
@@ -22,9 +26,14 @@ env:
     - CCACHE_TEMPDIR=/tmp/.ccache-temp
     - CCACHE_COMPRESS=1
     - BASE_OUTDIR=$TRAVIS_BUILD_DIR/out
+<<<<<<< HEAD
     - SDK_URL=https://bitcoincore.org/depends-sources/sdks
     - PYTHON_DEBUG=1
     - WINEDEBUG=fixme-all
+=======
+    - SDK_URL=https://github.com/phracker/MacOSX-SDKs/releases/download/10.13
+#    - SDK_URL=https://bitcoincore.org/depends-sources/sdks
+>>>>>>> branch '10.5.1' of https://github.com/midnight-miner/BATA-Development.git
 cache:
   apt: true
   directories:
@@ -43,7 +52,11 @@ matrix:
     - compiler: ": 32-bit + dash"
       env: HOST=i686-pc-linux-gnu PACKAGES="g++-multilib bc" RUN_TESTS=false GOAL="install" BITCOIN_CONFIG="--enable-glibc-back-compat --enable-reduce-exports LDFLAGS=-static-libstdc++" USE_SHELL="/bin/dash"
     - compiler: ": Cross-Mac"
+<<<<<<< HEAD
       env: HOST=x86_64-apple-darwin11 PACKAGES="cmake libcap-dev libz-dev libbz2-dev" BITCOIN_CONFIG="--enable-reduce-exports" OSX_SDK=10.9 GOAL="deploy"
+=======
+      env: HOST=x86_64-apple-darwin11 PACKAGES="gcc-multilib g++-multilib cmake libcap-dev libz-dev libbz2-dev" OSX_SDK=10.9 GOAL="deploy"
+>>>>>>> branch '10.5.1' of https://github.com/midnight-miner/BATA-Development.git
     - compiler: ": Win64"
       env: HOST=x86_64-w64-mingw32 PACKAGES="nsis gcc-mingw-w64-x86-64 g++-mingw-w64-x86-64 binutils-mingw-w64-x86-64 mingw-w64-x86-64-dev wine bc" RUN_TESTS=false GOAL="deploy" BITCOIN_CONFIG="--enable-gui --enable-reduce-exports" MAKEJOBS="-j2"
     - compiler: ": Win32"
@@ -56,8 +69,13 @@ install:
 before_script:
     - unset CC; unset CXX
     - mkdir -p depends/SDKs depends/sdk-sources
+<<<<<<< HEAD
     - if [ -n "$OSX_SDK" -a ! -f depends/sdk-sources/MacOSX${OSX_SDK}.sdk.tar.gz ]; then curl --location --fail $SDK_URL/MacOSX${OSX_SDK}.sdk.tar.gz -o depends/sdk-sources/MacOSX${OSX_SDK}.sdk.tar.gz; fi
     - if [ -n "$OSX_SDK" -a -f depends/sdk-sources/MacOSX${OSX_SDK}.sdk.tar.gz ]; then tar -C depends/SDKs -xf depends/sdk-sources/MacOSX${OSX_SDK}.sdk.tar.gz; fi
+=======
+    - if [ -n "$OSX_SDK" -a ! -f depends/sdk-sources/MacOSX${OSX_SDK}.sdk.tar.xz ]; then wget $SDK_URL/MacOSX${OSX_SDK}.sdk.tar.xz -O depends/sdk-sources/MacOSX${OSX_SDK}.sdk.tar.xz; fi
+    - if [ -n "$OSX_SDK" -a -f depends/sdk-sources/MacOSX${OSX_SDK}.sdk.tar.xz ]; then tar -C depends/SDKs -xf depends/sdk-sources/MacOSX${OSX_SDK}.sdk.tar.xz; fi
+>>>>>>> branch '10.5.1' of https://github.com/midnight-miner/BATA-Development.git
     - make $MAKEJOBS -C depends HOST=$HOST $DEP_OPTS
 script:
     - if [ -n "$USE_SHELL" ]; then export CONFIG_SHELL="$USE_SHELL"; fi
