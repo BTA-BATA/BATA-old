@@ -117,13 +117,14 @@ CNodeSignals& GetNodeSignals() { return g_signals; }
 // * FireWall Controls *
 bool Show_DebugOutput = false;
 bool Ban_Attacker = true;
-bool FalsePositiveProtection = true;
 bool Detect_NETFLOOD1 = true;
 bool BlackList_NETFLOOD1 = true;
 bool Detect_NETFLOOD2 = true;
 bool BlackList_NETFLOOD2 = true;
 bool Detect_INVALIDHEIGHT = true;
 bool Blacklist_INVALIDHEIGHT = true;
+bool Detect_BANDWIDTHABUSE = true;
+bool Blacklist_BANDWIDTHABUSE = true;
 // * Global Firewall Variables *
 int CurrentAverageHeight = 0;
 int CurrentAverageHeight_Min = 0;
@@ -348,7 +349,6 @@ bool Check_Attack(CNode *pnode)
 
             }   
 
-
         }
     }
 
@@ -369,6 +369,58 @@ bool Check_Attack(CNode *pnode)
                     Attack_Type = "3";
                 }
             }
+        }
+    }
+
+    if (Detect_BANDWIDTHABUSE == true)
+    {
+        // * Attack detection #4
+        // Calculate the ratio between Recieved bytes and Sent Bytes
+        // Detect a valid syncronizaion vs. a flood attack, incompatible client
+        
+        if (tTimeConnected > 30)
+        {
+
+        int tBandwidthRatio;
+    
+            if (tSendBytes > 0)
+            {
+                if (tRecBytes > 0)
+                {
+                    tBandwidthRatio = tRecBytes / tSendBytes;
+                }
+            }
+
+            if (Show_DebugOutput == true)
+            {
+                if (Debug_OutputIP != tNodeIP)
+                {
+                    cout <<"        " + Module_Name + " - Bandwidth Ratio: "<<tBandwidthRatio<<" - IP:"<<tNodeIP<<endl;
+                    Debug_OutputIP = tNodeIP;
+                }
+            }
+
+            if (Blacklist_BANDWIDTHABUSE == true)
+            {
+                if (tBandwidthRatio > 10)
+                {
+                    // unsafe bandiwidth limits
+                    Detected = true;
+                    Attack_Type = "4"; 
+                }
+                else
+                {
+                    // safe bandiwidth limits
+                    Detected = false;
+                    Attack_Type = "";
+                }
+            }
+        }
+        else
+        {
+            // disable firewall for 30 seconds
+            Detected = false;
+            Attack_Type = "";
         }
     }
 
@@ -451,19 +503,6 @@ bool Force_DisconnectNode(CNode *pnode, string FromFunction)
 
 }
 
-
-bool Check_FalsePositive(CNode *pnode)
-{
-
-    if (pnode->hashContinue == 0)
-    {
-        return true;
-    }
-
-return false;
-}
-
-
 bool FireWall(CNode *pnode, string FromFunction)
 {
     // Node/peer IP Name
@@ -491,25 +530,12 @@ return Force_DisconnectNode(pnode, FromFunction);
 
     }
 
-    if (FalsePositiveProtection == true)
-    {
-        if (Check_FalsePositive(pnode) == false)
-        {
             if (Check_Attack(pnode) == true)
             { 
 // Peer/Node Panic Disconnect
 return Force_DisconnectNode(pnode, FromFunction);
             }
-        }
-    }
-    else
-    {
-            if (Check_Attack(pnode) == true)
-            { 
-// Peer/Node Panic Disconnect
-return Force_DisconnectNode(pnode, FromFunction);
-            } 
-    }
+ 
 
 // Peer/Node Safe    
 return false;
