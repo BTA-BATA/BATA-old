@@ -350,26 +350,6 @@ bool Check_Attack(CNode *pnode)
         }
     }
 
-    if (Detect_INVALIDHEIGHT == true)
-    {
-        // * Attack detection #3
-        // (Start Height = -1, over 30 seconds connection length)
-        // Check for more than 600 seconds connection length
-        if (tTimeConnected > 600)
-        {
-            // Check for -1 blockheight
-            if (tStartingHeight == -1)
-            {
-                if (Blacklist_INVALIDHEIGHT == true)
-                {
-                    // Trigger Blacklisting
-                    Detected = true;
-                    Attack_Type = "3";
-                }
-            }
-        }
-    }
-
     if (Detect_BANDWIDTHABUSE == true)
     {
         // * Attack detection #4
@@ -419,6 +399,26 @@ bool Check_Attack(CNode *pnode)
             // disable firewall for 30 seconds
             Detected = false;
             Attack_Type = "";
+        }
+    }
+
+    if (Detect_INVALIDHEIGHT == true)
+    {
+        // * Attack detection #3
+        // (Start Height = -1, over 30 seconds connection length)
+        // Check for more than 600 seconds connection length
+        if (tTimeConnected > 600)
+        {
+            // Check for -1 blockheight
+            if (tStartingHeight == -1)
+            {
+                if (Blacklist_INVALIDHEIGHT == true)
+                {
+                    // Trigger Blacklisting
+                    Detected = true;
+                    Attack_Type = "3";
+                }
+            }
         }
     }
 
