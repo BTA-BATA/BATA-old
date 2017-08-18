@@ -318,7 +318,6 @@ bool Check_Attack(CNode *pnode)
         // (tRecBytes, tSendSize X 2 overload in less than 90 Seconds after connection)
         if (tTimeConnected < 90)
         {
-
             if (tRecBytes > Attack_Rule2)
             {
                 // Check for below average blockheight minimum
@@ -348,7 +347,6 @@ bool Check_Attack(CNode *pnode)
                 }
 
             }   
-
         }
     }
 
