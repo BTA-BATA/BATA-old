@@ -24,7 +24,7 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle) 
     QWidget(0, f), curAlignment(0)
 {
     // set reference point, paddings
-    int paddingRight            = 340;
+    int paddingRight            = 305;
     int paddingRightCopyright   = 300;
     int paddingTop              = 260;
     int paddingCopyrightTop     = 20;
@@ -49,7 +49,7 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle) 
     pixPaint.setFont(QFont(font, 8*fontFactor));
 
     // check font size and drawing with
-    pixPaint.setFont(QFont(font, 16*fontFactor));
+    pixPaint.setFont(QFont(font, 12*fontFactor));
     QFontMetrics fm = pixPaint.fontMetrics();
     int titleTextWidth  = fm.width(titleText);
     if(titleTextWidth > 160) {
