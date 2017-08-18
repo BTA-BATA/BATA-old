@@ -140,9 +140,9 @@ string Debug_OutputIP;
 string Module_Name = "[Bitcoin Firewall 1.2]";
 // * Attack Detection Settings *
 // Max send/receive bytes
-int Attack_Rule1 = 9000;
+int Attack_Rule1 = 900;
 // 900 KB send/receive size
-int Attack_Rule2 = Attack_Rule1 * 10;
+int Attack_Rule2 = Attack_Rule1 * 2;
 // 2 Blocks tolerance
 int AverageTolerance = 2;    // 
 // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
@@ -291,7 +291,7 @@ bool Check_Attack(CNode *pnode)
         // * Netflood Attack detection #1
         // (Send: 900 KB, Rec: 900 KB, StartingBlockHeight is lower Average checkpoint)
         // Check for large send data packets
-        if (tSendSize > Attack_Rule1)
+        if (tSendBytes > Attack_Rule1)
         { 
             // Check for large receive data packets
             if (tRecBytes > Attack_Rule1)
@@ -320,21 +320,35 @@ bool Check_Attack(CNode *pnode)
 
             if (tRecBytes > Attack_Rule2)
             {
-                if (tSendBytes > Attack_Rule2)
+                // Check for below average blockheight minimum
+                if (tStartingHeight < CurrentAverageHeight_Min)
                 {
-                    // Check for below average blockheight minimum
-                    if (tStartingHeight < CurrentAverageHeight_Min)
+                    if (BlackList_NETFLOOD2 == true)
                     {
-                        if (BlackList_NETFLOOD2 == true)
-                        {
-                            // Trigger Blacklisting
-                            Detected = true;
-                            Attack_Type = "2";
-                        }
+                        // Trigger Blacklisting
+                        Detected = true;
+                        Attack_Type = "2";
                     }
+                }
 
-                }              
             }
+
+            if (tSendBytes > Attack_Rule2)
+            {
+                // Check for below average blockheight minimum
+                if (tStartingHeight < CurrentAverageHeight_Min)
+                {
+                    if (BlackList_NETFLOOD2 == true)
+                    {
+                        // Trigger Blacklisting
+                        Detected = true;
+                        Attack_Type = "2";
+                    }
+                }
+
+            }   
+
+
         }
     }
 
@@ -440,6 +454,7 @@ bool Force_DisconnectNode(CNode *pnode, string FromFunction)
 
 bool Check_FalsePositive(CNode *pnode)
 {
+
     if (pnode->hashContinue == 0)
     {
         return true;
