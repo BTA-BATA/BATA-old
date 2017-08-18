@@ -400,7 +400,7 @@ bool Check_Attack(CNode *pnode)
 
             if (Blacklist_BANDWIDTHABUSE == true)
             {
-                if (tBandwidthRatio > 10)
+                if (tBandwidthRatio > 8)
                 {
                     // unsafe bandiwidth limits
                     Detected = true;
