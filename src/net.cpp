@@ -377,7 +377,7 @@ bool Check_Attack(CNode *pnode)
 
             if (Attack_Type == "3-LowBW-LowHeight")
             {
-                if (NodeTraffic > 10)
+                if (NodeTraffic > 20)
                 {
                     // check for bandwidth ratios out of the ordinary for block uploading
                     // Node/peer is in wallet sync (catching up to full blockheight)
