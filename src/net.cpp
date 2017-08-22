@@ -114,8 +114,9 @@ CNodeSignals& GetNodeSignals() { return g_signals; }
 //  Aug 15, 2017 - Biznatch Enterprises & Bata Development
 // https://github.com/BiznatchEnterprises/BitcoinFirewall
 
-// * Firewall Controls *
-bool Ban_Attacker = true;
+// * FireWall Controls *
+bool Show_DebugOutput = false;
+bool Ban_Attacker = false;
 bool Detect_INVALIDHEIGHT = true;
 bool Blacklist_INVALIDHEIGHT = true;
 bool Detect_BANDWIDTHABUSE = true;
@@ -123,14 +124,14 @@ bool Blacklist_BANDWIDTHABUSE = true;
 // * Global Firewall Variables *
 int CurrentAverageHeight = 0;
 int CurrentAverageHeight_Min = 0;
-//int CurrentAverageHeight_Max = 0;
 double CurrentAverageTraffic = 0;
 double CurrentAverageTraffic_Min = 0;
 double CurrentAverageTraffic_Max = 0;
+// Not Used: int CurrentAverageHeight_Max = 0;
 // * BlackList node/peers Array
 string BLACKLIST[256];
 int blacklist_cnt = 1;
-int Debug_OutputDelay = 20;
+int Debug_OutputDelay = 500;
 int Debug_OutputTimer = 0;
 double Debug_OutputBuffer = 0;
 bool DebugOutput = false;
@@ -138,13 +139,18 @@ string Debug_OutputText;
 string Debug_OutputIP;
 string Module_Name = "[Bitcoin Firewall 1.2]";
 // * Attack Detection Settings *
-int AverageTolerance = 2;    // 2 Blocks tolerance 
+// Max send/receive bytes
+int Attack_Rule1 = 900;
+// 900 KB send/receive size
+int Attack_Rule2 = Attack_Rule1 * 4;
+// 2 Blocks tolerance
+int AverageTolerance = 2;    // 
 // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
 int AverageRange = 20;   // + or -
 /// Bandwidth monitoring ranges
 int TrafficRange = 8; // + or -
-int TrafficTolerance = 1;    // send/recv ratio tolerance
-
+int TrafficTolerance = 1;
+int SafeRange = 88;
 
 void Examination(CNode *pnode)
 {
@@ -181,6 +187,67 @@ void Examination(CNode *pnode)
     CurrentAverageTraffic = CurrentAverageTraffic - TrafficTolerance;      // reduce with tolerance
     CurrentAverageTraffic_Min = CurrentAverageTraffic - TrafficRange;
     CurrentAverageTraffic_Max = CurrentAverageTraffic + TrafficRange;     
+  
+    if (Show_DebugOutput == true) {
+
+        DebugOutput = true;
+
+        // ** No Change since last Height Output ****
+        if (Debug_OutputBuffer == NodeTraffic)
+        {
+            DebugOutput = false;
+        }        
+        
+        // ** Prevent output from flooding screen ****
+        if (Debug_OutputTimer > Debug_OutputDelay)
+        {
+            DebugOutput = true;
+            Debug_OutputTimer = 0;
+        }
+        else
+        {
+            Debug_OutputTimer = Debug_OutputTimer + 1;
+            DebugOutput = false;
+        }
+
+        // ** Debug Output ON/OFF ****
+        if (DebugOutput == true) {
+            Debug_OutputBuffer = NodeTraffic;
+            cout <<"        " + Module_Name + " (Blacklisted: " + to_string(blacklist_cnt - 1) + ")"<<endl;
+            cout<<"         Examination: "<<pnode->addrName<<endl;
+            cout<<"         Average StartHeight: "<<CurrentAverageHeight<<endl;
+            cout<<"         Average StartHeight Min: "<<CurrentAverageHeight_Min<<endl;
+            //cout<<"         Average StartHeight Max: "<<CurrentAverageHeight_Max<<endl;
+            cout<<"         Node StartHeight: "<<pnode->nStartingHeight<<endl;
+            cout<<"         Average Traffic: "<<CurrentAverageTraffic<<endl;
+            cout<<"         Average Traffic (Min): "<<CurrentAverageTraffic_Min<<endl;
+            cout<<"         Average Traffic (Max): "<<CurrentAverageTraffic_Max<<endl;
+            cout<<"         Node Traffic: "<<NodeTraffic<<endl;
+            cout<<"         Send Size: "<<pnode->nSendSize<<endl;
+            cout<<"         Send Bytes: "<<pnode->nSendBytes<<endl;
+            cout<<"         Recv Bytes: "<<pnode->nRecvBytes<<endl;
+            cout<<"         Last Recv: "<<pnode->nLastRecv<<endl;
+            cout<<"         Last Sent: "<<pnode->nLastSend<<endl;
+            cout<<"         RecvVersion: "<<pnode->nRecvVersion<<endl;
+            cout<<"         nServices: "<<pnode->nServices<<endl;
+            cout<<"         nVersion: "<<pnode->nVersion<<endl;
+            //cout<<"         Last Sent: "<<pnode->hashContinue<<endl;
+            cout<<"         fWhitelisted: "<<pnode->fWhitelisted<<endl;
+            cout<<"         fClient: "<<pnode->fClient<<endl;     
+            cout<<"         fInbound: "<<pnode->fInbound<<endl;
+            cout<<"         fNetworkNode: "<<pnode->fNetworkNode<<endl;
+            cout<<"         nRefCount: "<<pnode->nRefCount<<endl;
+            cout<<"         fRelayTxes: "<<pnode->fRelayTxes<<endl;
+            cout<<"         fGetAddr: "<<pnode->fGetAddr<<endl;
+            cout<<"         nPingNonceSent: "<<pnode->nPingNonceSent<<endl;
+            cout<<"         nPingUsecStar: "<<pnode->nPingUsecStart<<endl;
+            cout<<"         nPingUsecTime: "<<pnode->nPingUsecTime<<endl;
+            cout<<"         fPingQueued: "<<pnode->fPingQueued<<endl;
+            cout<<"         Node Ping: "<<pnode->nPingUsecTime<<endl;
+            cout<<"         Time Connected (sec): "<<tTimeConnected<<endl;
+            cout<<"         -------------"<<endl;
+        }
+    }
 }
 
 
@@ -201,6 +268,16 @@ bool AddTo_BlackList(CNode *pnode)
 
     blacklist_cnt = blacklist_cnt + 1;
     BLACKLIST[blacklist_cnt] = tNodeIP;
+
+    if (Show_DebugOutput == true)
+    {
+        if (Debug_OutputText != "Blacklist")
+        {
+            cout <<"        " + Module_Name + " - Blacklisted: "<<tNodeIP<<endl;
+            Debug_OutputIP = tNodeIP;
+            Debug_OutputText = "Blacklist";
+        }
+    }
 
     LogPrintf("Firewall - Blacklisted: %s\n", tNodeIP.c_str());
 
@@ -377,7 +454,7 @@ bool Check_Attack(CNode *pnode)
 
             if (Attack_Type == "3-LowBW-LowHeight")
             {
-                if (NodeTraffic > 88)
+                if (NodeTraffic > SafeRange)
                 {
                     // check for bandwidth ratios out of the ordinary for block uploading
                     // Node/peer is in wallet sync (catching up to full blockheight)
@@ -387,7 +464,7 @@ bool Check_Attack(CNode *pnode)
 
            if (Attack_Type == "3-HighBW-LowHeight")
             {
-                if (NodeTraffic > 88)
+                if (NodeTraffic > SafeRange)
                 {
                     // check for bandwidth ratios out of the ordinary for block uploading
                     // Node/peer is in wallet sync (catching up to full blockheight)
@@ -401,6 +478,20 @@ bool Check_Attack(CNode *pnode)
     // ATTACK DETECTED (TRIGGER)!
     if (Detected == true)
     {
+        // Output to screen debug information
+        if (Show_DebugOutput == true)
+        {
+            if (Debug_OutputText != "Attack")
+            {
+                if (Debug_OutputIP != tNodeIP)
+                {
+                    cout <<"        " + Module_Name + " - Attack Type: " + Attack_Type + " Detected from: "<<tNodeIP<<endl;
+                    Debug_OutputIP = tNodeIP;
+                    Debug_OutputText = "Attack";
+                }
+            }
+        }
+
         LogPrintStr("Firewall - Attack Type: " +  Attack_Type + " Detected from: " + tNodeIP.c_str() + "\n");
 
         // Blacklist IP on Attack detection
@@ -432,6 +523,14 @@ bool Force_DisconnectNode(CNode *pnode, string FromFunction)
     // Node/peer IP Name
     string tNodeIP = pnode->addrName;
 
+    if (Show_DebugOutput == true) {   
+        if (Debug_OutputText != "Panic"){
+            cout <<"        " + Module_Name + " - Disconnected: "<<tNodeIP<<endl;
+            Debug_OutputIP = tNodeIP;
+            Debug_OutputText = "Panic";
+        }
+    }
+
     LogPrintStr("Firewall - (" + FromFunction + ") Panic Disconnect: " + tNodeIP.c_str() + "\n");
 
     pnode->fDisconnect = true;
@@ -459,6 +558,15 @@ bool FireWall(CNode *pnode, string FromFunction)
 {
     // Node/peer IP Name
     string tNodeIP = pnode->addrName;
+
+    if (Show_DebugOutput == true)
+    {
+        if (Debug_OutputText != "Init")
+        {
+            cout <<"        " + Module_Name + " - Initialized from: "<<FromFunction<<endl;
+            Debug_OutputText = "Init";
+        }
+    }
 
     if (Check_BlacklistedIP(pnode) == true)
     { 
