@@ -117,13 +117,12 @@ CNodeSignals& GetNodeSignals() { return g_signals; }
 
 string ModuleName = "[Bitcoin Firewall 1.2.1]";
 // * FireWall Controls *
-bool BAN_ATTACKER = true;
+bool BAN_ATTACKER = false;
+bool BLACKLIST_ATTACK = true;
 bool DETECT_INVALID_HEIGHT = true;
-bool BLACKLIST_INVALID_HEIGHT = true;
 bool DETECT_BANDWIDTH_ABUSE = true;
-bool BLACKLIST_BANDWIDTH_ABUSE = true;
 bool DETECT_DOUBLESPEND_ATTACK = true;
-bool BLACKLIST_DOUBLESPEND_ATTACK = true;
+
 // * Global Firewall Variables *
 int CurrentAverageHeight = 0;
 int CurrentAverageHeight_Min = 0;
@@ -142,7 +141,8 @@ int AverageRange = 20;   // Never allow peers using HIGH bandwidth with lower or
 /// Bandwidth monitoring ranges
 double TrafficRange = 8.88; // + or -
 double TrafficTolerance = 1; // Reduce for minimal fluctuation
-double TrafficSafeRange = 88.8;  // Traffic Safe Range Ratio Total Upload / Total Download
+double TrafficSafeRange = 5;  // Traffic Safe Range Ratio Total Upload / Total Download
+
 
 void Examination(CNode *pnode)
 {
@@ -238,12 +238,9 @@ bool CheckAttack(CNode *pnode)
 
                 // INSERT LOG WARNING - (not implemented)
 
-                if (BLACKLIST_INVALID_HEIGHT == true)
-                {
                     // Trigger Blacklisting
                     DETECTED = true;
                     AttackType = "1";
-                }
             }
         }
     }
@@ -266,12 +263,9 @@ bool CheckAttack(CNode *pnode)
                     
                     // INSERT LOG WARNING - (not implemented)
 
-                    if (BLACKLIST_BANDWIDTH_ABUSE == true)
-                    {
                         // too low bandiwidth ratio limits
                         DETECTED = true;
                         AttackType = "2-LowBW-HighHeight";
-                    }
                 }
 
                 if (pnode->nTrafficAverage > CurrentAverageTraffic_Max)
@@ -279,12 +273,9 @@ bool CheckAttack(CNode *pnode)
 
                     // INSERT LOG WARNING - (not implemented)
 
-                    if (BLACKLIST_BANDWIDTH_ABUSE == true)
-                    {
                         // too high bandiwidth ratio limits
                         DETECTED = true;
                         AttackType = "2-HighBW-HighHeight";
-                    }
                 }
             }
 
@@ -296,24 +287,18 @@ bool CheckAttack(CNode *pnode)
                 {
                     // INSERT LOG WARNING - (not implented)
 
-                    if (BLACKLIST_BANDWIDTH_ABUSE == true)
-                    {
                         // too low bandiwidth ratio limits
                         DETECTED = true;
                         AttackType = "3-LowBW-LowHeight";
-                    }
                 }
 
                 if (pnode->nTrafficAverage > CurrentAverageTraffic_Max)
                 {
                     // INSERT LOG WARNING - (not implented)
 
-                    if (BLACKLIST_BANDWIDTH_ABUSE == true)
-                    {
                         // too high bandiwidth ratio limits
                         DETECTED = true;
                         AttackType = "3-HighBW-LowHeight";
-                    }
                 }
 
             }
@@ -337,11 +322,8 @@ bool CheckAttack(CNode *pnode)
                     {
                     // INSERT LOG WARNING - (not implemented)
 
-                        if (BLACKLIST_DOUBLESPEND_ATTACK = true)
-                        {
                             AttackType = "Double-Spend";
                             DETECTED = true;
-                        }
                     }
                 }
 
@@ -350,11 +332,10 @@ bool CheckAttack(CNode *pnode)
                     if (pnode->nRecvBytes > 4000)
                     {
                         // INSERT LOG WARNING - (not implemented)
-                        if (BLACKLIST_DOUBLESPEND_ATTACK = true)
-                        {
+
                             DETECTED = true;
                             AttackType = "Double-Spend";
-                        }
+                            pnode->nWarningLevel = WarningLevelMax;
                     }
                 }
             }
@@ -375,17 +356,17 @@ bool CheckAttack(CNode *pnode)
 
             if (AttackType == "2-HighBW-HighHeight")
             {
-                if (pnode->nSendBytes < pnode->nRecvBytes)
-                {
+                //if (pnode->nSendBytes < pnode->nRecvBytes)
+                //{
                     // check for more data recieved than sent
                     // Node/peer is in wallet sync (catching up to full blockheight)
                     DETECTED = false;
-                }
+                //}
             }
 
             if (AttackType == "3-LowBW-LowHeight")
             {
-                if (pnode->nTrafficAverage > TrafficSafeRange / 2)
+                if (pnode->nTrafficAverage > TrafficSafeRange)
                 {
                     // check for bandwidth ratios out of the ordinary for block uploading
                     // Node/peer is in wallet sync (catching up to full blockheight)
@@ -419,7 +400,7 @@ bool CheckAttack(CNode *pnode)
 
         // Blacklist IP on Attack detection
         // * add node/peer IP to blacklist
-        if (BLACKLIST_BANDWIDTH_ABUSE == true)
+        if (BLACKLIST_ATTACK == true)
         {
             AddToBlackList(pnode);
         }
