@@ -1,0 +1,40 @@
+BATA Development (bata.io) - Quick Installation Guide
+-------------------------------------------
+
+*********
+Step 1 - Wallet.Dat Backup
+
+Graphical User Interface:
+Open bata-qt and click File -> Backup Wallet -> Save to a USB flash drive or other safe location, exit wallet.
+
+Non - Graphical User Interface:
+Exit bata-qt or batad, then locate your wallet.dat file and copy to a safe location by using your favorite File Manager - open one of following directories:
+
+Windows:
+Go to Start -> Run (or press WinKey+R) and run this:
+%APPDATA%\BATA
+BATA's data folder will open. For most users, this is the following locations:
+C:\Documents and Settings\YourUserName\Application data\BATA (XP)
+C:\Users\YourUserName\Appdata\Roaming\BATA (Vista and 7)
+"AppData" and "Application data" are hidden by default.
+
+Linux:
+Locate your BATA directory here: /home/username/.BATA/
+
+Mac:
+Locate your BATA directory here: /home/username/Library/Application Support/BATA
+
+*********
+Step 2 - Download the recent release from: https://github.com/BTA-BATA/BATA-SOURCE/releases
+Extract the contents of the Archive: BATA core______.zip to a temporary folder.
+
+*********
+Step 3 - Copy binary files (bata-qt, batad) from Step 2 into your existing BATA program folder (Ex: Program Files, Home/BATA) or create a new directory (folder)
+
+*********
+Step 4 - Low Peer/Node connection count? 
+
+Copy the file: bata.conf (Addnodes) from Step 2 into your BATA DATA folder from Step 1 (Non - Graphical User Interface).
+
+*********
+Step 5 - Restart new wallet 10.5.1

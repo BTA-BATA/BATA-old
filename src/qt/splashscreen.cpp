@@ -24,20 +24,21 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle) 
     QWidget(0, f), curAlignment(0)
 {
     // set reference point, paddings
-    int paddingRight            = 190;
-    int paddingRightCopyright   = 220;
-    int paddingTop              = 170;
-    int paddingCopyrightTop     = 70;
+    int paddingRight            = 305;
+    int paddingRightCopyright   = 300;
+    int paddingTop              = 260;
+    int paddingCopyrightTop     = 20;
     int titleCopyrightVSpace    = 14;
 
     float fontFactor            = 1.0;
 
     // define text to place
+    QString titleText       = tr("Bata Core");
     QString versionText     = QString("Version %1").arg(QString::fromStdString(FormatFullVersion()));
-    QString copyrightText1   = QChar(0xA9)+QString(" 2009-%1 ").arg(COPYRIGHT_YEAR) + QString(tr("Bitcoin & Litecoin Core dev"));
-    QString copyrightText2   = QChar(0xA9)+QString(" 2015-%1 ").arg(COPYRIGHT_YEAR) + QString(tr("Batacoin Core dev"));
-
+    QString copyrightText1   = QChar(0xA9)+QString(" 2009-%1 ").arg(COPYRIGHT_YEAR) + QString(tr("Bitcoin & Litecoin Core"));
+    QString copyrightText2   = QChar(0xA9)+QString(" 2015-%1 ").arg(COPYRIGHT_YEAR) + QString(tr("Bata Development"));
     QString titleAddText    = networkStyle->getTitleAddText();
+
     QString font            = QApplication::font().toString();
 
     // load the bitmap for writing some text over it
@@ -47,10 +48,18 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle) 
     pixPaint.setPen(QColor(100,100,100));
     pixPaint.setFont(QFont(font, 8*fontFactor));
 
+    // check font size and drawing with
+    pixPaint.setFont(QFont(font, 12*fontFactor));
     QFontMetrics fm = pixPaint.fontMetrics();
+    int titleTextWidth  = fm.width(titleText);
+    if(titleTextWidth > 160) {
+        // strange font rendering, Arial probably not found
+        fontFactor = 0.5;
+    }
 
     // draw version
-    pixPaint.drawText(pixmap.width()-paddingRight+2,paddingTop,versionText);
+//    pixPaint.drawText(pixmap.width()-paddingRight+2,paddingTop,versionText);
+    pixPaint.drawText(pixmap.width()-paddingRight,20,versionText);
 
     // draw copyright stuff
     pixPaint.setFont(QFont(font, 8*fontFactor));
@@ -71,7 +80,7 @@ SplashScreen::SplashScreen(Qt::WindowFlags f, const NetworkStyle *networkStyle) 
     pixPaint.end();
 
     // Set window title
-    //setWindowTitle(titleText + " " + titleAddText);
+    setWindowTitle(titleText + " " + titleAddText);
 
     // Resize window and move to center of desktop, disallow resizing
     QRect r(QPoint(), pixmap.size());

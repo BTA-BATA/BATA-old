@@ -1,5 +1,9 @@
-# 10.5 Change Log
-- Protocol Version: 80008
-- Fixed random crashing from net.cpp (Windows & Linux)
-- Bitcoin Firewall - Debug.log output
-- Optimized Bitcoin Firewall 1.0 settings
+# 10.5.1 Change Log:
+- Firewall bug fixed: socket send error Bad file descriptor (9)
+- Firewall Banscore integration
+- Firewall CheckFalsePositives
+- Blacklist very old protocols
+- Inactivity checking syntax changed
+- ThreadSocketHandler - Disconnect unused nodes
+- RefreshRecentConnections(Minutes) function
+

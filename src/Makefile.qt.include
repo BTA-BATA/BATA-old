@@ -254,9 +254,9 @@ RES_ICONS = \
   qt/res/icons/tx_input.png \
   qt/res/icons/tx_output.png \
   qt/res/icons/tx_mined.png \
-  qt/res/icons/unit_BTA.png \
-  qt/res/icons/unit_mBTA.png \
-  qt/res/icons/unit_uBTA.png
+  qt/res/icons/unit_bta.png \
+  qt/res/icons/unit_mbta.png \
+  qt/res/icons/unit_ubta.png
 
 BITCOIN_QT_CPP = \
   qt/bitcoinaddressvalidator.cpp \

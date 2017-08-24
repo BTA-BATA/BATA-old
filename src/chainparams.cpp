@@ -27,6 +27,8 @@ struct SeedSpec6 {
  * Main network
  */
 
+
+
 //! Convert the pnSeeds6 array into usable address objects.
 static void convertSeed6(std::vector<CAddress> &vSeedsOut, const SeedSpec6 *data, unsigned int count)
 {
@@ -63,14 +65,15 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
 		( 440000, uint256("0xac145d581b0c014764400f6265fbc70e1e72f62ec37506be4ad52806315c6e18"))
 		( 446000, uint256("0x6353453ab70c8f8d7c2a427848b31815b403954b35897fc171cdcb90efdc876c"))
 		( 550000, uint256("0xc3e04a21969b9b7c8b058336a752829de20f60381ab421dc65d8e7dc652fe47e"))
+		( 700000, uint256("0x3dde1aa60ab78ac29e84fa2baf641638dff95514af72e8c1dcf9fec89da84700"))
         ;
 
 static const Checkpoints::CCheckpointData data = {
         &mapCheckpoints,
-        1474222586, // * UNIX timestamp of last checkpoint block
-        634838,    // * total number of transactions between genesis and last checkpoint
+		1498771810, // * UNIX timestamp of last checkpoint block
+        797741,    // * total number of transactions between genesis and last checkpoint
                     //   (the tx=... number in the SetBestChain debug.log lines)
-        8000.0     // * estimated number of transactions per day after checkpoint
+        960.0     // * estimated number of transactions per day after checkpoint
     };
 
 static Checkpoints::MapCheckpoints mapCheckpointsTestnet =
@@ -149,18 +152,18 @@ public:
         hashGenesisBlock = genesis.GetHash();
         assert(hashGenesisBlock == uint256("0xb4bee36fd54a6176fd832f462641415c142d50e4b378f71c041870c2b1186bc8"));
         assert(genesis.hashMerkleRoot == uint256("0x3164764afd26106715d7e58de57468e236b167d639095be545459d2bcf94afe7"));
+        base58Prefixes[PUBKEY_ADDRESS] = boost::assign::list_of(25).convert_to_container<std::vector<unsigned char> >();						// Bata addresses start with 'B'
+        base58Prefixes[SCRIPT_ADDRESS] = boost::assign::list_of(5)(85).convert_to_container<std::vector<unsigned char> >();						// Bata script addresses start with '3'
+//        base58Prefixes[SCRIPT_ADDRESS2] = list_of(85);						// Bata script addresses start with 'b'
+        base58Prefixes[SECRET_KEY] =     boost::assign::list_of(188).convert_to_container<std::vector<unsigned char> >();						// Bata private keys start with '2'
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0xA4)(0x0C)(0x86)(0xFA).convert_to_container<std::vector<unsigned char> >();	// Bata BIP32 pubkeys start with 'bpub'
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0xA4)(0x0B)(0x91)(0xBD).convert_to_container<std::vector<unsigned char> >();	// Bata BIP32 prvkeys start with 'bprv'
+		base58Prefixes[EXT_COIN_TYPE]  = boost::assign::list_of(0x8000000b).convert_to_container<std::vector<unsigned char> >();				// Bata BIP44 coin type is 'b'
 
+        vFixedSeeds.clear();
+        vSeeds.clear();
+        vSeeds.push_back(CDNSSeedData("bata.io", "list.batadnsseed.bata.io"));
         vSeeds.push_back(CDNSSeedData("midnightnet.net", "batadnsseed.midnightminer.net"));
-        vSeeds.push_back(CDNSSeedData("bata.io", "batadnsseed.bata.io"));
-
-        base58Prefixes[PUBKEY_ADDRESS] = list_of(25);						// Bata addresses start with 'B'
-        base58Prefixes[SCRIPT_ADDRESS] = list_of(5);						// Bata script addresses start with '3'
-        base58Prefixes[SCRIPT_ADDRESS2] = list_of(85);						// Bata script addresses start with 'b'
-        base58Prefixes[SECRET_KEY] =     list_of(188);						// Bata private keys start with '2'
-        base58Prefixes[EXT_PUBLIC_KEY] = list_of(0xA4)(0x0C)(0x86)(0xFA);	// Bata BIP32 pubkeys start with 'bpub'
-        base58Prefixes[EXT_SECRET_KEY] = list_of(0xA4)(0x0B)(0x91)(0xBD);	// Bata BIP32 prvkeys start with 'bprv'
-		base58Prefixes[EXT_COIN_TYPE]  = list_of(0x8000000b);				// Bata BIP44 coin type is 'b'
-
         convertSeed6(vFixedSeeds, pnSeed6_main, ARRAYLEN(pnSeed6_main));
 
         fRequireRPCPassword = true;
@@ -217,11 +220,11 @@ public:
         vSeeds.push_back(CDNSSeedData("midnightminer.net", "testnet-bata.midnightminer.net"));
 //        vSeeds.push_back(CDNSSeedData("wemine-testnet.com", "dnsseed.wemine-testnet.com"));
 
-        base58Prefixes[PUBKEY_ADDRESS] = list_of(111);
-        base58Prefixes[SCRIPT_ADDRESS] = list_of(196);
-        base58Prefixes[SECRET_KEY]     = list_of(239);
-        base58Prefixes[EXT_PUBLIC_KEY] = list_of(0x04)(0x35)(0x87)(0xCF);
-        base58Prefixes[EXT_SECRET_KEY] = list_of(0x04)(0x35)(0x83)(0x94);
+        base58Prefixes[PUBKEY_ADDRESS] = boost::assign::list_of(111).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[SCRIPT_ADDRESS] = boost::assign::list_of(196).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[SECRET_KEY]     = boost::assign::list_of(239).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
         convertSeed6(vFixedSeeds, pnSeed6_test, ARRAYLEN(pnSeed6_test));
 
