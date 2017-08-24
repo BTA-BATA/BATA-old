@@ -243,6 +243,9 @@ public:
     int64_t nLastSend;
     int64_t nLastRecv;
     int64_t nTimeConnected;
+    double nTrafficAverage;
+    double nTrafficRatio;
+    int nTrafficTimestamp;
     CAddress addr;
     std::string addrName;
     CService addrLocal;
@@ -252,7 +255,9 @@ public:
     // store the sanitized version in cleanSubVer. The original should be used when dealing with
     // the network or wire types and the cleaned string used when displayed or logged.
     std::string strSubVer, cleanSubVer;
-    bool fWhitelisted; // This peer can bypass DoS banning.
+    bool fWhitelisted; // This peer can bypass DoS banning & firewall.
+    bool fBlacklisted; // This peer can't bypass firewall
+    int nWarningLevel;
     bool fOneShot;
     bool fClient;
     bool fInbound;
@@ -287,7 +292,6 @@ protected:
 public:
     uint256 hashContinue;
     int nStartingHeight;
-
     // flood relay
     std::vector<CAddress> vAddrToSend;
     mruset<CAddress> setAddrKnown;
