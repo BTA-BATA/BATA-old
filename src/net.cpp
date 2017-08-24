@@ -111,16 +111,19 @@ CNodeSignals& GetNodeSignals() { return g_signals; }
 // **************************************
 
 // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-// [Bitcoin Firewall 1.2
+// [Bitcoin Firewall 1.2.1
 //  Aug 22, 2017 - Biznatch Enterprises & Bata Development
 // http://bata.io & https://github.com/BiznatchEnterprises/BitcoinFirewall
 
+string ModuleName = "[Bitcoin Firewall 1.2.1]";
 // * FireWall Controls *
-bool BAN_ATTACKER = false;
+bool BAN_ATTACKER = true;
 bool DETECT_INVALID_HEIGHT = true;
 bool BLACKLIST_INVALID_HEIGHT = true;
 bool DETECT_BANDWIDTH_ABUSE = true;
 bool BLACKLIST_BANDWIDTH_ABUSE = true;
+bool DETECT_DOUBLESPEND_ATTACK = true;
+bool BLACKLIST_DOUBLESPEND_ATTACK = true;
 // * Global Firewall Variables *
 int CurrentAverageHeight = 0;
 int CurrentAverageHeight_Min = 0;
@@ -129,10 +132,10 @@ double CurrentAverageTraffic_Min = 0;
 double CurrentAverageTraffic_Max = 0;
 // Not Used: int CurrentAverageHeight_Max = 0;
 // * BlackList node/peers Array
-string BlackList[256];
+//string BlackList[256];
 int BlackListCounter = 1;
-string ModuleName = "[Bitcoin Firewall 1.2]";
-string IgnoreSeedNode = "";  // WHITELIST (ignore)
+int WarningLevelMax = 5;
+string IgnoreSeedNode = "68.71.58.226";  // WHITELIST (ignore)
 // * Attack Detection Settings *
 int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks tolerance
 int AverageRange = 20;   // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
@@ -145,8 +148,7 @@ void Examination(CNode *pnode)
 {
 // Calculate new Height Average from all peers connected
 
-    // Node Traffic Upload/Download ratio
-    double NodeTrafficRatio = 0;
+    bool UpdateNodeStats = false;
 
     // ** Update current average if increased ****
     if (pnode->nStartingHeight > CurrentAverageHeight) 
@@ -160,10 +162,26 @@ void Examination(CNode *pnode)
 
     if (pnode->nRecvBytes > 0)
     {
-        NodeTrafficRatio = pnode->nSendBytes / (double)pnode->nRecvBytes;
+        pnode->nTrafficRatio = pnode->nSendBytes / (double)pnode->nRecvBytes;
+
+        if (pnode->nTrafficTimestamp == 0)
+        {
+            UpdateNodeStats = true;
+        }
+
+        if (GetTime() - pnode->nTrafficTimestamp > 10){
+            UpdateNodeStats = true;
+        }
+
+        if (UpdateNodeStats == true)
+        {
+            pnode->nTrafficAverage = pnode->nTrafficAverage + pnode->nTrafficRatio / 2;
+            pnode->nTrafficTimestamp = GetTime();
+        }
+
     }
   
-    CurrentAverageTraffic = CurrentAverageTraffic + NodeTrafficRatio;
+    CurrentAverageTraffic = CurrentAverageTraffic + pnode->nTrafficRatio;
     CurrentAverageTraffic = CurrentAverageTraffic / 2;
     CurrentAverageTraffic = CurrentAverageTraffic - TrafficTolerance;      // reduce with tolerance
     CurrentAverageTraffic_Min = CurrentAverageTraffic - TrafficRange;
@@ -176,41 +194,22 @@ bool AddToBlackList(CNode *pnode)
 {
 // [AddTo Blacklist]
 
-    // Restart Blacklist count
-    if (BlackListCounter > 255)
+    if(pnode->nWarningLevel > WarningLevelMax)
     {
-        BlackListCounter = 1;
-    }
-
-    // increase Blacklist count
-    BlackListCounter++;
-    // Add node IP to blacklist
-    BlackList[BlackListCounter] = pnode->addrName;
-
-    // Append Blacklist to debug.log
-    LogPrintf("Firewall - Blacklisted: %s\n", pnode->addrName.c_str());
-
+        // increase Blacklist count
+        BlackListCounter++;
+        // Add node IP to blacklist
+        //BlackList[BlackListCounter] = pnode->addrName;
+        pnode->fBlacklisted = true;
+        // Append Blacklist to debug.log
+        LogPrintf("Firewall - Blacklisted: %s\n", pnode->addrName.c_str());
 return true;
-}
-
-
-bool CheckBlacklistedIP(CNode *pnode)
-{
-// [Check for blacklisted IP]
-
-    // Compare Node IP to session Blacklist
-
-    for (int i = 1; i < BlackListCounter; i++)
-    {  
-        if (pnode->addrName == BlackList[i])
-        {
-// Banned IP Found!
-return true;
-        }
     }
-
-// Banned IP not found
+    else
+    {
+        pnode->nWarningLevel = pnode->nWarningLevel + 1;
 return false;
+    }
 }
 
 
@@ -218,7 +217,6 @@ bool CheckAttack(CNode *pnode)
 {
 // [Intelligent Attack Protection]
 
-    double NodeTrafficRatio = 0;
     bool DETECTED = false;
     int nTimeConnected = GetTime() - pnode->nTimeConnected;
     string AttackType = "";
@@ -237,6 +235,9 @@ bool CheckAttack(CNode *pnode)
             // Check for -1 blockheight
             if (pnode->nStartingHeight == -1)
             {
+
+                // INSERT LOG WARNING - (not implemented)
+
                 if (BLACKLIST_INVALID_HEIGHT == true)
                 {
                     // Trigger Blacklisting
@@ -253,26 +254,18 @@ bool CheckAttack(CNode *pnode)
     // * Attack detection #2 & 3
         // Calculate the ratio between Recieved bytes and Sent Bytes
         // Detect a valid syncronizaion vs. a flood attack
-
-        int nBandwidthRatio = 0;
         
-        if (nTimeConnected > 30)
+        if (nTimeConnected > 90)
         {
             // * Attack detection #2
             // Node is further ahead on the chain than average minimum
             if (pnode->nStartingHeight > CurrentAverageHeight_Min)
             {
-    
-                if (pnode->nSendBytes > 0)
+                if (pnode->nTrafficAverage < CurrentAverageTraffic_Min)
                 {
-                    if (pnode->nRecvBytes > 0)
-                    {
-                        nBandwidthRatio = pnode->nRecvBytes / pnode->nSendBytes;
-                    }
-                }
+                    
+                    // INSERT LOG WARNING - (not implemented)
 
-                if (nBandwidthRatio < CurrentAverageTraffic_Min)
-                {
                     if (BLACKLIST_BANDWIDTH_ABUSE == true)
                     {
                         // too low bandiwidth ratio limits
@@ -281,8 +274,11 @@ bool CheckAttack(CNode *pnode)
                     }
                 }
 
-                if (nBandwidthRatio > CurrentAverageTraffic_Max)
+                if (pnode->nTrafficAverage > CurrentAverageTraffic_Max)
                 {
+
+                    // INSERT LOG WARNING - (not implemented)
+
                     if (BLACKLIST_BANDWIDTH_ABUSE == true)
                     {
                         // too high bandiwidth ratio limits
@@ -296,16 +292,10 @@ bool CheckAttack(CNode *pnode)
             // Node is behind on the chain than average minimum
             if (pnode->nStartingHeight < CurrentAverageHeight_Min)
             {  
-                if (pnode->nSendBytes > 0)
+                if (pnode->nTrafficAverage < CurrentAverageTraffic_Min)
                 {
-                    if (pnode->nRecvBytes > 0)
-                    {
-                        nBandwidthRatio = pnode->nRecvBytes / pnode->nSendBytes;
-                    }
-                }
+                    // INSERT LOG WARNING - (not implented)
 
-                if (nBandwidthRatio < CurrentAverageTraffic_Min)
-                {
                     if (BLACKLIST_BANDWIDTH_ABUSE == true)
                     {
                         // too low bandiwidth ratio limits
@@ -314,8 +304,10 @@ bool CheckAttack(CNode *pnode)
                     }
                 }
 
-                if (nBandwidthRatio > CurrentAverageTraffic_Max)
+                if (pnode->nTrafficAverage > CurrentAverageTraffic_Max)
                 {
+                    // INSERT LOG WARNING - (not implented)
+
                     if (BLACKLIST_BANDWIDTH_ABUSE == true)
                     {
                         // too high bandiwidth ratio limits
@@ -330,16 +322,52 @@ bool CheckAttack(CNode *pnode)
     }
     // ----------------
 
-    // Calculcate Upload / Download ratioh for current node
-    if (pnode->nRecvBytes > 0)
+    // ----------------
+    // Rule #4
+    if (DETECT_DOUBLESPEND_ATTACK = true)
     {
-        NodeTrafficRatio = pnode->nSendBytes / (double)pnode->nRecvBytes;
+        if (pnode->nTrafficRatio < TrafficSafeRange / 2)
+        {
+
+            if (pnode->nStartingHeight < CurrentAverageHeight_Min)
+            {  
+                if (nTimeConnected < 10)
+                {
+                    if (pnode->nRecvBytes > 2000)
+                    {
+                    // INSERT LOG WARNING - (not implemented)
+
+                        if (BLACKLIST_DOUBLESPEND_ATTACK = true)
+                        {
+                            AttackType = "Double-Spend";
+                            DETECTED = true;
+                        }
+                    }
+                }
+
+                if (nTimeConnected < 30)
+                {
+                    if (pnode->nRecvBytes > 4000)
+                    {
+                        // INSERT LOG WARNING - (not implemented)
+                        if (BLACKLIST_DOUBLESPEND_ATTACK = true)
+                        {
+                            DETECTED = true;
+                            AttackType = "Double-Spend";
+                        }
+                    }
+                }
+            }
+
+        }   
     }
+    // ----------------
 
     // ----------------
     // FALSE POSITIVE PROTECTION
     if (DETECTED == true)
     {
+
             if (AttackType == "2-LowBW-HighHeight")
             {
                 DETECTED = false;
@@ -357,7 +385,7 @@ bool CheckAttack(CNode *pnode)
 
             if (AttackType == "3-LowBW-LowHeight")
             {
-                if (NodeTrafficRatio > TrafficSafeRange)
+                if (pnode->nTrafficAverage > TrafficSafeRange / 2)
                 {
                     // check for bandwidth ratios out of the ordinary for block uploading
                     // Node/peer is in wallet sync (catching up to full blockheight)
@@ -367,13 +395,14 @@ bool CheckAttack(CNode *pnode)
 
            if (AttackType == "3-HighBW-LowHeight")
             {
-                if (NodeTrafficRatio > TrafficSafeRange)
+                if (pnode->nTrafficAverage > TrafficSafeRange)
                 {
                     // check for bandwidth ratios out of the ordinary for block uploading
                     // Node/peer is in wallet sync (catching up to full blockheight)
                     DETECTED = false;
                 }  
-            }        
+            }       
+
     }
     // ----------------
 
@@ -381,10 +410,12 @@ bool CheckAttack(CNode *pnode)
     // ATTACK DETECTED (TRIGGER)!
     if (DETECTED == true)
     {
+        std::string NodeTrafficRatioStr = boost::lexical_cast<std::string>(pnode->nTrafficRatio);
+        std::string NodeTrafficAverageStr = boost::lexical_cast<std::string>(pnode->nTrafficAverage);
+        std::string CurrentAverageTrafficStr = boost::lexical_cast<std::string>(CurrentAverageTraffic);
+        std::string NodeWarningStr = boost::lexical_cast<std::string>(pnode->nWarningLevel);
 
-        std::string NodeTrafficRatioStr = boost::lexical_cast<std::string>(NodeTrafficRatio);
-
-        LogPrintStr("Firewall - Attack Type: " +  AttackType + " Traffic Ratio: " + NodeTrafficRatioStr + " Detected from: " + pnode->addrName.c_str() + "\n");
+        LogPrintStr("Firewall - [Attack Type: " +  AttackType + "] [Detected from: " + pnode->addrName.c_str() + "] [Warning Level: " + NodeWarningStr + "] [Node Traffic: " + NodeTrafficRatioStr +  "] [Node Traffic Avrg: " + NodeTrafficAverageStr + "] [Traffic Avrg: " + CurrentAverageTrafficStr + "]\n");
 
         // Blacklist IP on Attack detection
         // * add node/peer IP to blacklist
@@ -455,7 +486,7 @@ bool FireWall(CNode *pnode, string FromFunction)
         CNode::ClearBanned();
     }
 
-    if (CheckBlacklistedIP(pnode) == true)
+    if (pnode->fBlacklisted == true)
     { 
         // Peer/Node Ban
         if (BAN_ATTACKER == true){
@@ -2548,6 +2579,8 @@ CNode::CNode(SOCKET hSocketIn, CAddress addrIn, std::string addrNameIn, bool fIn
     nVersion = 0;
     strSubVer = "";
     fWhitelisted = false;
+    fBlacklisted = false;
+    nWarningLevel = 0;
     fOneShot = false;
     fClient = false; // set by version message
     fInbound = fInboundIn;
@@ -2567,7 +2600,9 @@ CNode::CNode(SOCKET hSocketIn, CAddress addrIn, std::string addrNameIn, bool fIn
     nPingUsecStart = 0;
     nPingUsecTime = 0;
     fPingQueued = false;
-
+    nTrafficAverage = 0;
+    nTrafficRatio = 0;
+    nTrafficTimestamp = 0;
     {
         LOCK(cs_nLastNodeId);
         id = nLastNodeId++;
