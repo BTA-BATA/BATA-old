@@ -119,7 +119,7 @@ string ModuleName = "[Bitcoin Firewall 1.2.2]";
 //boost::filesystem::path pathFirewallLog = GetDataDir()  / "firewall.log";
 
 // * FireWall Controls *
-bool LIVE_DEBUG_OUTPUT = false;
+bool LIVE_DEBUG_OUTPUT = true;
 bool BLACKLIST_ATTACKS = true;
 bool DETECT_INVALID_WALLET = true;
 bool BLACKLIST_INVALID_WALLET = true;
@@ -142,10 +142,10 @@ int BlackListCounter = 1;
 string IgnoreSeedNode = "68.71.58.226:5784";  // WHITELIST (ignore)
 // * Attack Detection Settings *
 int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks tolerance
-int AverageRange = 100;   // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
+int AverageRange = 500;   // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
 /// Bandwidth monitoring ranges
 double TrafficTolerance = 0.0001; // Reduce for minimal fluctuation
-double TrafficRange = 1; // + or -
+double TrafficRange = 8; // + or -
 //double TrafficSafeRange = 5;  // Traffic Safe Range Ratio Total Upload / Total Download
 
 
@@ -295,7 +295,7 @@ bool CheckAttack(CNode *pnode)
 
             if (AttackType == "3-LowBW-LowHeight")
             {
-                if (pnode->nTrafficAverage > CurrentAverageTraffic_Min)
+                if (pnode->nTrafficRatio > CurrentAverageTraffic_Min)
                 {
                     // check for bandwidth ratios out of the ordinary for block uploading
                     // Node/peer is in wallet sync (catching up to full blockheight)
@@ -306,7 +306,7 @@ bool CheckAttack(CNode *pnode)
 
            if (AttackType == "3-HighBW-LowHeight")
             {
-                if (pnode->nTrafficAverage < CurrentAverageTraffic_Max)
+                if (pnode->nTrafficRatio < CurrentAverageTraffic_Max)
                 {
                     // check for bandwidth ratios out of the ordinary for block uploading
                     // Node/peer is in wallet sync (catching up to full blockheight)
@@ -332,17 +332,19 @@ bool CheckAttack(CNode *pnode)
 
         LogPrintStr("Firewall - [Attack Type: " +  AttackType + "] [Detected from: " + pnode->addrName.c_str() + "] [Node Traffic: " + NodeTrafficRatioStr +  "] [Node Traffic Avrg: " + NodeTrafficAverageStr + "] [Traffic Avrg: " + CurrentAverageTrafficStr + "]\n");
 
+        BAN_ATTACK = false;
+
         // Blacklist IP on Attack detection
         // * add node/peer IP to blacklist
         if (BLACKLIST_INVALID_WALLET == true)
         {
             BLACKLIST_ATTACK = true;
         }
-        else if (BLACKLIST_INVALID_WALLET == true)
+        if (BLACKLIST_INVALID_WALLET == true)
         {
             BLACKLIST_ATTACK = true;
         }
-        else if (BLACKLIST_BANDWIDTH_ABUSE == true)
+        if (BLACKLIST_BANDWIDTH_ABUSE == true)
         {
             BLACKLIST_ATTACK = true;
         }
@@ -357,11 +359,11 @@ bool CheckAttack(CNode *pnode)
         {
             BAN_ATTACK = true;
         }
-        else if (BAN_INVALID_WALLET == true)
+        if (BAN_INVALID_WALLET == true)
         {
             BAN_ATTACK = true;
         }
-        else if (BAN_BANDWIDTH_ABUSE == true)
+        if (BAN_BANDWIDTH_ABUSE == true)
         {
             BAN_ATTACK = true;
         }
@@ -400,7 +402,7 @@ bool Examination(CNode *pnode, string FromFunction)
     if (pnode->nStartingHeight > CurrentAverageHeight) 
     {
         CurrentAverageHeight = CurrentAverageHeight + pnode->nStartingHeight; 
-        CurrentAverageHeight = CurrentAverageHeight / 2;
+        CurrentAverageHeight = CurrentAverageHeight / vNodes.size();
         CurrentAverageHeight = CurrentAverageHeight - AverageTolerance;      // reduce with tolerance
         CurrentAverageHeight_Min = CurrentAverageHeight - AverageRange;
         CurrentAverageHeight_Max = CurrentAverageHeight + AverageRange;
@@ -415,7 +417,7 @@ bool Examination(CNode *pnode, string FromFunction)
             UpdateNodeStats = true;
         }
 
-        if (GetTime() - pnode->nTrafficTimestamp > 2){
+        if (GetTime() - pnode->nTrafficTimestamp > 60){
             UpdateNodeStats = true;
         }
 
@@ -424,7 +426,7 @@ bool Examination(CNode *pnode, string FromFunction)
 
         if (UpdateNodeStats == true)
         {   
-            CurrentAverageTraffic = CurrentAverageTraffic + pnode->nTrafficRatio;
+            CurrentAverageTraffic = CurrentAverageTraffic + pnode->nTrafficAverage;
             CurrentAverageTraffic = CurrentAverageTraffic / 2;
             CurrentAverageTraffic = CurrentAverageTraffic - TrafficTolerance;      // reduce with tolerance
             CurrentAverageTraffic_Min = CurrentAverageTraffic - TrafficRange;
@@ -437,9 +439,8 @@ bool Examination(CNode *pnode, string FromFunction)
             //fout<<ModuleName<<" [Avrg Height: "<<CurrentAverageHeight<<"] [Avrg Height Min: "<<CurrentAverageHeight_Min<<"] [Avrg Height Max: "<<CurrentAverageHeight_Max<<"]"<<endl;
  
             if (LIVE_DEBUG_OUTPUT == true){
-            cout<<ModuleName<<" [IP: "<<pnode->addrName.c_str()<<"] [Node Traffic: "<<pnode->nTrafficRatio<<"] [Node Traffic Average: "<<pnode->nTrafficAverage<<"]"<<endl;
-            cout<<ModuleName<<" [Avrg Traffic: "<<CurrentAverageTraffic<<"] [Avrg Traffic Min: "<<CurrentAverageTraffic_Min<<"] [Avrg Traffic Max: "<<CurrentAverageTraffic_Max<<"]"<<endl;
-            cout<<ModuleName<<" [Avrg Height: "<<CurrentAverageHeight<<"] [Avrg Height Min: "<<CurrentAverageHeight_Min<<"] [Avrg Height Max: "<<CurrentAverageHeight_Max<<"]"<<endl;
+            cout<<ModuleName<<" [IP: "<<pnode->addrName.c_str()<<"] [Node Traffic: "<<pnode->nTrafficRatio<<"] [Node Traffic Average: "<<pnode->nTrafficAverage<<"] [Node Height: "<<pnode->nStartingHeight<<"]"<<endl;
+            cout<<ModuleName<<" [Avrg Traffic: "<<CurrentAverageTraffic<<"] [Avrg Traffic Min: "<<CurrentAverageTraffic_Min<<"] [Avrg Traffic Max: "<<CurrentAverageTraffic_Max<<"]"<<" [Avrg Height: "<<CurrentAverageHeight<<"] [Avrg Height Min: "<<CurrentAverageHeight_Min<<"] [Avrg Height Max: "<<CurrentAverageHeight_Max<<"]"<<endl;
             }
 
         }
