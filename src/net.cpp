@@ -145,8 +145,9 @@ int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks toleranc
 int AverageRange = 100;   // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
 /// Bandwidth monitoring ranges
 double TrafficTolerance = 0.0001; // Reduce for minimal fluctuation
-double TrafficRange = 0.002; // + or -
+double TrafficRange = 1; // + or -
 //double TrafficSafeRange = 5;  // Traffic Safe Range Ratio Total Upload / Total Download
+
 
 bool AddToBlackList(CNode *pnode)
 {
@@ -418,11 +419,11 @@ bool Examination(CNode *pnode, string FromFunction)
             UpdateNodeStats = true;
         }
 
-        if (UpdateNodeStats == true)
-        {
             pnode->nTrafficAverage = pnode->nTrafficAverage + pnode->nTrafficRatio / 2;
             pnode->nTrafficTimestamp = GetTime();
-   
+
+        if (UpdateNodeStats == true)
+        {   
             CurrentAverageTraffic = CurrentAverageTraffic + pnode->nTrafficRatio;
             CurrentAverageTraffic = CurrentAverageTraffic / 2;
             CurrentAverageTraffic = CurrentAverageTraffic - TrafficTolerance;      // reduce with tolerance
@@ -436,11 +437,10 @@ bool Examination(CNode *pnode, string FromFunction)
             //fout<<ModuleName<<" [Avrg Height: "<<CurrentAverageHeight<<"] [Avrg Height Min: "<<CurrentAverageHeight_Min<<"] [Avrg Height Max: "<<CurrentAverageHeight_Max<<"]"<<endl;
  
             if (LIVE_DEBUG_OUTPUT == true){
-            cout<<ModuleName<<" [IP: "<<pnode->addrName.c_str()<<"] [Node Traffic: "<<pnode->nTrafficRatio<<"] [Node Traffic Average: "<<pnode->nTrafficAverage<<"] [Traffic Avrg: "<<CurrentAverageTraffic<<"]"<<endl;
+            cout<<ModuleName<<" [IP: "<<pnode->addrName.c_str()<<"] [Node Traffic: "<<pnode->nTrafficRatio<<"] [Node Traffic Average: "<<pnode->nTrafficAverage<<"]"<<endl;
             cout<<ModuleName<<" [Avrg Traffic: "<<CurrentAverageTraffic<<"] [Avrg Traffic Min: "<<CurrentAverageTraffic_Min<<"] [Avrg Traffic Max: "<<CurrentAverageTraffic_Max<<"]"<<endl;
             cout<<ModuleName<<" [Avrg Height: "<<CurrentAverageHeight<<"] [Avrg Height Min: "<<CurrentAverageHeight_Min<<"] [Avrg Height Max: "<<CurrentAverageHeight_Max<<"]"<<endl;
             }
-
 
         }
 
