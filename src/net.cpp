@@ -139,23 +139,14 @@ double CurrentAverageTraffic_Max = 0;
 // * BlackList node/peers Array
 //string BlackList[256];
 int BlackListCounter = 1;
-<<<<<<< HEAD
-string IgnoreSeedNode = "68.71.58.226";  // WHITELIST (ignore)
-=======
 string IgnoreSeedNode = "68.71.58.226:5784";  // WHITELIST (ignore)
->>>>>>> Firewall 1.2.2
 // * Attack Detection Settings *
 int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks tolerance
 int AverageRange = 100;   // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
 /// Bandwidth monitoring ranges
 double TrafficTolerance = 0.0001; // Reduce for minimal fluctuation
-<<<<<<< HEAD
 double TrafficRange = 0.002; // + or -
-=======
-double TrafficRange = 1; // + or -
->>>>>>> Firewall 1.2.2
 //double TrafficSafeRange = 5;  // Traffic Safe Range Ratio Total Upload / Total Download
-
 
 bool AddToBlackList(CNode *pnode)
 {
@@ -403,7 +394,6 @@ bool Examination(CNode *pnode, string FromFunction)
         // Peer/Node Panic Disconnect
         return ForceDisconnectNode(pnode, FromFunction);
     }
-<<<<<<< HEAD
 
     // ** Update current average if increased ****
     if (pnode->nStartingHeight > CurrentAverageHeight) 
@@ -451,55 +441,7 @@ bool Examination(CNode *pnode, string FromFunction)
             cout<<ModuleName<<" [Avrg Height: "<<CurrentAverageHeight<<"] [Avrg Height Min: "<<CurrentAverageHeight_Min<<"] [Avrg Height Max: "<<CurrentAverageHeight_Max<<"]"<<endl;
             }
 
-=======
 
-    // ** Update current average if increased ****
-    if (pnode->nStartingHeight > CurrentAverageHeight) 
-    {
-        CurrentAverageHeight = CurrentAverageHeight + pnode->nStartingHeight; 
-        CurrentAverageHeight = CurrentAverageHeight / 2;
-        CurrentAverageHeight = CurrentAverageHeight - AverageTolerance;      // reduce with tolerance
-        CurrentAverageHeight_Min = CurrentAverageHeight - AverageRange;
-        CurrentAverageHeight_Max = CurrentAverageHeight + AverageRange;
-    }
-
-    if (pnode->nRecvBytes > 0)
-    {
-        pnode->nTrafficRatio = pnode->nSendBytes / (double)pnode->nRecvBytes;
-
-        if (pnode->nTrafficTimestamp == 0)
-        {
-            UpdateNodeStats = true;
-        }
-
-        if (GetTime() - pnode->nTrafficTimestamp > 2){
-            UpdateNodeStats = true;
-        }
-
-            pnode->nTrafficAverage = pnode->nTrafficAverage + pnode->nTrafficRatio / 2;
-            pnode->nTrafficTimestamp = GetTime();
-
-        if (UpdateNodeStats == true)
-        {   
-            CurrentAverageTraffic = CurrentAverageTraffic + pnode->nTrafficRatio;
-            CurrentAverageTraffic = CurrentAverageTraffic / 2;
-            CurrentAverageTraffic = CurrentAverageTraffic - TrafficTolerance;      // reduce with tolerance
-            CurrentAverageTraffic_Min = CurrentAverageTraffic - TrafficRange;
-            CurrentAverageTraffic_Max = CurrentAverageTraffic + TrafficRange;     
-
-            //std::ofstream fout(pathFirewallLog);
-   
-            //fout<<ModuleName<<" [IP: "<<pnode->addrName.c_str()<<"] [Node Traffic: "<<pnode->nTrafficRatio<<"] [Node Traffic Average: "<<pnode->nTrafficAverage<<"] [Traffic Avrg: "<<CurrentAverageTraffic<<"]"<<endl;
-            //fout<<ModuleName<<" [Avrg Traffic: "<<CurrentAverageTraffic<<"] [Avrg Traffic Min: "<<CurrentAverageTraffic_Min<<"] [Avrg Traffic Max: "<<CurrentAverageTraffic_Max<<"]"<<endl;
-            //fout<<ModuleName<<" [Avrg Height: "<<CurrentAverageHeight<<"] [Avrg Height Min: "<<CurrentAverageHeight_Min<<"] [Avrg Height Max: "<<CurrentAverageHeight_Max<<"]"<<endl;
- 
-            if (LIVE_DEBUG_OUTPUT == true){
-            cout<<ModuleName<<" [IP: "<<pnode->addrName.c_str()<<"] [Node Traffic: "<<pnode->nTrafficRatio<<"] [Node Traffic Average: "<<pnode->nTrafficAverage<<"]"<<endl;
-            cout<<ModuleName<<" [Avrg Traffic: "<<CurrentAverageTraffic<<"] [Avrg Traffic Min: "<<CurrentAverageTraffic_Min<<"] [Avrg Traffic Max: "<<CurrentAverageTraffic_Max<<"]"<<endl;
-            cout<<ModuleName<<" [Avrg Height: "<<CurrentAverageHeight<<"] [Avrg Height Min: "<<CurrentAverageHeight_Min<<"] [Avrg Height Max: "<<CurrentAverageHeight_Max<<"]"<<endl;
-            }
-
->>>>>>> Firewall 1.2.2
         }
 
     }
