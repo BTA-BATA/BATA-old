@@ -142,7 +142,7 @@ int BlackListCounter = 1;
 string IgnoreSeedNode = "68.71.58.226:5784";  // WHITELIST (ignore)
 // * Attack Detection Settings *
 int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks tolerance
-int AverageRange = 500;   // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
+int AverageRange = 100;   // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
 /// Bandwidth monitoring ranges
 double TrafficTolerance = 0.0001; // Reduce for minimal fluctuation
 double TrafficRange = 8; // + or -
