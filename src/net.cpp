@@ -325,6 +325,8 @@ bool CheckAttack(CNode *pnode)
     {
         bool BLACKLIST_ATTACK = false;
         bool BAN_ATTACK = false;
+        BAN_ATTACK = false;
+        BLACKLIST_ATTACK = false;
 
         std::string NodeTrafficRatioStr = boost::lexical_cast<std::string>(pnode->nTrafficRatio);
         std::string NodeTrafficAverageStr = boost::lexical_cast<std::string>(pnode->nTrafficAverage);
@@ -332,41 +334,38 @@ bool CheckAttack(CNode *pnode)
 
         LogPrintStr("Firewall - [Attack Type: " +  AttackType + "] [Detected from: " + pnode->addrName.c_str() + "] [Node Traffic: " + NodeTrafficRatioStr +  "] [Node Traffic Avrg: " + NodeTrafficAverageStr + "] [Traffic Avrg: " + CurrentAverageTrafficStr + "]\n");
 
-        BAN_ATTACK = false;
-
-        // Blacklist IP on Attack detection
-        // * add node/peer IP to blacklist
-        if (BLACKLIST_INVALID_WALLET == true)
-        {
-            BLACKLIST_ATTACK = true;
-        }
-        if (BLACKLIST_INVALID_WALLET == true)
-        {
-            BLACKLIST_ATTACK = true;
-        }
-        if (BLACKLIST_BANDWIDTH_ABUSE == true)
-        {
-            BLACKLIST_ATTACK = true;
-        }
+            // Blacklist IP on Attack detection
+            // * add node/peer IP to blacklist
+            if (BLACKLIST_INVALID_WALLET == true)
+            {
+                BLACKLIST_ATTACK = true;
+            }
+            
+            if (BLACKLIST_INVALID_WALLET == true)
+            {
+                BLACKLIST_ATTACK = true;
+            }
+        
+            if (BLACKLIST_BANDWIDTH_ABUSE == true)
+            {
+                BLACKLIST_ATTACK = true;
+            }
 
         if (BLACKLIST_ATTACK == true)
         {
             AddToBlackList(pnode);
         }
 
-        // Peer/Node Ban if required
-        if (BAN_INVALID_WALLET == true)
-        {
-            BAN_ATTACK = true;
-        }
-        if (BAN_INVALID_WALLET == true)
-        {
-            BAN_ATTACK = true;
-        }
-        if (BAN_BANDWIDTH_ABUSE == true)
-        {
-            BAN_ATTACK = true;
-        }
+            // Peer/Node Ban if required
+            if (BAN_INVALID_WALLET == true)
+            {
+                BAN_ATTACK = true;
+            }
+        
+            if (BAN_BANDWIDTH_ABUSE == true)
+            {
+                BAN_ATTACK = true;
+            }
 
         if (BAN_ATTACK == true)
         {
