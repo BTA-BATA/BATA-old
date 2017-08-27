@@ -146,7 +146,7 @@ int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks toleranc
 int AverageRange = 200;   // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
 /// Bandwidth monitoring ranges
 double TrafficTolerance = 0.0001; // Reduce for minimal fluctuation
-double TrafficZone = 0.2; // + or -
+double TrafficZone = 8; // + or -
 
 
 bool AddToBlackList(CNode *pnode)
@@ -237,7 +237,7 @@ bool CheckAttack(CNode *pnode)
         // Calculate the ratio between Recieved bytes and Sent Bytes
         // Detect a valid syncronizaion vs. a flood attack
         
-        if (nTimeConnected > 90)
+        if (nTimeConnected > 10)
         {
             // * Attack detection #2
             // Node is further ahead on the chain than average minimum
