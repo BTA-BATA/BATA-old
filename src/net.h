@@ -256,8 +256,7 @@ public:
     // the network or wire types and the cleaned string used when displayed or logged.
     std::string strSubVer, cleanSubVer;
     bool fWhitelisted; // This peer can bypass DoS banning & firewall.
-    bool fBlacklisted; // This peer can't bypass firewall
-    int nWarningLevel;
+    int nBlacklisted; // This peer can't bypass firewall
     bool fOneShot;
     bool fClient;
     bool fInbound;

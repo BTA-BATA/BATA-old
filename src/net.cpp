@@ -122,6 +122,7 @@ string ModuleName = "[Bitcoin Firewall 1.2.2]";
 // * FireWall Controls *
 bool ENABLE_FIREWALL = true;
 bool LIVE_DEBUG_OUTPUT = true;
+bool AUTOBAN_BLACKLIST_LIMIT = 10;
 bool DETECT_INVALID_WALLET = true;
 bool BLACKLIST_INVALID_WALLET = true;
 bool BAN_INVALID_WALLET = true;
@@ -160,7 +161,7 @@ bool AddToBlackList(CNode *pnode)
         BlackListCounter++;
         // Add node IP to blacklist
         //BlackList[BlackListCounter] = pnode->addrName;
-        pnode->fBlacklisted = true;
+        pnode->nBlacklisted++ ;
         // Append Blacklist to debug.log
         LogPrintf("Firewall - Blacklisted: %s\n", pnode->addrName.c_str());
 return true;
@@ -482,11 +483,22 @@ bool FireWall(CNode *pnode, string FromFunction)
         pnode->ClearBanned();
     }
 
-    if (pnode->fBlacklisted == true)
+    if (pnode->nBlacklisted <= AUTOBAN_BLACKLIST_LIMIT)
     { 
+        if (pnode->nBlacklisted > 0)
+        {
         FromFunction = "Blacklisted";
 
 // Peer/Node Panic Disconnect
+ForceDisconnectNode(pnode, FromFunction);
+    return true;
+        }
+    }
+    else
+    {
+        pnode->Ban(pnode->addr);
+        LogPrintf("Firewall - Banned %s\n", pnode->addrName.c_str());
+        
 ForceDisconnectNode(pnode, FromFunction);
     return true;
     }
@@ -2576,8 +2588,7 @@ CNode::CNode(SOCKET hSocketIn, CAddress addrIn, std::string addrNameIn, bool fIn
     nVersion = 0;
     strSubVer = "";
     fWhitelisted = false;
-    fBlacklisted = false;
-    nWarningLevel = 0;
+    nBlacklisted = 0;
     fOneShot = false;
     fClient = false; // set by version message
     fInbound = fInboundIn;
