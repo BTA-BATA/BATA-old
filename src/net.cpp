@@ -8,6 +8,7 @@
 #include "config/bitcoin-config.h"
 #endif
 
+#include <iostream>
 #include <fstream>
 #include "net.h"
 #include <string>
@@ -119,15 +120,17 @@ string ModuleName = "[Bitcoin Firewall 1.2.2]";
 //boost::filesystem::path pathFirewallLog = GetDataDir()  / "firewall.log";
 
 // * FireWall Controls *
+bool ENABLE_FIREWALL = true;
 bool LIVE_DEBUG_OUTPUT = true;
-bool BLACKLIST_ATTACKS = true;
 bool DETECT_INVALID_WALLET = true;
 bool BLACKLIST_INVALID_WALLET = true;
 bool BAN_INVALID_WALLET = true;
-bool DETECT_BANDWIDTH_ABUSE = true;
+bool DETECT_BANDWIDTH_ABUSE =  true;
 bool BLACKLIST_BANDWIDTH_ABUSE = true;
 bool BAN_BANDWIDTH_ABUSE = false;
-bool FALSE_POSITIVE_PROTECTION = true;
+bool FALSE_POSITIVE_PROTECTION =  true;
+bool FIREWALL_CLEAR_BANS = false;
+
 // * Global Firewall Variables *
 int CurrentAverageHeight = 0;
 int CurrentAverageHeight_Min = 0;
@@ -226,19 +229,12 @@ bool CheckAttack(CNode *pnode)
             {
                 BLACKLIST_ATTACK = true;
             }
-            else
-            {
-                BAN_ATTACK = false;
-            }
 
             if (BAN_INVALID_WALLET == true)
             {
                 BAN_ATTACK = true;
             }
-            else
-            {
-                BAN_ATTACK = false;
-            }
+
         }
     }
 
@@ -299,19 +295,12 @@ bool CheckAttack(CNode *pnode)
             {
                 BLACKLIST_ATTACK = true;
             }
-            else
-            {
-                BLACKLIST_ATTACK = false;
-            }
 
             if (BAN_BANDWIDTH_ABUSE == true)
             {
                 BAN_ATTACK = true;
             }
-            else
-            {
-                BAN_ATTACK = fasle;
-            }
+
         }
     }
     // ----------------
@@ -466,6 +455,11 @@ bool Examination(CNode *pnode, string FromFunction)
 bool FireWall(CNode *pnode, string FromFunction)
 {
 
+    if (ENABLE_FIREWALL == false)
+    {
+        return false;
+    }
+
     // Check for Static Whitelisted Seed Node
     if (pnode->addrName == IgnoreSeedNode)
     {
@@ -478,7 +472,12 @@ bool FireWall(CNode *pnode, string FromFunction)
         return false;
     }
 
-    // Check for 0 peer count
+    if (FIREWALL_CLEAR_BANS == true)
+    {
+        pnode->ClearBanned();
+    }
+
+    // Check for 0 peer count (auto-unban)
     if (vNodes.size() == 0){
         pnode->ClearBanned();
     }
