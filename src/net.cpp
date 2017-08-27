@@ -413,18 +413,18 @@ bool Examination(CNode *pnode, string FromFunction)
             UpdateNodeStats = true;
         }
 
-            pnode->nTrafficAverage = pnode->nTrafficAverage + pnode->nTrafficRatio / 2;
+            pnode->nTrafficAverage = pnode->nTrafficAverage + (double)pnode->nTrafficRatio / 2;
             pnode->nTrafficTimestamp = GetTime();
 
         if (UpdateNodeStats == true)
         {   
 
   
-            CurrentAverageTraffic = CurrentAverageTraffic + pnode->nTrafficAverage;
-            CurrentAverageTraffic = CurrentAverageTraffic / 2;
-            CurrentAverageTraffic = CurrentAverageTraffic - TrafficTolerance;      // reduce with tolerance
-            CurrentAverageTraffic_Min = CurrentAverageTraffic - TrafficZone;
-            CurrentAverageTraffic_Max = CurrentAverageTraffic + TrafficZone;     
+            CurrentAverageTraffic = CurrentAverageTraffic + (double)pnode->nTrafficAverage;
+            CurrentAverageTraffic = CurrentAverageTraffic / (double)2;
+            CurrentAverageTraffic = CurrentAverageTraffic - (double)TrafficTolerance;      // reduce with tolerance
+            CurrentAverageTraffic_Min = CurrentAverageTraffic - (double)TrafficZone;
+            CurrentAverageTraffic_Max = CurrentAverageTraffic + (double)TrafficZone;     
 
             //std::ofstream fout(pathFirewallLog);
    
