@@ -226,10 +226,18 @@ bool CheckAttack(CNode *pnode)
             {
                 BLACKLIST_ATTACK = true;
             }
+            else
+            {
+                BAN_ATTACK = false;
+            }
 
             if (BAN_INVALID_WALLET == true)
             {
                 BAN_ATTACK = true;
+            }
+            else
+            {
+                BAN_ATTACK = false;
             }
         }
     }
@@ -291,10 +299,18 @@ bool CheckAttack(CNode *pnode)
             {
                 BLACKLIST_ATTACK = true;
             }
+            else
+            {
+                BLACKLIST_ATTACK = false;
+            }
 
             if (BAN_BANDWIDTH_ABUSE == true)
             {
                 BAN_ATTACK = true;
+            }
+            else
+            {
+                BAN_ATTACK = fasle;
             }
         }
     }
@@ -311,7 +327,6 @@ bool CheckAttack(CNode *pnode)
             {
                 AttackType = "";
                 DETECTED = false;
-                BAN_ATTACK = true;
             }   
 
             if (AttackType == "2-HighBW-HighHeight")
@@ -319,7 +334,6 @@ bool CheckAttack(CNode *pnode)
                 // Node/peer is in wallet sync (catching up to full blockheight)
                 AttackType = "";
                 DETECTED = false;
-                BAN_ATTACK = false;
             }
 
             if (AttackType == "3-LowBW-LowHeight")
@@ -330,7 +344,6 @@ bool CheckAttack(CNode *pnode)
                     // Node/peer is in wallet sync (catching up to full blockheight)
                     AttackType = "";
                     DETECTED = false;
-                    BAN_ATTACK = false;
                 }
             }   
 
@@ -342,7 +355,6 @@ bool CheckAttack(CNode *pnode)
                     // Node/peer is in wallet sync (catching up to full blockheight)
                     AttackType = "";
                     DETECTED = false;
-                    BAN_ATTACK = false;
                 }  
             }       
 
