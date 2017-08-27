@@ -137,16 +137,16 @@ double CurrentAverageTraffic_Min = 0;
 double CurrentAverageTraffic_Max = 0;
 // Not Used: int CurrentAverageHeight_Max = 0;
 // * BlackList node/peers Array
-//string BlackList[256];
+bool BLACKLIST_ATTACK = false;  // global temp variables
+bool BAN_ATTACK = false; //global temp variables
 int BlackListCounter = 1;
 string IgnoreSeedNode = "68.71.58.226:5784";  // WHITELIST (ignore)
 // * Attack Detection Settings *
 int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks tolerance
-int AverageRange = 100;   // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
+int AverageRange = 200;   // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
 /// Bandwidth monitoring ranges
 double TrafficTolerance = 0.0001; // Reduce for minimal fluctuation
 double TrafficRange = 8; // + or -
-//double TrafficSafeRange = 5;  // Traffic Safe Range Ratio Total Upload / Total Download
 
 
 bool AddToBlackList(CNode *pnode)
@@ -218,6 +218,16 @@ bool CheckAttack(CNode *pnode)
                     AttackType = "1";
             }
         }
+
+        if (BLACKLIST_INVALID_WALLET == true)
+        {
+            BLACKLIST_ATTACK = true;
+        }
+
+        if (BAN_INVALID_WALLET == true)
+        {
+            BAN_ATTACK = true;
+        }
     }
 
     // ---Filter 2 & 3-------------
@@ -270,6 +280,18 @@ bool CheckAttack(CNode *pnode)
             }
 
         }
+
+        if (BLACKLIST_BANDWIDTH_ABUSE == true)
+        {
+            BLACKLIST_ATTACK = true;
+        }
+
+        if (BAN_BANDWIDTH_ABUSE == true)
+        {
+            BAN_ATTACK = true;
+        }
+
+
     }
     // ----------------
 
@@ -323,10 +345,6 @@ bool CheckAttack(CNode *pnode)
     // ATTACK DETECTED (TRIGGER)!
     if (DETECTED == true)
     {
-        bool BLACKLIST_ATTACK = false;
-        bool BAN_ATTACK = false;
-        BAN_ATTACK = false;
-        BLACKLIST_ATTACK = false;
 
         std::string NodeTrafficRatioStr = boost::lexical_cast<std::string>(pnode->nTrafficRatio);
         std::string NodeTrafficAverageStr = boost::lexical_cast<std::string>(pnode->nTrafficAverage);
@@ -334,39 +352,14 @@ bool CheckAttack(CNode *pnode)
 
         LogPrintStr("Firewall - [Attack Type: " +  AttackType + "] [Detected from: " + pnode->addrName.c_str() + "] [Node Traffic: " + NodeTrafficRatioStr +  "] [Node Traffic Avrg: " + NodeTrafficAverageStr + "] [Traffic Avrg: " + CurrentAverageTrafficStr + "]\n");
 
-            // Blacklist IP on Attack detection
-            // * add node/peer IP to blacklist
-            if (BLACKLIST_INVALID_WALLET == true)
-            {
-                BLACKLIST_ATTACK = true;
-            }
-            
-            if (BLACKLIST_INVALID_WALLET == true)
-            {
-                BLACKLIST_ATTACK = true;
-            }
-        
-            if (BLACKLIST_BANDWIDTH_ABUSE == true)
-            {
-                BLACKLIST_ATTACK = true;
-            }
-
+        // Blacklist IP on Attack detection
+        // * add node/peer IP to blacklist
         if (BLACKLIST_ATTACK == true)
         {
             AddToBlackList(pnode);
         }
 
-            // Peer/Node Ban if required
-            if (BAN_INVALID_WALLET == true)
-            {
-                BAN_ATTACK = true;
-            }
-        
-            if (BAN_BANDWIDTH_ABUSE == true)
-            {
-                BAN_ATTACK = true;
-            }
-
+        // Peer/Node Ban if required
         if (BAN_ATTACK == true)
         {
             pnode->Ban(pnode->addr);
@@ -401,7 +394,7 @@ bool Examination(CNode *pnode, string FromFunction)
     if (pnode->nStartingHeight > CurrentAverageHeight) 
     {
         CurrentAverageHeight = CurrentAverageHeight + pnode->nStartingHeight; 
-        CurrentAverageHeight = CurrentAverageHeight / vNodes.size();
+        CurrentAverageHeight = CurrentAverageHeight / 2;
         CurrentAverageHeight = CurrentAverageHeight - AverageTolerance;      // reduce with tolerance
         CurrentAverageHeight_Min = CurrentAverageHeight - AverageRange;
         CurrentAverageHeight_Max = CurrentAverageHeight + AverageRange;
@@ -425,11 +418,14 @@ bool Examination(CNode *pnode, string FromFunction)
 
         if (UpdateNodeStats == true)
         {   
+            if (pnode->nTrafficAverage < CurrentAverageTraffic_Max)
+            {
             CurrentAverageTraffic = CurrentAverageTraffic + pnode->nTrafficAverage;
             CurrentAverageTraffic = CurrentAverageTraffic / 2;
             CurrentAverageTraffic = CurrentAverageTraffic - TrafficTolerance;      // reduce with tolerance
             CurrentAverageTraffic_Min = CurrentAverageTraffic - TrafficRange;
             CurrentAverageTraffic_Max = CurrentAverageTraffic + TrafficRange;     
+            }
 
             //std::ofstream fout(pathFirewallLog);
    
