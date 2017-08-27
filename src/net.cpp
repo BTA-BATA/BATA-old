@@ -146,7 +146,7 @@ int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks toleranc
 int AverageRange = 200;   // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
 /// Bandwidth monitoring ranges
 double TrafficTolerance = 0.0001; // Reduce for minimal fluctuation
-double TrafficRange = 8; // + or -
+double TrafficZone = 0.2; // + or -
 
 
 bool AddToBlackList(CNode *pnode)
@@ -317,7 +317,7 @@ bool CheckAttack(CNode *pnode)
 
             if (AttackType == "3-LowBW-LowHeight")
             {
-                if (pnode->nTrafficRatio > CurrentAverageTraffic_Min)
+                if (pnode->nTrafficAverage > CurrentAverageTraffic_Min)
                 {
                     // check for bandwidth ratios out of the ordinary for block uploading
                     // Node/peer is in wallet sync (catching up to full blockheight)
@@ -328,7 +328,7 @@ bool CheckAttack(CNode *pnode)
 
            if (AttackType == "3-HighBW-LowHeight")
             {
-                if (pnode->nTrafficRatio < CurrentAverageTraffic_Max)
+                if (pnode->nTrafficAverage < CurrentAverageTraffic_Max)
                 {
                     // check for bandwidth ratios out of the ordinary for block uploading
                     // Node/peer is in wallet sync (catching up to full blockheight)
@@ -409,7 +409,7 @@ bool Examination(CNode *pnode, string FromFunction)
             UpdateNodeStats = true;
         }
 
-        if (GetTime() - pnode->nTrafficTimestamp > 60){
+        if (GetTime() - pnode->nTrafficTimestamp > 10){
             UpdateNodeStats = true;
         }
 
@@ -418,14 +418,13 @@ bool Examination(CNode *pnode, string FromFunction)
 
         if (UpdateNodeStats == true)
         {   
-            if (pnode->nTrafficAverage < CurrentAverageTraffic_Max)
-            {
+
+  
             CurrentAverageTraffic = CurrentAverageTraffic + pnode->nTrafficAverage;
             CurrentAverageTraffic = CurrentAverageTraffic / 2;
             CurrentAverageTraffic = CurrentAverageTraffic - TrafficTolerance;      // reduce with tolerance
-            CurrentAverageTraffic_Min = CurrentAverageTraffic - TrafficRange;
-            CurrentAverageTraffic_Max = CurrentAverageTraffic + TrafficRange;     
-            }
+            CurrentAverageTraffic_Min = CurrentAverageTraffic - TrafficZone;
+            CurrentAverageTraffic_Max = CurrentAverageTraffic + TrafficZone;     
 
             //std::ofstream fout(pathFirewallLog);
    
