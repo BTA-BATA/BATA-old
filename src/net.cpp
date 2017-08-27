@@ -143,10 +143,10 @@ int BlackListCounter = 1;
 string IgnoreSeedNode = "68.71.58.226:5784";  // WHITELIST (ignore)
 // * Attack Detection Settings *
 int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks tolerance
-int AverageRange = 200;   // Never allow peers using HIGH bandwidth with lower or higher range than starting BlockHeight average
+int AverageRange = 200;   // + or - Starting Height Range
 /// Bandwidth monitoring ranges
 double TrafficTolerance = 0.0001; // Reduce for minimal fluctuation
-double TrafficZone = 8; // + or -
+double TrafficZone = 8; // + or - Traffic Range
 
 
 bool AddToBlackList(CNode *pnode)
@@ -213,20 +213,24 @@ bool CheckAttack(CNode *pnode)
             // Check for -1 blockheight
             if (pnode->nRecvVersion == 0)
             {
-                    // Trigger Blacklisting
-                    DETECTED = true;
-                    AttackType = "1";
+                // Trigger Blacklisting
+                DETECTED = true;
+                AttackType = "1";
+
             }
         }
 
-        if (BLACKLIST_INVALID_WALLET == true)
+        if (DETECTED == true)
         {
-            BLACKLIST_ATTACK = true;
-        }
+            if (BLACKLIST_INVALID_WALLET == true)
+            {
+                BLACKLIST_ATTACK = true;
+            }
 
-        if (BAN_INVALID_WALLET == true)
-        {
-            BAN_ATTACK = true;
+            if (BAN_INVALID_WALLET == true)
+            {
+                BAN_ATTACK = true;
+            }
         }
     }
 
@@ -281,17 +285,18 @@ bool CheckAttack(CNode *pnode)
 
         }
 
-        if (BLACKLIST_BANDWIDTH_ABUSE == true)
+        if (DETECTED == true)
         {
-            BLACKLIST_ATTACK = true;
+            if (BLACKLIST_BANDWIDTH_ABUSE == true)
+            {
+                BLACKLIST_ATTACK = true;
+            }
+
+            if (BAN_BANDWIDTH_ABUSE == true)
+            {
+                BAN_ATTACK = true;
+            }
         }
-
-        if (BAN_BANDWIDTH_ABUSE == true)
-        {
-            BAN_ATTACK = true;
-        }
-
-
     }
     // ----------------
 
@@ -306,6 +311,7 @@ bool CheckAttack(CNode *pnode)
             {
                 AttackType = "";
                 DETECTED = false;
+                BAN_ATTACK = true;
             }   
 
             if (AttackType == "2-HighBW-HighHeight")
@@ -313,6 +319,7 @@ bool CheckAttack(CNode *pnode)
                 // Node/peer is in wallet sync (catching up to full blockheight)
                 AttackType = "";
                 DETECTED = false;
+                BAN_ATTACK = false;
             }
 
             if (AttackType == "3-LowBW-LowHeight")
@@ -323,6 +330,7 @@ bool CheckAttack(CNode *pnode)
                     // Node/peer is in wallet sync (catching up to full blockheight)
                     AttackType = "";
                     DETECTED = false;
+                    BAN_ATTACK = false;
                 }
             }   
 
@@ -334,6 +342,7 @@ bool CheckAttack(CNode *pnode)
                     // Node/peer is in wallet sync (catching up to full blockheight)
                     AttackType = "";
                     DETECTED = false;
+                    BAN_ATTACK = false;
                 }  
             }       
 
@@ -409,7 +418,7 @@ bool Examination(CNode *pnode, string FromFunction)
             UpdateNodeStats = true;
         }
 
-        if (GetTime() - pnode->nTrafficTimestamp > 10){
+        if (GetTime() - pnode->nTrafficTimestamp > 30){
             UpdateNodeStats = true;
         }
 
@@ -418,8 +427,6 @@ bool Examination(CNode *pnode, string FromFunction)
 
         if (UpdateNodeStats == true)
         {   
-
-  
             CurrentAverageTraffic = CurrentAverageTraffic + (double)pnode->nTrafficAverage;
             CurrentAverageTraffic = CurrentAverageTraffic / (double)2;
             CurrentAverageTraffic = CurrentAverageTraffic - (double)TrafficTolerance;      // reduce with tolerance
