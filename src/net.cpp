@@ -122,7 +122,7 @@ string ModuleName = "[Bitcoin Firewall 1.2.2]";
 // * FireWall Controls *
 bool ENABLE_FIREWALL = true;
 bool LIVE_DEBUG_OUTPUT = true;
-bool AUTOBAN_BLACKLIST_LIMIT = 10;
+bool AUTOBAN_BLACKLIST_LIMIT = 2;
 bool DETECT_INVALID_WALLET = true;
 bool BLACKLIST_INVALID_WALLET = true;
 bool BAN_INVALID_WALLET = true;
@@ -139,11 +139,13 @@ int CurrentAverageHeight_Max = 0;
 double CurrentAverageTraffic = 0;
 double CurrentAverageTraffic_Min = 0;
 double CurrentAverageTraffic_Max = 0;
+int CurrentAverageSend = 0;
+int CurrentAverageRecv = 0;
 // Not Used: int CurrentAverageHeight_Max = 0;
 // * BlackList node/peers Array
 bool BLACKLIST_ATTACK = false;  // global temp variables
 bool BAN_ATTACK = false; //global temp variables
-int BlackListCounter = 1;
+int BlackListCounter = 0;
 string IgnoreSeedNode = "68.71.58.226:5784";  // WHITELIST (ignore)
 // * Attack Detection Settings *
 int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks tolerance
@@ -361,7 +363,7 @@ bool CheckAttack(CNode *pnode)
         std::string NodeTrafficAverageStr = boost::lexical_cast<std::string>(pnode->nTrafficAverage);
         std::string CurrentAverageTrafficStr = boost::lexical_cast<std::string>(CurrentAverageTraffic);
 
-        LogPrintStr("Firewall - [Attack Type: " +  AttackType + "] [Detected from: " + pnode->addrName.c_str() + "] [Node Traffic: " + NodeTrafficRatioStr +  "] [Node Traffic Avrg: " + NodeTrafficAverageStr + "] [Traffic Avrg: " + CurrentAverageTrafficStr + "]\n");
+        LogPrintStr(ModuleName + " - [Attack Type: " +  AttackType + "] [Detected from: " + pnode->addrName.c_str() + "] [Node Traffic: " + NodeTrafficRatioStr +  "] [Node Traffic Avrg: " + NodeTrafficAverageStr + "] [Traffic Avrg: " + CurrentAverageTrafficStr + "]\n");
 
         // Blacklist IP on Attack detection
         // * add node/peer IP to blacklist
@@ -374,7 +376,7 @@ bool CheckAttack(CNode *pnode)
         if (BAN_ATTACK == true)
         {
             pnode->Ban(pnode->addr);
-            LogPrintf("Firewall - Banned %s\n", pnode->addrName.c_str());
+            LogPrintStr(ModuleName + " - Banned: " + pnode->addrName.c_str() + "\n");
         }
 
 // ATTACK DETECTED!
@@ -433,17 +435,17 @@ bool Examination(CNode *pnode, string FromFunction)
             CurrentAverageTraffic = CurrentAverageTraffic / (double)2;
             CurrentAverageTraffic = CurrentAverageTraffic - (double)TrafficTolerance;      // reduce with tolerance
             CurrentAverageTraffic_Min = CurrentAverageTraffic - (double)TrafficZone;
-            CurrentAverageTraffic_Max = CurrentAverageTraffic + (double)TrafficZone;     
+            CurrentAverageTraffic_Max = CurrentAverageTraffic + (double)TrafficZone;    
+            CurrentAverageSend = CurrentAverageSend + pnode->nSendBytes / 2;
+            CurrentAverageRecv = CurrentAverageRecv + pnode->nRecvBytes / 2;
+            
 
             //std::ofstream fout(pathFirewallLog);
-   
-            //fout<<ModuleName<<" [IP: "<<pnode->addrName.c_str()<<"] [Node Traffic: "<<pnode->nTrafficRatio<<"] [Node Traffic Average: "<<pnode->nTrafficAverage<<"] [Traffic Avrg: "<<CurrentAverageTraffic<<"]"<<endl;
-            //fout<<ModuleName<<" [Avrg Traffic: "<<CurrentAverageTraffic<<"] [Avrg Traffic Min: "<<CurrentAverageTraffic_Min<<"] [Avrg Traffic Max: "<<CurrentAverageTraffic_Max<<"]"<<endl;
-            //fout<<ModuleName<<" [Avrg Height: "<<CurrentAverageHeight<<"] [Avrg Height Min: "<<CurrentAverageHeight_Min<<"] [Avrg Height Max: "<<CurrentAverageHeight_Max<<"]"<<endl;
- 
+
             if (LIVE_DEBUG_OUTPUT == true){
-            cout<<ModuleName<<" [IP: "<<pnode->addrName.c_str()<<"] [Node Traffic: "<<pnode->nTrafficRatio<<"] [Node Traffic Average: "<<pnode->nTrafficAverage<<"] [Node Height: "<<pnode->nStartingHeight<<"]"<<endl;
-            cout<<ModuleName<<" [Avrg Traffic: "<<CurrentAverageTraffic<<"] [Avrg Traffic Min: "<<CurrentAverageTraffic_Min<<"] [Avrg Traffic Max: "<<CurrentAverageTraffic_Max<<"]"<<" [Avrg Height: "<<CurrentAverageHeight<<"] [Avrg Height Min: "<<CurrentAverageHeight_Min<<"] [Avrg Height Max: "<<CurrentAverageHeight_Max<<"]"<<endl;
+            cout<<ModuleName<<" [BlackListed: "<< BlackListCounter<<"]"<<endl;
+            cout<<"[Node IP: "<<pnode->addrName.c_str()<<"] [BlackList: "<<pnode->nBlacklisted<<" [Traffic: "<<pnode->nTrafficRatio<<"] [Traffic Average: "<<pnode->nTrafficAverage<<"] [Starting Height: "<<pnode->nStartingHeight<<"] [Node Sent: "<<pnode->nSendBytes<<"] [Node Recv: "<<pnode->nRecvBytes<<"]"<<endl;
+            cout<<"[Traffic: "<<CurrentAverageTraffic<<"] [Traffic Min: "<<CurrentAverageTraffic_Min<<"] [Traffic Max: "<<CurrentAverageTraffic_Max<<"]"<<" [Height: "<<CurrentAverageHeight<<"] [Height Min: "<<CurrentAverageHeight_Min<<"] [Height Max: "<<CurrentAverageHeight_Max<<"] [Send Avrg: "<<CurrentAverageSend<<"] [Rec Avrg:"<<CurrentAverageRecv<<"]"<<endl;
             }
 
         }
