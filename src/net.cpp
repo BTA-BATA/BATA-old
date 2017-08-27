@@ -122,13 +122,12 @@ string ModuleName = "[Bitcoin Firewall 1.2.2]";
 // * FireWall Controls *
 bool ENABLE_FIREWALL = true;
 bool LIVE_DEBUG_OUTPUT = true;
-bool AUTOBAN_BLACKLIST_LIMIT = 2;
 bool DETECT_INVALID_WALLET = true;
 bool BLACKLIST_INVALID_WALLET = true;
 bool BAN_INVALID_WALLET = true;
 bool DETECT_BANDWIDTH_ABUSE =  true;
 bool BLACKLIST_BANDWIDTH_ABUSE = true;
-bool BAN_BANDWIDTH_ABUSE = false;
+bool BAN_BANDWIDTH_ABUSE = true;
 bool FALSE_POSITIVE_PROTECTION =  true;
 bool FIREWALL_CLEAR_BANS = false;
 
@@ -149,7 +148,7 @@ int BlackListCounter = 0;
 string IgnoreSeedNode = "68.71.58.226:5784";  // WHITELIST (ignore)
 // * Attack Detection Settings *
 int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks tolerance
-int AverageRange = 200;   // + or - Starting Height Range
+int AverageRange = 500;   // + or - Starting Height Range
 /// Bandwidth monitoring ranges
 double TrafficTolerance = 0.0001; // Reduce for minimal fluctuation
 double TrafficZone = 8; // + or - Traffic Range
@@ -422,7 +421,7 @@ bool Examination(CNode *pnode, string FromFunction)
             UpdateNodeStats = true;
         }
 
-        if (GetTime() - pnode->nTrafficTimestamp > 30){
+        if (GetTime() - pnode->nTrafficTimestamp > 20){
             UpdateNodeStats = true;
         }
 
@@ -436,15 +435,15 @@ bool Examination(CNode *pnode, string FromFunction)
             CurrentAverageTraffic = CurrentAverageTraffic - (double)TrafficTolerance;      // reduce with tolerance
             CurrentAverageTraffic_Min = CurrentAverageTraffic - (double)TrafficZone;
             CurrentAverageTraffic_Max = CurrentAverageTraffic + (double)TrafficZone;    
-            CurrentAverageSend = CurrentAverageSend + pnode->nSendBytes / 2;
-            CurrentAverageRecv = CurrentAverageRecv + pnode->nRecvBytes / 2;
+            CurrentAverageSend = CurrentAverageSend + pnode->nSendBytes / vNodes.size();
+            CurrentAverageRecv = CurrentAverageRecv + pnode->nRecvBytes / vNodes.size();
             
 
             //std::ofstream fout(pathFirewallLog);
 
             if (LIVE_DEBUG_OUTPUT == true){
             cout<<ModuleName<<" [BlackListed: "<< BlackListCounter<<"]"<<endl;
-            cout<<"[Traffic: "<<CurrentAverageTraffic<<"] [Traffic Min: "<<CurrentAverageTraffic_Min<<"] [Traffic Max: "<<CurrentAverageTraffic_Max<<"]"<<" [Height: "<<CurrentAverageHeight<<"] [Height Min: "<<CurrentAverageHeight_Min<<"] [Height Max: "<<CurrentAverageHeight_Max<<"] [Send Avrg: "<<CurrentAverageSend<<"] [Rec Avrg:"<<CurrentAverageRecv<<"]"<<endl;
+            cout<<"[Traffic: "<<CurrentAverageTraffic<<"] [Traffic Min: "<<CurrentAverageTraffic_Min<<"] [Traffic Max: "<<CurrentAverageTraffic_Max<<"]"<<" [Height: "<<CurrentAverageHeight<<"] [Height Min: "<<CurrentAverageHeight_Min<<"] [Height Max: "<<CurrentAverageHeight_Max<<"] [Send Avrg: "<<CurrentAverageSend<<"] [Rec Avrg: "<<CurrentAverageRecv<<"]"<<endl;
             cout<<"[Check Node IP: "<<pnode->addrName.c_str()<<"] [BlackList: "<<pnode->nBlacklisted<<" [Traffic: "<<pnode->nTrafficRatio<<"] [Traffic Average: "<<pnode->nTrafficAverage<<"] [Starting Height: "<<pnode->nStartingHeight<<"] [Node Sent: "<<pnode->nSendBytes<<"] [Node Recv: "<<pnode->nRecvBytes<<"]"<<endl;
             }
 
@@ -485,24 +484,15 @@ bool FireWall(CNode *pnode, string FromFunction)
         pnode->ClearBanned();
     }
 
-    if (pnode->nBlacklisted <= AUTOBAN_BLACKLIST_LIMIT)
-    { 
-        if (pnode->nBlacklisted > 0)
-        {
+
+    if (pnode->nBlacklisted > 0)
+    {
         FromFunction = "Blacklisted";
 
 // Peer/Node Panic Disconnect
 ForceDisconnectNode(pnode, FromFunction);
     return true;
-        }
-    }
-    else
-    {
-        pnode->Ban(pnode->addr);
-        LogPrintf("Firewall - Banned %s\n", pnode->addrName.c_str());
-        
-ForceDisconnectNode(pnode, FromFunction);
-    return true;
+
     }
 
     // Perform a Node consensus examination
