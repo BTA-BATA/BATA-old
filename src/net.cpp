@@ -190,11 +190,17 @@ bool ForceDisconnectNode(CNode *pnode, string FromFunction)
     //      Hard-disconnection function (Panic)
 
     LogPrintStr(ModuleName + " - (" + FromFunction + ") Panic Disconnect: " + pnode->addrName.c_str() + "\n");
-MilliSleep(10);
     // close socket and cleanup
+    TRY_LOCK(pnode->cs_vSend, lockSend);
+    if (lockSend)
+    {
     pnode->CloseSocketDisconnect();
-MilliSleep(100);
     return true;  
+    }
+    else
+    {
+    return false;
+    }
 
 }
 
@@ -961,6 +967,7 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest)
 
 void CNode::CloseSocketDisconnect()
 {
+
     fDisconnect = true;
     if (hSocket != INVALID_SOCKET)
     {
