@@ -414,6 +414,7 @@ bool CheckAttack(CNode *pnode)
                     if (tnTimeConnected > 60)
                     {
                         DETECTED = false;
+                        AttackType = "";
 
                         if (pnode->nStartingHeight < 0)
                         {
@@ -426,15 +427,6 @@ bool CheckAttack(CNode *pnode)
                         {
                             DETECTED = true;
                             AttackType = "1-Obsolete-Version";
-                        }
-
-                        if (pnode->nSendBytes == 130)
-                        {
-                            if (pnode->nRecvBytes == 0)
-                            {
-                            DETECTED = true;
-                            AttackType = "1-Idle";
-                            }
                         }
 
                         if (LIVE_DEBUG_OUTPUT == true){
