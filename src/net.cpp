@@ -140,6 +140,8 @@ double CurrentAverageTraffic_Min = 0;
 double CurrentAverageTraffic_Max = 0;
 int CurrentAverageSend = 0;
 int CurrentAverageRecv = 0;
+int ALL_CHECK_TIMER = 0;
+int ALL_CHECK_MAX = 10;
 // Not Used: int CurrentAverageHeight_Max = 0;
 // * BlackList node/peers Array
 bool BLACKLIST_ATTACK = false;  // global temp variables
@@ -159,10 +161,10 @@ bool AddToBlackList(CNode *pnode)
 // [AddTo Blacklist]
 
         // increase Blacklist count
-        BlackListCounter++;
+        BlackListCounter = BlackListCounter + 1;
         // Add node IP to blacklist
         //BlackList[BlackListCounter] = pnode->addrName;
-        pnode->nBlacklisted++ ;
+        pnode->nBlacklisted = pnode->nBlacklisted + 1;
         // Append Blacklist to debug.log
         LogPrintf("Firewall - Blacklisted: %s\n", pnode->addrName.c_str());
 return true;
@@ -285,13 +287,12 @@ bool CheckAttack(CNode *pnode)
 
             if (AttackType == "3-LowBW-LowHeight")
             {
-                if (pnode->nTrafficAverage > CurrentAverageTraffic_Min)
-                {
+
                     // check for bandwidth ratios out of the ordinary for block uploading
                     // Node/peer is in wallet sync (catching up to full blockheight)
                     AttackType = "";
                     DETECTED = false;
-                }
+                
             }   
 
            if (AttackType == "3-HighBW-LowHeight")
@@ -367,6 +368,32 @@ bool CheckAttack(CNode *pnode)
             }
         }
 
+        if (DETECTED == false)
+        {
+            if (ALL_CHECK_TIMER >= ALL_CHECK_MAX)
+            {
+                LOCK(cs_vNodes);
+                BOOST_FOREACH(CNode* pnode, vNodes)
+                {
+                    if (pnode->nStartingHeight == -1)
+                    {
+                        int tnTimeConnected = GetTime() - pnode->nTimeConnected;
+                        if (tnTimeConnected > 30)
+                        {
+                            DETECTED = true;
+                            AttackType = "1";
+                        }
+                    }
+                }
+                ALL_CHECK_TIMER = ALL_CHECK_TIMER + 1;
+            }
+            else
+            {
+                ALL_CHECK_TIMER = 0;
+            }
+        }
+
+
         if (DETECTED == true)
         {
             if (BLACKLIST_INVALID_WALLET == true)
@@ -380,6 +407,7 @@ bool CheckAttack(CNode *pnode)
             }
 
         }
+
     }
 
 
