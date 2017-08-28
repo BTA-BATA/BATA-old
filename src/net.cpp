@@ -129,7 +129,7 @@ bool DETECT_BANDWIDTH_ABUSE =  true;
 bool BLACKLIST_BANDWIDTH_ABUSE = true;
 bool BAN_BANDWIDTH_ABUSE = false;
 bool FALSE_POSITIVE_PROTECTION =  true;
-bool FIREWALL_CLEAR_BANS = false;
+bool FIREWALL_CLEAR_BANS = true;
 
 // * Global Firewall Variables *
 int CurrentAverageHeight = 0;
@@ -406,7 +406,7 @@ bool CheckAttack(CNode *pnode)
 
         if (DETECTED == false)
         {
-            if (GetTime() - ALL_CHECK_TIMER / 60 < ALL_CHECK_MAX)
+            if (GetTime() - ALL_CHECK_TIMER > ALL_CHECK_MAX)
             {
                 ALL_CHECK_TIMER = GetTime();
 
