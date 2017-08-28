@@ -121,7 +121,7 @@ string ModuleName = "[Bitcoin Firewall 1.2.2]";
 
 // * FireWall Controls *
 bool ENABLE_FIREWALL = true;
-bool LIVE_DEBUG_OUTPUT = true;
+bool LIVE_DEBUG_OUTPUT = false;
 bool DETECT_INVALID_WALLET = true;
 bool BLACKLIST_INVALID_WALLET = true;
 bool BAN_INVALID_WALLET = true;
@@ -129,7 +129,7 @@ bool DETECT_BANDWIDTH_ABUSE =  true;
 bool BLACKLIST_BANDWIDTH_ABUSE = true;
 bool BAN_BANDWIDTH_ABUSE = false;
 bool FALSE_POSITIVE_PROTECTION =  true;
-bool FIREWALL_CLEAR_BANS = true;
+bool FIREWALL_CLEAR_BANS = false;
 
 // * Global Firewall Variables *
 int CurrentAverageHeight = 0;
@@ -188,19 +188,12 @@ bool ForceDisconnectNode(CNode *pnode, string FromFunction)
     // [Force Disconnection of node/peer]
     //
     //      Hard-disconnection function (Panic)
-
-    LogPrintStr(ModuleName + " - (" + FromFunction + ") Panic Disconnect: " + pnode->addrName.c_str() + "\n");
-    // close socket and cleanup
-    TRY_LOCK(pnode->cs_vSend, lockSend);
-    if (lockSend)
-    {
+    LOCK(pnode->cs_vSend);
     pnode->CloseSocketDisconnect();
+    // close socket and cleanup
+    LogPrintStr(ModuleName + " - (" + FromFunction + ") Panic Disconnect: " + pnode->addrName.c_str() + "\n");
     return true;  
-    }
-    else
-    {
-    return false;
-    }
+ 
 
 }
 
