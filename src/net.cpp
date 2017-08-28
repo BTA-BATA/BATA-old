@@ -129,7 +129,7 @@ bool DETECT_BANDWIDTH_ABUSE =  true;
 bool BLACKLIST_BANDWIDTH_ABUSE = true;
 bool BAN_BANDWIDTH_ABUSE = false;
 bool FALSE_POSITIVE_PROTECTION =  true;
-bool FIREWALL_CLEAR_BANS = true;
+bool FIREWALL_CLEAR_BANS = false;
 
 // * Global Firewall Variables *
 int CurrentAverageHeight = 0;
@@ -176,7 +176,7 @@ bool AddToBlackList(CNode *pnode)
         //BlackList[BlackListCounter] = pnode->addrName;
         pnode->nBlacklisted = pnode->nBlacklisted + 1;
         // Append Blacklist to debug.log
-        LogPrintf("Firewall - Blacklisted: %s\n", pnode->addrName.c_str());
+        LogPrintStr(ModuleName + " - Blacklisted: " + pnode->addrName.c_str());
 return true;
 
 }
@@ -189,11 +189,11 @@ bool ForceDisconnectNode(CNode *pnode, string FromFunction)
     //
     //      Hard-disconnection function (Panic)
 
-    LogPrintStr("Firewall - (" + FromFunction + ") Panic Disconnect: " + pnode->addrName.c_str() + "\n");
-
+    LogPrintStr(ModuleName + " - (" + FromFunction + ") Panic Disconnect: " + pnode->addrName.c_str() + "\n");
+MilliSleep(10);
     // close socket and cleanup
     pnode->CloseSocketDisconnect();
-
+MilliSleep(100);
     return true;  
 
 }
