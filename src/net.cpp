@@ -415,7 +415,7 @@ bool CheckAttack(CNode *pnode)
 
                 if (LIVE_DEBUG_OUTPUT == true)
                 {
-                cout<<ModuleName<<" - Random Check"<<endl;
+                    cout<<ModuleName<<" - Random Check"<<endl;
                 }
 
                 BOOST_FOREACH(CNode* pnode, vNodes)
@@ -451,11 +451,7 @@ bool CheckAttack(CNode *pnode)
                             AddToBlackList(pnode);
                             }
                             ForceDisconnectNode(pnode, "Random");
-                            if (BAN_INVALID_WALLET == true)
-                            {
-                                pnode->Ban(pnode->addr);
-                                LogPrintStr(ModuleName + " - Banned: " + pnode->addrName.c_str() + "\n");
-                            }
+
                         }
                
                     }
