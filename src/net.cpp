@@ -141,9 +141,11 @@ double CurrentAverageTraffic_Max = 0;
 int CurrentAverageSend = 0;
 int CurrentAverageRecv = 0;
 int ALL_CHECK_TIMER = 0;
-int ALL_CHECK_MAX = 10;
+int ALL_CHECK_MAX = 100;
+int MINIMUM_PROTOCOL = 80007;
 // Not Used: int CurrentAverageHeight_Max = 0;
 // * BlackList node/peers Array
+string BLACKLIST[256];
 bool BLACKLIST_ATTACK = false;  // global temp variables
 bool BAN_ATTACK = false; //global temp variables
 int BlackListCounter = 0;
@@ -159,6 +161,14 @@ double TrafficZone = 6; // + or - Traffic Range
 bool AddToBlackList(CNode *pnode)
 {
 // [AddTo Blacklist]
+
+        // Restart Blacklist count
+        if (BlackListCounter >  255)
+        {
+            BlackListCounter = 0;
+        }
+
+        BLACKLIST[BlackListCounter] = pnode->addrName;
 
         // increase Blacklist count
         BlackListCounter = BlackListCounter + 1;
@@ -186,6 +196,30 @@ bool ForceDisconnectNode(CNode *pnode, string FromFunction)
 
     return true;  
 
+}
+
+
+bool CheckBlackList(CNode *pnode)
+{
+
+    if (pnode->nBlacklisted > 0)
+    {
+        // Banned IP FOUND!
+        return true;
+    }
+
+    for (int i = 0; i < BlackListCounter - 1; i++)
+    {  
+        if (pnode->addrName == BLACKLIST[i])
+        {   
+            // Banned IP FOUND!
+            return true;
+        }
+
+    }
+
+    // Banned IP not found
+    return false;
 }
 
 
@@ -324,7 +358,7 @@ bool CheckAttack(CNode *pnode)
             {
                     // Trigger Blacklisting
                     DETECTED = true;
-                    AttackType = "1";
+                    AttackType = "1-StartHeight-Invalid";
             }
         }
 
@@ -336,7 +370,7 @@ bool CheckAttack(CNode *pnode)
             {
                     // Trigger Blacklisting
                     DETECTED = true;
-                    AttackType = "1";
+                    AttackType = "1-StartHeight-Invalid";
             }
         }
         
@@ -349,7 +383,7 @@ bool CheckAttack(CNode *pnode)
             {
                 // Trigger Blacklisting
                 DETECTED = true;
-                AttackType = "1";
+                AttackType = "1-Protocol-Invalid";
 
             }
         }
@@ -363,7 +397,7 @@ bool CheckAttack(CNode *pnode)
             {
                 // Trigger Blacklisting
                 DETECTED = true;
-                AttackType = "1";
+                AttackType = "1-Protocol-Invalid";
 
             }
         }
@@ -372,24 +406,63 @@ bool CheckAttack(CNode *pnode)
         {
             if (ALL_CHECK_TIMER >= ALL_CHECK_MAX)
             {
-                LOCK(cs_vNodes);
+                cout<<ModuleName<<" - Random Check"<<endl;
+
                 BOOST_FOREACH(CNode* pnode, vNodes)
                 {
-                    if (pnode->nStartingHeight == -1)
+                    int tnTimeConnected = GetTime() - pnode->nTimeConnected;
+                    if (tnTimeConnected > 60)
                     {
-                        int tnTimeConnected = GetTime() - pnode->nTimeConnected;
-                        if (tnTimeConnected > 30)
+                        DETECTED = false;
+
+                        if (pnode->nStartingHeight < 0)
                         {
                             DETECTED = true;
-                            AttackType = "1";
+                            AttackType = "1-Invalid-Height";
+
                         }
+
+                        if (pnode->nRecvVersion < MINIMUM_PROTOCOL)
+                        {
+                            DETECTED = true;
+                            AttackType = "1-Obsolete-Version";
+                        }
+
+                        if (pnode->nSendBytes == 130)
+                        {
+                            if (pnode->nRecvBytes == 0)
+                            {
+                            DETECTED = true;
+                            AttackType = "1-Idle";
+                            }
+                        }
+
+                        if (LIVE_DEBUG_OUTPUT == true){
+                            cout<<ModuleName<<" [IP: "<<pnode->addrName.c_str()<<"] [Protocol: "<<pnode->nRecvVersion<<"] [Send: "<<pnode->nSendBytes<<"] [Recv: "<<pnode->nRecvBytes<<"] Detected: "<<DETECTED<<"]"<<endl;
+                        }
+
+                        if (DETECTED == true)
+                        {
+                            if (BLACKLIST_INVALID_WALLET == true)
+                            {   
+                            AddToBlackList(pnode);
+                            }
+                            ForceDisconnectNode(pnode, "Random");
+                            if (BAN_INVALID_WALLET == true)
+                            {
+                                pnode->Ban(pnode->addr);
+                                LogPrintStr(ModuleName + " - Banned: " + pnode->addrName.c_str() + "\n");
+                            }
+                        }
+               
                     }
+
                 }
-                ALL_CHECK_TIMER = ALL_CHECK_TIMER + 1;
+                ALL_CHECK_TIMER = 0;
             }
             else
             {
-                ALL_CHECK_TIMER = 0;
+                ALL_CHECK_TIMER = ALL_CHECK_TIMER + 1;
             }
         }
 
@@ -504,7 +577,7 @@ bool Examination(CNode *pnode, string FromFunction)
             if (LIVE_DEBUG_OUTPUT == true){
             cout<<ModuleName<<" [BlackListed: "<< BlackListCounter<<"]"<<endl;
             cout<<"[Traffic: "<<CurrentAverageTraffic<<"] [Traffic Min: "<<CurrentAverageTraffic_Min<<"] [Traffic Max: "<<CurrentAverageTraffic_Max<<"]"<<" [Height: "<<CurrentAverageHeight<<"] [Height Min: "<<CurrentAverageHeight_Min<<"] [Height Max: "<<CurrentAverageHeight_Max<<"] [Send Avrg: "<<CurrentAverageSend<<"] [Rec Avrg: "<<CurrentAverageRecv<<"]"<<endl;
-            cout<<"[Check Node IP: "<<pnode->addrName.c_str()<<"] [BlackList: "<<pnode->nBlacklisted<<" [Traffic: "<<pnode->nTrafficRatio<<"] [Traffic Average: "<<pnode->nTrafficAverage<<"] [Starting Height: "<<pnode->nStartingHeight<<"] [Node Sent: "<<pnode->nSendBytes<<"] [Node Recv: "<<pnode->nRecvBytes<<"]"<<endl;
+            cout<<"[Check Node IP: "<<pnode->addrName.c_str()<<"] [Traffic: "<<pnode->nTrafficRatio<<"] [Traffic Average: "<<pnode->nTrafficAverage<<"] [Starting Height: "<<pnode->nStartingHeight<<"] [Node Sent: "<<pnode->nSendBytes<<"] [Node Recv: "<<pnode->nRecvBytes<<"]"<<endl;
             }
 
         }
@@ -545,7 +618,7 @@ bool FireWall(CNode *pnode, string FromFunction)
     }
 
 
-    if (pnode->nBlacklisted > 0)
+    if (CheckBlackList(pnode) == true)
     {
         FromFunction = "Blacklisted";
 
