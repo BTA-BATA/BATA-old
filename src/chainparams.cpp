@@ -73,18 +73,18 @@ static const Checkpoints::CCheckpointData data = {
 		1498771810, // * UNIX timestamp of last checkpoint block
         797741,    // * total number of transactions between genesis and last checkpoint
                     //   (the tx=... number in the SetBestChain debug.log lines)
-        960.0     // * estimated number of transactions per day after checkpoint
+        960        // * estimated number of transactions per day after checkpoint
     };
 
 static Checkpoints::MapCheckpoints mapCheckpointsTestnet =
         boost::assign::map_list_of
-        ( 546, uint256("0xa0fea99a6897f531600c8ae53367b126824fd6a847b2b2b73817a95b8e27e602"))
+        ( 1, uint256("0xc1976360739525c4ea0949fc4a1b0086284614198a0f133b1513d79c55b5466b"))
         ;
 static const Checkpoints::CCheckpointData dataTestnet = {
         &mapCheckpointsTestnet,
-        1365458829,
-        547,
-        576
+		1503885814,
+        2,
+        960
     };
 
 static Checkpoints::MapCheckpoints mapCheckpointsRegtest =
@@ -209,10 +209,28 @@ public:
         nMaxTipAge = 0x7fffffff;
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
-        genesis.nTime = 1388880557;
-        genesis.nNonce = 387006691;
+        genesis.nTime = 1503885814;
+        genesis.nNonce = 698199;
+
+        if (false && genesis.GetHash() != hashGenesisBlock)
+                {
+                    printf("recalculating params for testnet.\n");
+//                    printf("old testnet genesis nonce: %s\n", (unsigned)genesis.nNonce.ToString().c_str());
+                    cout << "old testnet genesis nonce: " << (unsigned)genesis.nNonce << "\n" ;
+                    printf("old testnet genesis hash:  %s\n", hashGenesisBlock.ToString().c_str());
+                    printf("old testnet genesis nBits: %d\n", genesis.nBits);
+                    printf("recalculating params for testnet.\n");
+                    // deliberately empty for loop finds nonce value.
+                    for(genesis.nNonce == 0; genesis.GetHash() > bnProofOfWorkLimit; genesis.nNonce++){ }
+                    printf("new testnet genesis merkle root: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+//                    printf("new testnet genesis nonce: %s\n", (unsigned)genesis.nNonce);
+                    cout << "new testnet genesis nonce: " << (unsigned)genesis.nNonce << "\n" ;
+                    printf("new testnet genesis hash: %s\n", genesis.GetHash().ToString().c_str());
+                    printf("new testnet genesis nBits: %d\n", genesis.nBits);
+                }
+
         hashGenesisBlock = genesis.GetHash();
-//        assert(hashGenesisBlock == uint256("0xb78197f0e175697646db1f738edc1ffdcb30588ebe70e7e16026489076577061"));
+        assert(hashGenesisBlock == uint256("0x00000a6800e5e2b43515cd12da56861eb482ebcdfa6ee92c1a8d7836ff654500"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -229,11 +247,12 @@ public:
         convertSeed6(vFixedSeeds, pnSeed6_test, ARRAYLEN(pnSeed6_test));
 
         fRequireRPCPassword = true;
-        fMiningRequiresPeers = true;
+        fMiningRequiresPeers = false;
         fAllowMinDifficultyBlocks = true;
         fDefaultConsistencyChecks = false;
         fRequireStandard = false;
         fMineBlocksOnDemand = false;
+        fSkipProofOfWorkCheck = true;
         fTestnetToBeDeprecatedFieldRPC = true;
 
         // Bata: v2 enforced using Bitcoin's supermajority rule
