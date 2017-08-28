@@ -188,12 +188,15 @@ bool ForceDisconnectNode(CNode *pnode, string FromFunction)
     // [Force Disconnection of node/peer]
     //
     //      Hard-disconnection function (Panic)
-    LOCK(pnode->cs_vSend);
+
+TRY_LOCK(pnode->cs_vSend, lockSend);
+if (lockSend){
+    // release outbound grant (if any)
     pnode->CloseSocketDisconnect();
-    // close socket and cleanup
+
     LogPrintStr(ModuleName + " - (" + FromFunction + ") Panic Disconnect: " + pnode->addrName.c_str() + "\n");
     return true;  
- 
+}
 
 }
 
@@ -410,7 +413,10 @@ bool CheckAttack(CNode *pnode)
             {
                 ALL_CHECK_TIMER = GetTime();
 
+                if (LIVE_DEBUG_OUTPUT == true)
+                {
                 cout<<ModuleName<<" - Random Check"<<endl;
+                }
 
                 BOOST_FOREACH(CNode* pnode, vNodes)
                 {
@@ -433,7 +439,8 @@ bool CheckAttack(CNode *pnode)
                             AttackType = "1-Obsolete-Version";
                         }
 
-                        if (LIVE_DEBUG_OUTPUT == true){
+                        if (LIVE_DEBUG_OUTPUT == true)
+                        {
                             cout<<ModuleName<<" [IP: "<<pnode->addrName.c_str()<<"] [Protocol: "<<pnode->nRecvVersion<<"] [Send: "<<pnode->nSendBytes<<"] [Recv: "<<pnode->nRecvBytes<<"] Detected: "<<DETECTED<<"]"<<endl;
                         }
 
@@ -1181,7 +1188,6 @@ void SocketSendData(CNode *pnode)
 
 
         if (FireWall(pnode, "SendData") == true) {
-            pnode->AbortMessage();
              return;
         }
         else
