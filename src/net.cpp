@@ -140,8 +140,8 @@ double CurrentAverageTraffic_Min = 0;
 double CurrentAverageTraffic_Max = 0;
 int CurrentAverageSend = 0;
 int CurrentAverageRecv = 0;
-int ALL_CHECK_TIMER = 0;
-int ALL_CHECK_MAX = 100;
+int ALL_CHECK_TIMER = GetTime();
+int ALL_CHECK_MAX = 10;  // minutes interval
 int MINIMUM_PROTOCOL = 80007;
 // Not Used: int CurrentAverageHeight_Max = 0;
 // * BlackList node/peers Array
@@ -155,7 +155,7 @@ int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks toleranc
 int AverageRange = 500;   // + or - Starting Height Range
 /// Bandwidth monitoring ranges
 double TrafficTolerance = 0.0001; // Reduce for minimal fluctuation
-double TrafficZone = 6; // + or - Traffic Range
+double TrafficZone = 4; // + or - Traffic Range
 
 
 bool AddToBlackList(CNode *pnode)
@@ -321,11 +321,13 @@ bool CheckAttack(CNode *pnode)
 
             if (AttackType == "3-LowBW-LowHeight")
             {
-
+                if (pnode->nRecvBytes < pnode->nSendBytes)
+                {
                     // check for bandwidth ratios out of the ordinary for block uploading
                     // Node/peer is in wallet sync (catching up to full blockheight)
                     AttackType = "";
                     DETECTED = false;
+                }
                 
             }   
 
@@ -404,8 +406,10 @@ bool CheckAttack(CNode *pnode)
 
         if (DETECTED == false)
         {
-            if (ALL_CHECK_TIMER >= ALL_CHECK_MAX)
+            if (GetTime() - ALL_CHECK_TIMER / 60 < ALL_CHECK_MAX)
             {
+                ALL_CHECK_TIMER = GetTime();
+
                 cout<<ModuleName<<" - Random Check"<<endl;
 
                 BOOST_FOREACH(CNode* pnode, vNodes)
@@ -450,12 +454,9 @@ bool CheckAttack(CNode *pnode)
                     }
 
                 }
-                ALL_CHECK_TIMER = 0;
+
             }
-            else
-            {
-                ALL_CHECK_TIMER = ALL_CHECK_TIMER + 1;
-            }
+
         }
 
 
