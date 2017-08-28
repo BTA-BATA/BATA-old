@@ -212,23 +212,6 @@ public:
         genesis.nTime = 1503885814;
         genesis.nNonce = 698199;
 
-        if (false && genesis.GetHash() != hashGenesisBlock)
-                {
-                    printf("recalculating params for testnet.\n");
-//                    printf("old testnet genesis nonce: %s\n", (unsigned)genesis.nNonce.ToString().c_str());
-                    cout << "old testnet genesis nonce: " << (unsigned)genesis.nNonce << "\n" ;
-                    printf("old testnet genesis hash:  %s\n", hashGenesisBlock.ToString().c_str());
-                    printf("old testnet genesis nBits: %d\n", genesis.nBits);
-                    printf("recalculating params for testnet.\n");
-                    // deliberately empty for loop finds nonce value.
-                    for(genesis.nNonce == 0; genesis.GetHash() > bnProofOfWorkLimit; genesis.nNonce++){ }
-                    printf("new testnet genesis merkle root: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-//                    printf("new testnet genesis nonce: %s\n", (unsigned)genesis.nNonce);
-                    cout << "new testnet genesis nonce: " << (unsigned)genesis.nNonce << "\n" ;
-                    printf("new testnet genesis hash: %s\n", genesis.GetHash().ToString().c_str());
-                    printf("new testnet genesis nBits: %d\n", genesis.nBits);
-                }
-
         hashGenesisBlock = genesis.GetHash();
         assert(hashGenesisBlock == uint256("0x00000a6800e5e2b43515cd12da56861eb482ebcdfa6ee92c1a8d7836ff654500"));
 
