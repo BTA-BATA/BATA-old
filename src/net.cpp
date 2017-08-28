@@ -127,9 +127,9 @@ bool BLACKLIST_INVALID_WALLET = true;
 bool BAN_INVALID_WALLET = true;
 bool DETECT_BANDWIDTH_ABUSE =  true;
 bool BLACKLIST_BANDWIDTH_ABUSE = true;
-bool BAN_BANDWIDTH_ABUSE = false;
+bool BAN_BANDWIDTH_ABUSE = true;
 bool FALSE_POSITIVE_PROTECTION =  true;
-bool FIREWALL_CLEAR_BANS = false;
+bool FIREWALL_CLEAR_BANS = true;
 
 // * Global Firewall Variables *
 int CurrentAverageHeight = 0;
@@ -151,7 +151,7 @@ int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks toleranc
 int AverageRange = 500;   // + or - Starting Height Range
 /// Bandwidth monitoring ranges
 double TrafficTolerance = 0.0001; // Reduce for minimal fluctuation
-double TrafficZone = 8; // + or - Traffic Range
+double TrafficZone = 6; // + or - Traffic Range
 
 
 bool AddToBlackList(CNode *pnode)
@@ -193,54 +193,11 @@ bool CheckAttack(CNode *pnode)
 
     bool DETECTED = false;
     int nTimeConnected = GetTime() - pnode->nTimeConnected;
+    double nMinutesConnected = nTimeConnected / (double)60;
     string AttackType = "";
 
-    // ---Filter 1-------------
-    if (DETECT_INVALID_WALLET == true)
-    {
-    // * Attack detection #1
-        // (Start Height = -1, over 30 seconds connection length)
-        // Check for more than 600 seconds connection length
-        if (nTimeConnected > 600)
-        {
-            // Check for -1 blockheight
-            if (pnode->nStartingHeight == -1)
-            {
-                    // Trigger Blacklisting
-                    DETECTED = true;
-                    AttackType = "1";
-            }
-        }
-        // (Protocol: 0
-        // Check for more than 30 seconds connection length
-        if (nTimeConnected > 30)
-        {
-            // Check for -1 blockheight
-            if (pnode->nRecvVersion == 0)
-            {
-                // Trigger Blacklisting
-                DETECTED = true;
-                AttackType = "1";
 
-            }
-        }
-
-        if (DETECTED == true)
-        {
-            if (BLACKLIST_INVALID_WALLET == true)
-            {
-                BLACKLIST_ATTACK = true;
-            }
-
-            if (BAN_INVALID_WALLET == true)
-            {
-                BAN_ATTACK = true;
-            }
-
-        }
-    }
-
-    // ---Filter 2 & 3-------------
+    // ---Filter 1 -------------
     if (DETECT_BANDWIDTH_ABUSE == true)
     {
     // * Attack detection #2 & 3
@@ -340,18 +297,65 @@ bool CheckAttack(CNode *pnode)
 
            if (AttackType == "3-HighBW-LowHeight")
             {
-                if (pnode->nTrafficAverage < CurrentAverageTraffic_Max)
+
+                if (pnode->nRecvBytes < pnode->nSendBytes)
                 {
-                    // check for bandwidth ratios out of the ordinary for block uploading
-                    // Node/peer is in wallet sync (catching up to full blockheight)
+                    // Double Spend false protection check
                     AttackType = "";
                     DETECTED = false;
-                }  
-            }       
+                }         
+
+            }   
 
         }
     }
     // ----------------
+
+    // ---Filter 2-------------
+    if (DETECT_INVALID_WALLET == true)
+    {
+    // * Attack detection #1
+        // (Start Height = -1, over 30 seconds connection length)
+        // Check for more than 600 seconds connection length
+        if (nTimeConnected > 120)
+        {
+            // Check for -1 blockheight
+            if (pnode->nStartingHeight == -1)
+            {
+                    // Trigger Blacklisting
+                    DETECTED = true;
+                    AttackType = "1";
+            }
+        }
+        // (Protocol: 0
+        // Check for more than 30 seconds connection length
+        if (nTimeConnected > 10)
+        {
+            // Check for -1 blockheight
+            if (pnode->nRecvVersion == 0)
+            {
+                // Trigger Blacklisting
+                DETECTED = true;
+                AttackType = "1";
+
+            }
+        }
+
+        if (DETECTED == true)
+        {
+            if (BLACKLIST_INVALID_WALLET == true)
+            {
+                BLACKLIST_ATTACK = true;
+            }
+
+            if (BAN_INVALID_WALLET == true)
+            {
+                BAN_ATTACK = true;
+            }
+
+        }
+    }
+
 
     // ----------------
     // ATTACK DETECTED (TRIGGER)!
@@ -361,8 +365,10 @@ bool CheckAttack(CNode *pnode)
         std::string NodeTrafficRatioStr = boost::lexical_cast<std::string>(pnode->nTrafficRatio);
         std::string NodeTrafficAverageStr = boost::lexical_cast<std::string>(pnode->nTrafficAverage);
         std::string CurrentAverageTrafficStr = boost::lexical_cast<std::string>(CurrentAverageTraffic);
+        std::string SendBytesStr = boost::lexical_cast<std::string>(pnode->nSendBytes);
+        std::string RecvBytesStr = boost::lexical_cast<std::string>(pnode->nRecvBytes);
 
-        LogPrintStr(ModuleName + " - [Attack Type: " +  AttackType + "] [Detected from: " + pnode->addrName.c_str() + "] [Node Traffic: " + NodeTrafficRatioStr +  "] [Node Traffic Avrg: " + NodeTrafficAverageStr + "] [Traffic Avrg: " + CurrentAverageTrafficStr + "]\n");
+        LogPrintStr(ModuleName + " - [Attack Type: " +  AttackType + "] [Detected from: " + pnode->addrName.c_str() + "] [Node Traffic: " + NodeTrafficRatioStr +  "] [Node Traffic Avrg: " + NodeTrafficAverageStr + "] [Traffic Avrg: " + CurrentAverageTrafficStr + "] [Sent Bytes: " + SendBytesStr + "] [Recv Bytes: " + RecvBytesStr + "]\n");
 
         // Blacklist IP on Attack detection
         // * add node/peer IP to blacklist
