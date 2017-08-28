@@ -176,7 +176,7 @@ bool AddToBlackList(CNode *pnode)
         //BlackList[BlackListCounter] = pnode->addrName;
         pnode->nBlacklisted = pnode->nBlacklisted + 1;
         // Append Blacklist to debug.log
-        LogPrintStr(ModuleName + " - Blacklisted: " + pnode->addrName.c_str());
+        LogPrintStr(ModuleName + " - Blacklisted: " + pnode->addrName.c_str() + "\n");
 return true;
 
 }
@@ -406,7 +406,8 @@ bool CheckAttack(CNode *pnode)
 
         if (DETECTED == false)
         {
-            if (GetTime() - ALL_CHECK_TIMER > ALL_CHECK_MAX)
+            int GlobalTimeOn = GetTime() - ALL_CHECK_TIMER;
+            if (GlobalTimeOn > ALL_CHECK_MAX * 60)
             {
                 ALL_CHECK_TIMER = GetTime();
 
