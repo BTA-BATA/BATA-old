@@ -127,7 +127,7 @@ bool BLACKLIST_INVALID_WALLET = true;
 bool BAN_INVALID_WALLET = true;
 bool DETECT_BANDWIDTH_ABUSE =  true;
 bool BLACKLIST_BANDWIDTH_ABUSE = true;
-bool BAN_BANDWIDTH_ABUSE = true;
+bool BAN_BANDWIDTH_ABUSE = false;
 bool FALSE_POSITIVE_PROTECTION =  true;
 bool FIREWALL_CLEAR_BANS = true;
 
@@ -193,7 +193,6 @@ bool CheckAttack(CNode *pnode)
 
     bool DETECTED = false;
     int nTimeConnected = GetTime() - pnode->nTimeConnected;
-    double nMinutesConnected = nTimeConnected / (double)60;
     string AttackType = "";
 
 
@@ -317,7 +316,7 @@ bool CheckAttack(CNode *pnode)
     // * Attack detection #1
         // (Start Height = -1, over 30 seconds connection length)
         // Check for more than 600 seconds connection length
-        if (nTimeConnected > 120)
+        if (nTimeConnected > 30)
         {
             // Check for -1 blockheight
             if (pnode->nStartingHeight == -1)
@@ -327,12 +326,39 @@ bool CheckAttack(CNode *pnode)
                     AttackType = "1";
             }
         }
-        // (Protocol: 0
-        // Check for more than 30 seconds connection length
-        if (nTimeConnected > 10)
+
+        // Check for -1 blockheight
+        if (nTimeConnected > 30)
         {
             // Check for -1 blockheight
+            if (pnode->nStartingHeight < 0)
+            {
+                    // Trigger Blacklisting
+                    DETECTED = true;
+                    AttackType = "1";
+            }
+        }
+        
+        // (Protocol: 0
+        // Check for more than 30 seconds connection length
+        if (nTimeConnected > 30)
+        {
+            // Check for 0 protocol
             if (pnode->nRecvVersion == 0)
+            {
+                // Trigger Blacklisting
+                DETECTED = true;
+                AttackType = "1";
+
+            }
+        }
+
+        // (Protocol: 0
+        // Check for more than 30 seconds connection length
+        if (nTimeConnected > 30)
+        {
+            // Check for 
+            if (pnode->nRecvVersion < 1)
             {
                 // Trigger Blacklisting
                 DETECTED = true;
