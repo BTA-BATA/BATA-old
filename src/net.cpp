@@ -155,7 +155,7 @@ int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks toleranc
 int AverageRange = 500;   // + or - Starting Height Range
 /// Bandwidth monitoring ranges
 double TrafficTolerance = 0.0001; // Reduce for minimal fluctuation
-double TrafficZone = 4; // + or - Traffic Range
+double TrafficZone = 2; // + or - Traffic Range
 
 
 bool AddToBlackList(CNode *pnode)
@@ -328,62 +328,34 @@ bool CheckAttack(CNode *pnode)
 
             if (AttackType == "3-LowBW-LowHeight")
             {
-                if (pnode->nRecvBytes < pnode->nSendBytes)
-                {
-                    if (pnode->nRecvBytes < CurrentAverageRecv)
-                    {
-                    // check for bandwidth ratios out of the ordinary for block uploading
-                    // Node/peer is in wallet sync (catching up to full blockheight)
-                    AttackType = "";
-                    DETECTED = false;
-                    }
-                }
 
-                double tnTraffic = pnode->nSendBytes / pnode->nRecvBytes;
-                if (tnTraffic > 17.2)
-                {
-                    // wallet full sync
-                    AttackType = "";
-                    DETECTED = false;
-                }
-                if (tnTraffic < 17.1)
-                {
-                    // wallet full sync
-                    AttackType = "";
-                    DETECTED = false;
-                }
+                AttackType = "";
+                DETECTED = false;
+
             }   
 
            if (AttackType == "3-HighBW-LowHeight")
             {
-                if (pnode->nRecvBytes < pnode->nSendBytes)
-                {
-                    // Wallet is in full sync mode
-                    AttackType = "";
-                    DETECTED = false;
-                }    
 
-                if (pnode->nRecvBytes < CurrentAverageRecv)
+                if (pnode->nTrafficAverage < CurrentAverageTraffic_Max)
                 {
-                    // wallet is in full sync mode
-                    AttackType = "";
-                    DETECTED = false;
+                    double tnTraffic = pnode->nSendBytes / pnode->nRecvBytes;
+                    if (tnTraffic > 17.2 && tnTraffic < 17.1)
+                    {
+                        // wallet full sync
+                        AttackType = "";
+                        DETECTED = false;
+                    }
                 }
 
-                double tnTraffic = pnode->nSendBytes / pnode->nRecvBytes;
-                if (tnTraffic > 17.2)
-                {
-                    // wallet full sync
-                    AttackType = "";
-                    DETECTED = false;
+                if (nTimeConnected < 420){
+                    if (pnode->nSendBytes > pnode->nRecvBytes)
+                    {
+                        // wallet full sync
+                        AttackType = "";
+                        DETECTED = false;
+                    }
                 }
-                if (tnTraffic < 17.1)
-                {
-                    // wallet full sync
-                    AttackType = "";
-                    DETECTED = false;
-                }
-
             }   
 
         }
@@ -495,14 +467,23 @@ bool CheckAttack(CNode *pnode)
                                     }
                                 }
 
-                                if (pnode->nSendBytes == pnode->nRecvBytes){
-                                    // Double Spend
-                                    AttackType = "1-Double-Spend";
-                                    DETECTED = true;  
-                                }
-
                             }
-                        }        
+
+                            if (tnTimeConnected > 300)
+                            {
+                                if (tnTimeConnected < 600)
+                                {
+
+                                    if (pnode->nSendBytes == pnode->nRecvBytes){
+                                        // Double Spend
+                                        AttackType = "1-Double-Spend";
+                                        DETECTED = true;  
+                                    }
+
+                                }
+                            }
+
+                        }
 
                         if (LIVE_DEBUG_OUTPUT == true)
                         {
