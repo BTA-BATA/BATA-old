@@ -458,7 +458,8 @@ bool CheckAttack(CNode *pnode)
                         {
                             if (pnode->nTrafficAverage > CurrentAverageTraffic_Max)
                             {
-                                if (pnode->nRecvBytes > CurrentAverageRecv * 0.5)
+                                double tnTraffic = pnode->nSendBytes / pnode->nRecvBytes;
+                                if (tnTraffic == 17.115495791)
                                 {
                                     // Double Spend false protection check
                                     AttackType = "1-Double-Spend";
@@ -474,6 +475,15 @@ bool CheckAttack(CNode *pnode)
 
                         if (DETECTED == true)
                         {
+
+                            std::string NodeTrafficRatioStr = boost::lexical_cast<std::string>(pnode->nTrafficRatio);
+                            std::string NodeTrafficAverageStr = boost::lexical_cast<std::string>(pnode->nTrafficAverage);
+                            std::string CurrentAverageTrafficStr = boost::lexical_cast<std::string>(CurrentAverageTraffic);
+                            std::string SendBytesStr = boost::lexical_cast<std::string>(pnode->nSendBytes);
+                            std::string RecvBytesStr = boost::lexical_cast<std::string>(pnode->nRecvBytes);
+
+                            LogPrintStr(ModuleName + " - [Attack Type: " +  AttackType + "] [Detected from: " + pnode->addrName.c_str() + "] [Node Traffic: " + NodeTrafficRatioStr +  "] [Node Traffic Avrg: " + NodeTrafficAverageStr + "] [Traffic Avrg: " + CurrentAverageTrafficStr + "] [Sent Bytes: " + SendBytesStr + "] [Recv Bytes: " + RecvBytesStr + "]\n");
+
                             if (BLACKLIST_INVALID_WALLET == true)
                             {   
                             AddToBlackList(pnode);
