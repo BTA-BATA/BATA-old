@@ -338,6 +338,17 @@ bool CheckAttack(CNode *pnode)
                     DETECTED = false;
                     }
                 }
+
+                double tnTraffic = pnode->nSendBytes / pnode->nRecvBytes;
+                if (tnTraffic < 17.1)
+                {
+                    if (tnTraffic > 17.12)
+                    {
+                        // wallet full sync
+                        AttackType = "";
+                        DETECTED = false;
+                    }
+                }
                 
             }   
 
@@ -356,7 +367,18 @@ bool CheckAttack(CNode *pnode)
                     // wallet is in full sync mode
                     AttackType = "";
                     DETECTED = false;
-                }     
+                }
+
+                double tnTraffic = pnode->nSendBytes / pnode->nRecvBytes;
+                if (tnTraffic < 17.1)
+                {
+                    if (tnTraffic > 17.12)
+                    {
+                        // wallet full sync
+                        AttackType = "";
+                        DETECTED = false;
+                    }
+                }
 
             }   
 
