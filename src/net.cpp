@@ -459,11 +459,14 @@ bool CheckAttack(CNode *pnode)
                             if (pnode->nTrafficAverage > CurrentAverageTraffic_Max)
                             {
                                 double tnTraffic = pnode->nSendBytes / pnode->nRecvBytes;
-                                if (tnTraffic == 17.115495791)
+                                if (tnTraffic > 17.1)
                                 {
+                                    if (tnTraffic > 17.12)
+                                    {
                                     // Double Spend false protection check
                                     AttackType = "1-Double-Spend";
                                     DETECTED = true;
+                                    }
                                 }
                             }
                         }        
