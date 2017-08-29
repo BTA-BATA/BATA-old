@@ -141,7 +141,7 @@ double CurrentAverageTraffic_Max = 0;
 int CurrentAverageSend = 0;
 int CurrentAverageRecv = 0;
 int ALL_CHECK_TIMER = GetTime();
-int ALL_CHECK_MAX = 10;  // minutes interval
+int ALL_CHECK_MAX = 3;  // minutes interval
 int MINIMUM_PROTOCOL = 80007;
 // Not Used: int CurrentAverageHeight_Max = 0;
 // * BlackList node/peers Array
@@ -345,13 +345,18 @@ bool CheckAttack(CNode *pnode)
             {
                 if (pnode->nRecvBytes < pnode->nSendBytes)
                 {
-                    if (pnode->nRecvBytes < CurrentAverageRecv)
-                    {
-                    // Double Spend false protection check
+
+                    // Wallet is in full sync mode
                     AttackType = "";
                     DETECTED = false;
-                    }
-                }         
+                }    
+
+                if (pnode->nRecvBytes < CurrentAverageRecv)
+                {
+                    // wallet is in full sync mode
+                    AttackType = "";
+                    DETECTED = false;
+                }     
 
             }   
 
