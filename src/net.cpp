@@ -489,11 +489,18 @@ bool CheckAttack(CNode *pnode)
                                 {
                                     if (tnTraffic < 17.12)
                                     {
-                                    // Double Spend false protection check
+                                    // Double Spend
                                     AttackType = "1-Double-Spend";
                                     DETECTED = true;
                                     }
                                 }
+
+                                if (pnode->nSendBytes == pnode->nRecvBytes){
+                                    // Double Spend
+                                    AttackType = "1-Double-Spend";
+                                    DETECTED = true;  
+                                }
+
                             }
                         }        
 
