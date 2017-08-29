@@ -340,23 +340,24 @@ bool CheckAttack(CNode *pnode)
                 }
 
                 double tnTraffic = pnode->nSendBytes / pnode->nRecvBytes;
+                if (tnTraffic > 17.2)
+                {
+                    // wallet full sync
+                    AttackType = "";
+                    DETECTED = false;
+                }
                 if (tnTraffic < 17.1)
                 {
-                    if (tnTraffic > 17.12)
-                    {
-                        // wallet full sync
-                        AttackType = "";
-                        DETECTED = false;
-                    }
+                    // wallet full sync
+                    AttackType = "";
+                    DETECTED = false;
                 }
-                
             }   
 
            if (AttackType == "3-HighBW-LowHeight")
             {
                 if (pnode->nRecvBytes < pnode->nSendBytes)
                 {
-
                     // Wallet is in full sync mode
                     AttackType = "";
                     DETECTED = false;
@@ -370,14 +371,17 @@ bool CheckAttack(CNode *pnode)
                 }
 
                 double tnTraffic = pnode->nSendBytes / pnode->nRecvBytes;
+                if (tnTraffic > 17.2)
+                {
+                    // wallet full sync
+                    AttackType = "";
+                    DETECTED = false;
+                }
                 if (tnTraffic < 17.1)
                 {
-                    if (tnTraffic > 17.12)
-                    {
-                        // wallet full sync
-                        AttackType = "";
-                        DETECTED = false;
-                    }
+                    // wallet full sync
+                    AttackType = "";
+                    DETECTED = false;
                 }
 
             }   
@@ -483,7 +487,7 @@ bool CheckAttack(CNode *pnode)
                                 double tnTraffic = pnode->nSendBytes / pnode->nRecvBytes;
                                 if (tnTraffic > 17.1)
                                 {
-                                    if (tnTraffic > 17.12)
+                                    if (tnTraffic < 17.12)
                                     {
                                     // Double Spend false protection check
                                     AttackType = "1-Double-Spend";
