@@ -458,7 +458,7 @@ bool CheckAttack(CNode *pnode)
                         {
                             if (pnode->nTrafficAverage > CurrentAverageTraffic_Max)
                             {
-                                if (pnode->nRecvBytes > CurrentAverageRecv)
+                                if (pnode->nRecvBytes > CurrentAverageRecv * 0.5)
                                 {
                                     // Double Spend false protection check
                                     AttackType = "1-Double-Spend";
