@@ -127,7 +127,7 @@ bool BLACKLIST_INVALID_WALLET = true;
 bool BAN_INVALID_WALLET = true;
 bool DETECT_BANDWIDTH_ABUSE =  true;
 bool BLACKLIST_BANDWIDTH_ABUSE = true;
-bool BAN_BANDWIDTH_ABUSE = false;
+bool BAN_BANDWIDTH_ABUSE = true;
 bool FALSE_POSITIVE_PROTECTION =  true;
 bool FIREWALL_CLEAR_BANS = false;
 
@@ -189,15 +189,20 @@ bool ForceDisconnectNode(CNode *pnode, string FromFunction)
     //
     //      Hard-disconnection function (Panic)
 
+
 TRY_LOCK(pnode->cs_vSend, lockSend);
 if (lockSend){
     // release outbound grant (if any)
     pnode->CloseSocketDisconnect();
-
     LogPrintStr(ModuleName + " - (" + FromFunction + ") Panic Disconnect: " + pnode->addrName.c_str() + "\n");
     return true;  
 }
+else
+{
+    pnode->vSendMsg.end();
+}
 
+return false;
 }
 
 
@@ -325,22 +330,27 @@ bool CheckAttack(CNode *pnode)
             {
                 if (pnode->nRecvBytes < pnode->nSendBytes)
                 {
+                    if (pnode->nRecvBytes < CurrentAverageRecv)
+                    {
                     // check for bandwidth ratios out of the ordinary for block uploading
                     // Node/peer is in wallet sync (catching up to full blockheight)
                     AttackType = "";
                     DETECTED = false;
+                    }
                 }
                 
             }   
 
            if (AttackType == "3-HighBW-LowHeight")
             {
-
                 if (pnode->nRecvBytes < pnode->nSendBytes)
                 {
+                    if (pnode->nRecvBytes < CurrentAverageRecv)
+                    {
                     // Double Spend false protection check
                     AttackType = "";
                     DETECTED = false;
+                    }
                 }         
 
             }   
@@ -355,7 +365,7 @@ bool CheckAttack(CNode *pnode)
     // * Attack detection #1
         // (Start Height = -1, over 30 seconds connection length)
         // Check for more than 600 seconds connection length
-        if (nTimeConnected > 30)
+        if (nTimeConnected > 90)
         {
             // Check for -1 blockheight
             if (pnode->nStartingHeight == -1)
@@ -367,7 +377,7 @@ bool CheckAttack(CNode *pnode)
         }
 
         // Check for -1 blockheight
-        if (nTimeConnected > 30)
+        if (nTimeConnected > 90)
         {
             // Check for -1 blockheight
             if (pnode->nStartingHeight < 0)
@@ -380,7 +390,7 @@ bool CheckAttack(CNode *pnode)
         
         // (Protocol: 0
         // Check for more than 30 seconds connection length
-        if (nTimeConnected > 30)
+        if (nTimeConnected > 90)
         {
             // Check for 0 protocol
             if (pnode->nRecvVersion == 0)
@@ -394,7 +404,7 @@ bool CheckAttack(CNode *pnode)
 
         // (Protocol: 0
         // Check for more than 30 seconds connection length
-        if (nTimeConnected > 30)
+        if (nTimeConnected > 90)
         {
             // Check for 
             if (pnode->nRecvVersion < 1)
@@ -421,7 +431,7 @@ bool CheckAttack(CNode *pnode)
                 BOOST_FOREACH(CNode* pnode, vNodes)
                 {
                     int tnTimeConnected = GetTime() - pnode->nTimeConnected;
-                    if (tnTimeConnected > 60)
+                    if (tnTimeConnected > 90)
                     {
                         DETECTED = false;
                         AttackType = "";
@@ -438,6 +448,19 @@ bool CheckAttack(CNode *pnode)
                             DETECTED = true;
                             AttackType = "1-Obsolete-Version";
                         }
+
+                        if (pnode->nStartingHeight < CurrentAverageHeight_Min)
+                        {
+                            if (pnode->nTrafficAverage > CurrentAverageTraffic_Max)
+                            {
+                                if (pnode->nRecvBytes > CurrentAverageRecv)
+                                {
+                                    // Double Spend false protection check
+                                    AttackType = "1-Double-Spend";
+                                    DETECTED = true;
+                                }
+                            }
+                        }        
 
                         if (LIVE_DEBUG_OUTPUT == true)
                         {
@@ -580,6 +603,8 @@ bool Examination(CNode *pnode, string FromFunction)
 
     }
 
+
+
 }
 
 
@@ -620,12 +645,11 @@ bool FireWall(CNode *pnode, string FromFunction)
 
 // Peer/Node Panic Disconnect
 ForceDisconnectNode(pnode, FromFunction);
-    return true;
-
+return true;
     }
 
     // Perform a Node consensus examination
-    Examination(pnode, FromFunction);
+return  Examination(pnode, FromFunction);
 
 // Peer/Node Safe    
 return false;
@@ -1183,11 +1207,8 @@ void SocketSendData(CNode *pnode)
     {
 
 
-        if (FireWall(pnode, "SendData") == true) {
-             return;
-        }
-        else
-        {
+        FireWall(pnode, "SendData");
+ 
         const CSerializeData &data = *it;
                 assert(data.size() > pnode->nSendOffset);
 
@@ -1230,7 +1251,7 @@ void SocketSendData(CNode *pnode)
                                     } 
                                 }    
                         }
-        }
+       
     }    
 
     if (it == pnode->vSendMsg.end()) {
@@ -2161,9 +2182,7 @@ bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOu
     if (!pnode)
         return false;
     if (grantOutbound)
-
-        if (FireWall(pnode, "OpenNetConnection") == true) { return false; }
-
+        FireWall(pnode, "OpenNetConnection");
         grantOutbound->MoveTo(pnode->grantOutbound);
     pnode->fNetworkNode = true;
     if (fOneShot)
