@@ -155,7 +155,7 @@ int AverageTolerance = 2;    // Reduce for minimal fluctuation 2 Blocks toleranc
 int AverageRange = 500;   // + or - Starting Height Range
 /// Bandwidth monitoring ranges
 double TrafficTolerance = 0.0001; // Reduce for minimal fluctuation
-double TrafficZone = 2; // + or - Traffic Range
+double TrafficZone = 4; // + or - Traffic Range
 
 
 bool AddToBlackList(CNode *pnode)
