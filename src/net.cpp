@@ -574,7 +574,7 @@ return false;
 }
 
 
-bool Examination(CNode *pnode, string FromFunction)
+void Examination(CNode *pnode, string FromFunction)
 {
 // Calculate new Height Average from all peers connected
 
@@ -681,7 +681,7 @@ return true;
     }
 
     // Perform a Node consensus examination
-return  Examination(pnode, FromFunction);
+Examination(pnode, FromFunction);
 
 // Peer/Node Safe    
 return false;
