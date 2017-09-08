@@ -47,7 +47,7 @@ static const int IDLE_TIMEOUT = 4 * 60;
 /** Time between cycles to check for idle nodes, force disconnect (seconds) **/ 
 static const int DATA_TIMEOUT = 3 * 60;
 /** Time between cycles force reconnection of disconnections from peers.dat (minutes) **/ 
-static const int REFRESH_CONNECTIONS = 25;
+static const int REFRESH_CONNECTIONS = 240;
 /** The maximum number of entries in an 'inv' protocol message */
 static const unsigned int MAX_INV_SZ = 50000;
 /** The maximum number of new addresses to accumulate before announcing. */
@@ -256,8 +256,7 @@ public:
     // the network or wire types and the cleaned string used when displayed or logged.
     std::string strSubVer, cleanSubVer;
     bool fWhitelisted; // This peer can bypass DoS banning & firewall.
-    bool fBlacklisted; // This peer can't bypass firewall
-    int nWarningLevel;
+    int nBlacklisted; // This peer can't bypass firewall
     bool fOneShot;
     bool fClient;
     bool fInbound;
