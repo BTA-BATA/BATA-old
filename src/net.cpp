@@ -583,7 +583,7 @@ void Examination(CNode *pnode, string FromFunction)
     if (CheckAttack(pnode) == true)
     { 
         // Peer/Node Panic Disconnect
-        return ForceDisconnectNode(pnode, FromFunction);
+        ForceDisconnectNode(pnode, FromFunction);
     }
 
     // ** Update current average if increased ****
