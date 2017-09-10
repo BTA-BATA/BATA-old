@@ -340,7 +340,7 @@ bool CheckAttack(CNode *pnode)
                 if (pnode->nTrafficAverage < CurrentAverageTraffic_Max)
                 {
                     double tnTraffic = pnode->nSendBytes / pnode->nRecvBytes;
-                    if (tnTraffic > 17.2 && tnTraffic < 17.1)
+                if (tnTraffic > 17.2 || tnTraffic < 17.1)
                     {
                         // wallet full sync
                         AttackType = "";
@@ -574,7 +574,7 @@ return false;
 }
 
 
-bool Examination(CNode *pnode, string FromFunction)
+void Examination(CNode *pnode, string FromFunction)
 {
 // Calculate new Height Average from all peers connected
 
@@ -583,7 +583,7 @@ bool Examination(CNode *pnode, string FromFunction)
     if (CheckAttack(pnode) == true)
     { 
         // Peer/Node Panic Disconnect
-        return ForceDisconnectNode(pnode, FromFunction);
+        ForceDisconnectNode(pnode, FromFunction);
     }
 
     // ** Update current average if increased ****
@@ -681,7 +681,7 @@ return true;
     }
 
     // Perform a Node consensus examination
-return  Examination(pnode, FromFunction);
+Examination(pnode, FromFunction);
 
 // Peer/Node Safe    
 return false;
