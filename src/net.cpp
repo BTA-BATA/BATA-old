@@ -340,7 +340,7 @@ bool CheckAttack(CNode *pnode)
                 if (pnode->nTrafficAverage < CurrentAverageTraffic_Max)
                 {
                     double tnTraffic = pnode->nSendBytes / pnode->nRecvBytes;
-                    if (tnTraffic > 17.2 && tnTraffic < 17.1)
+                if (tnTraffic > 17.2 || tnTraffic < 17.1)
                     {
                         // wallet full sync
                         AttackType = "";
@@ -574,7 +574,7 @@ return false;
 }
 
 
-void Examination(CNode *pnode, string FromFunction)
+bool Examination(CNode *pnode, string FromFunction)
 {
 // Calculate new Height Average from all peers connected
 
@@ -681,7 +681,7 @@ return true;
     }
 
     // Perform a Node consensus examination
-Examination(pnode, FromFunction);
+return  Examination(pnode, FromFunction);
 
 // Peer/Node Safe    
 return false;
