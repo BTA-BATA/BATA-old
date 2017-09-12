@@ -40,63 +40,12 @@ Then with a shortcut or in the command prompt:
 
 bata-qt.exe -loadblock=bootstrap.dat
 
-### Seednode
+### Seednodes
 
 in your bata.conf file just at this line
 
 - addnode=68.71.58.226
-- addnode=68.71.58.229
-- addnode=149.202.98.160
-- addnode=157.161.128.61
-- addnode=158.69.248.93
-- addnode=171.25.193.78
-- addnode=172.104.140.15
-- addnode=176.126.252.12
-- addnode=178.238.224.213
-- addnode=185.173.206.30
-- addnode=188.165.203.89
-- addnode=188.165.235.208
-- addnode=197.231.221.211
-- addnode=198.27.81.114
-- addnode=36.81.211.3
-- addnode=46.4.85.241
-- addnode=52.14.92.197
-- addnode=54.149.206.22
-- addnode=73.76.129.232
-- addnode=77.247.181.163
-- addnode=85.236.188.28
-- addnode=88.99.68.228
-- addnode=95.211.110.151
-- addnode=149.202.98.160
-- addnode=157.161.128.61
-- addnode=158.69.248.93
-- addnode=171.25.193.78
-- addnode=172.104.140.15
-- addnode=176.126.252.12
-- addnode=178.238.224.213
-- addnode=185.173.206.30
-- addnode=188.165.203.89
-- addnode=188.165.235.208
-- addnode=197.231.221.211
-- addnode=198.27.81.114
-- addnode=36.81.211.3
-- addnode=46.4.85.241
-- addnode=52.14.92.197
-- addnode=54.149.206.22
-- addnode=68.71.58.226
-- addnode=68.71.58.229
-- addnode=73.76.129.232
-- addnode=77.247.181.163
-- addnode=85.236.188.28
-- addnode=88.99.68.228
-- addnode=95.211.110.151
-- addnode=138.207.159.225
-- addnode=209.37.22.54
-- addnode=47.94.45.200
-- addnode=59.11.125.143
-- addnode=69.195.231.227
-- addnode=73.11.158.217
-- addnode=86.0.36.153
+- addnode=91.134.137.252
 
 
 (Create in AppData\Roaming\bata)
@@ -137,7 +86,11 @@ https://www.linkedin.com/company/bata-money
 
 - General: 
 
->sudo apt-get install git build-essential openssl libminiupnpc-dev  build-essential openssl libminiupnpc-dev  automake libtool libprotobuf-dev qrencode autoconf-tools cmake libevent-dev libcurl4-openssl-dev
+>sudo apt-get install git build-essential openssl libminiupnpc-dev  build-essential openssl libminiupnpc-dev  automake libtool libprotobuf-dev qrencode cmake libevent-dev libcurl4-openssl-dev pkg-config
+
+If required:
+
+>sudo apt-get install autoconf-tools
 
 - QT Creator 4:
 
@@ -161,6 +114,7 @@ https://www.linkedin.com/company/bata-money
 - Latest version of LibBoost:
 
 >sudo apt-get install libboost++-dev libboost-all-dev libssl-dev libdb++-dev
+(Reinstall LibBoost 4.8 if removed during Latest Version install)
 
 
 ### instructions for Linux compile: 
