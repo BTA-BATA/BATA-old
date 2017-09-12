@@ -28,11 +28,13 @@ BTA is traded on multiple cryptocurrency exchanges right across the globe.
 https://bata.io
 
 ### For Developments info: 
+
 https://bata.io/development
 
 ### Bootstrap: 
 
-http://crypt.midnightminer.net/bootstraps/bata/bootstrap.zip
+Main: https://bata.money/downloads/bootstrap.zip
+Mirror: http://crypt.midnightminer.net/bootstraps/bata/bootstrap.zip
 
 Unzip the file into the same directory as the bata-qt.exe
 
