@@ -104,6 +104,24 @@ If required:
 
 - LibBoost 4.8:
 
+From Source: (Recommended)
+
+>wget http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz
+>tar -xzvf db-4.8.30.NC.tar.gz
+>cd db-4.8.30.NC/build_unix
+>../dist/configure --enable-cxx --disable-shared
+>make
+
+>And build commands:
+
+>./autogen.sh
+>CPPFLAGS="-I/your path to /db-4.8.30.NC/build_unix  \
+>LDFLAGS="-L/your path to /db-4.8.30.NC/build_unix  \
+>./configure 
+>make
+
+From PPA (Not recommended)
+
 >sudo apt-get install software-properties-common
 
 >sudo add-apt-repository ppa:bitcoin/bitcoin
