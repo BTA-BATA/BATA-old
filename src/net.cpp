@@ -328,19 +328,16 @@ bool CheckAttack(CNode *pnode)
 
             if (AttackType == "3-LowBW-LowHeight")
             {
-
                 AttackType = "";
                 DETECTED = false;
-
             }   
 
            if (AttackType == "3-HighBW-LowHeight")
             {
-
+                double tnTraffic = pnode->nSendBytes / pnode->nRecvBytes;
                 if (pnode->nTrafficAverage < CurrentAverageTraffic_Max)
                 {
-                    double tnTraffic = pnode->nSendBytes / pnode->nRecvBytes;
-                if (tnTraffic > 17.2 || tnTraffic < 17.1)
+                    if (tnTraffic > 17.2 || tnTraffic < 17.1)
                     {
                         // wallet full sync
                         AttackType = "";
@@ -348,16 +345,13 @@ bool CheckAttack(CNode *pnode)
                     }
                 }
 
-                if (nTimeConnected < 420){
-                    if (pnode->nSendBytes > pnode->nRecvBytes)
-                    {
-                        // wallet full sync
-                        AttackType = "";
-                        DETECTED = false;
-                    }
+                if (pnode->nSendBytes < pnode->nRecvBytes)
+                {
+                    // wallet full sync
+                    AttackType = "";
+                    DETECTED = false;
                 }
             }   
-
         }
     }
     // ----------------
@@ -373,9 +367,9 @@ bool CheckAttack(CNode *pnode)
             // Check for -1 blockheight
             if (pnode->nStartingHeight == -1)
             {
-                    // Trigger Blacklisting
-                    DETECTED = true;
-                    AttackType = "1-StartHeight-Invalid";
+                // Trigger Blacklisting
+                DETECTED = true;
+                AttackType = "1-StartHeight-Invalid";
             }
         }
 
@@ -385,9 +379,9 @@ bool CheckAttack(CNode *pnode)
             // Check for -1 blockheight
             if (pnode->nStartingHeight < 0)
             {
-                    // Trigger Blacklisting
-                    DETECTED = true;
-                    AttackType = "1-StartHeight-Invalid";
+                // Trigger Blacklisting
+                DETECTED = true;
+                AttackType = "1-StartHeight-Invalid";
             }
         }
         
@@ -469,12 +463,13 @@ bool CheckAttack(CNode *pnode)
 
                             }
 
-                            if (tnTimeConnected > 300)
+                            if (tnTimeConnected > 200)
                             {
                                 if (tnTimeConnected < 600)
                                 {
 
-                                    if (pnode->nSendBytes == pnode->nRecvBytes){
+                                    if (pnode->nSendBytes == pnode->nRecvBytes)
+                                    {
                                         // Double Spend
                                         AttackType = "1-Double-Spend";
                                         DETECTED = true;  
@@ -483,6 +478,19 @@ bool CheckAttack(CNode *pnode)
                                 }
                             }
 
+
+                            if (tnTimeConnected < 800)
+                            {
+                                if (pnode->nSendBytes > 40000)
+                                {   
+                                    if (pnode->nRecvBytes > 80000)
+                                    {
+                                        // Double Spend
+                                        AttackType = "1-Double-Spend";
+                                        DETECTED = true;  
+                                    }
+                                }
+                            }
                         }
 
                         if (LIVE_DEBUG_OUTPUT == true)
@@ -1312,7 +1320,7 @@ bool FirstCycle = true;
 void RefreshRecentConnections(int RefreshMinutes)
 {
 
-if (vNodes.size() >= 4) { return; }
+if (vNodes.size() >= 8) { return; }
 
 time_t timer;
 int SecondsPassed = 0;
