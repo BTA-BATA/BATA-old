@@ -225,6 +225,11 @@ extern json_spirit::Value getchaintips(const json_spirit::Array& params, bool fH
 extern json_spirit::Value invalidateblock(const json_spirit::Array& params, bool fHelp);
 extern json_spirit::Value reconsiderblock(const json_spirit::Array& params, bool fHelp);
 
+extern json_spirit::Value getcheckpoint(const json_spirit::Array& params, bool fHelp); // in checkpointsync.cpp
+extern json_spirit::Value sendcheckpoint(const json_spirit::Array& params, bool fHelp);
+extern json_spirit::Value enforcecheckpoint(const json_spirit::Array& params, bool fHelp);
+
+
 // in rest.cpp
 extern bool HTTPReq_REST(AcceptedConnection *conn,
                   std::string& strURI,
