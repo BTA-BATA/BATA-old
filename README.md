@@ -48,6 +48,31 @@ in your bata.conf file just at this line
 
 - addnode=68.71.58.226
 - addnode=91.134.137.252
+- addnode=136.243.45.140
+- addnode=167.88.15.89
+- addnode=184.164.129.202
+- addnode=185.170.42.18
+- addnode=188.134.72.213
+- addnode=188.165.235.208
+- addnode=188.241.58.126
+- addnode=190.107.226.252
+- addnode=198.23.219.66
+- addnode=27.50.93.254
+- addnode=35.158.7.235
+- addnode=35.199.154.30
+- addnode=45.76.39.46
+- addnode=46.4.85.241
+- addnode=5.9.30.28
+- addnode=52.14.92.197
+- addnode=54.149.206.22
+- addnode=62.14.46.140
+- addnode=70.182.184.78
+- addnode=76.169.57.92
+- addnode=80.217.220.213
+- addnode=81.89.56.170
+- addnode=82.121.73.25
+- addnode=95.211.110.151
+- addnode=98.201.202.45
 
 
 (Create in AppData\Roaming\bata)
