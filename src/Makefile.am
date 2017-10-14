@@ -85,13 +85,13 @@ BITCOIN_CORE_H = \
   chainparamsbase.h \
   chainparamsseeds.h \
   checkpoints.h \
-  checkpointsync.h \
   checkqueue.h \
   clientversion.h \
   coincontrol.h \
   coins.h \
   compat.h \
   compressor.h \
+  firewall.h \
   primitives/block.h \
   primitives/transaction.h \
   core_io.h \
@@ -171,12 +171,12 @@ libbitcoin_server_a_SOURCES = \
   bloom.cpp \
   chain.cpp \
   checkpoints.cpp \
-  checkpointsync.cpp \
   init.cpp \
   leveldbwrapper.cpp \
   main.cpp \
   merkleblock.cpp \
   miner.cpp \
+  firewall.cpp \
   net.cpp \
   noui.cpp \
   pow.cpp \

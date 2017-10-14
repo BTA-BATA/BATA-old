@@ -88,7 +88,6 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "estimatepriority", 0 },
     { "prioritisetransaction", 1 },
     { "prioritisetransaction", 2 },
-	{ "enforcecheckpoint", 0 },
 };
 
 class CRPCConvertTable

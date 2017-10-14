@@ -7,6 +7,7 @@
 
 #include "net.h"
 #include "util.h"
+#include "main.h"
 // #include "serialize.h"
 
 #define CHECKPOINT_MAX_SPAN (60 * 60 * 4) // max 4 hours before latest block

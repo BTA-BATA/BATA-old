@@ -45,7 +45,6 @@ class CInv;
 class CScriptCheck;
 class CValidationInterface;
 class CValidationState;
-// class CSyncCheckpoint;
 
 struct CBlockTemplate;
 struct CNodeStateStats;
@@ -141,10 +140,6 @@ extern bool fCheckBlockIndex;
 extern unsigned int nCoinCacheSize;
 extern CFeeRate minRelayTxFee;
 extern bool fAlerts;
-extern std::map<uint256, CBlock*> mapOrphanBlocks;
-extern CCriticalSection cs_hashSyncCheckpoint;
-// extern CSyncCheckpoint checkpointMessage;
-
 
 /** Best header we've seen so far (used for getheaders queries' starting points). */
 extern CBlockIndex *pindexBestHeader;

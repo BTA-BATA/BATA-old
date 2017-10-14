@@ -9,7 +9,6 @@
 #include <string>
 
 class CWallet;
-class CSyncCheckpoint;
 
 namespace boost
 {
