@@ -35,6 +35,16 @@ int GetTotalBlocksEstimate();
 //! Returns last CBlockIndex* in mapBlockIndex that is a checkpoint
 CBlockIndex* GetLastCheckpoint();
 
+// Returns last CBlockIndex* in mapBlockIndex that is a checkpoint
+CBlockIndex* GetLastCheckpoint(const std::map<uint256, CBlockIndex*>& mapBlockIndex);
+
+/* Returns the last available checkpoint in the main chain */
+uint256 GetLastAvailableCheckpoint();
+
+// Returns the block hash of latest hardened checkpoint
+uint256 GetLatestHardenedCheckpoint();
+
+
 double GuessVerificationProgress(CBlockIndex* pindex, bool fSigchecks = true);
 
 extern bool fEnabled;
