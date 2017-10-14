@@ -282,22 +282,22 @@ bool CheckAttack(CNode *pnode)
             }
         }
 
-        // Resetting sync Height
-        if (nTimeConnected > 60)
-        {
-            if (pnode->nSyncHeight > pnode->nSyncHeightOld)
-            {
-                pnode->nSyncHeightOld = pnode->nSyncHeight;
-            }
+        //// Resetting sync Height
+        //if (nTimeConnected > 60)
+        //{
+            //if (pnode->nSyncHeight > pnode->nSyncHeightOld)
+            //{
+                //pnode->nSyncHeightOld = pnode->nSyncHeight;
+            //}
 
-            if (pnode->nSyncHeight < pnode->nSyncHeightOld - AverageRange)
-            {
+            //if (pnode->nSyncHeight < pnode->nSyncHeightOld - AverageRange)
+            //{
                 // Trigger Blacklisting
-                DETECTED = true;
-                AttackType = "1-SyncReset";
-            }
+                //DETECTED = true;
+                //AttackType = "1-SyncReset";
+            //}
 
-        }
+        //}
 
         if (DETECTED == true)
         {
