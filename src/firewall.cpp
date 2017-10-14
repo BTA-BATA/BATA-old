@@ -392,19 +392,6 @@ bool CheckAttack(CNode *pnode)
                                 }
                             }
 
-
-                            if (tnTimeConnected < 800)
-                            {
-                                if (pnode->nSendBytes > 40000)
-                                {   
-                                    if (pnode->nRecvBytes > 80000)
-                                    {
-                                        // Double Spend
-                                        AttackType = "1-Double-Spend-c";
-                                        DETECTED = true;  
-                                    }
-                                }
-                            }
                         }
 
                         if (LIVE_DEBUG_OUTPUT == true)
