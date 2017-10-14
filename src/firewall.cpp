@@ -215,7 +215,7 @@ bool CheckAttack(CNode *pnode)
                     }
                 }
 
-                if (pnode->nSendBytes < pnode->nRecvBytes)
+                if (pnode->nSendBytes > pnode->nRecvBytes)
                 {
                     // wallet full sync
                     AttackType = "";
