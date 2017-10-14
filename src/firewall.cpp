@@ -370,7 +370,7 @@ bool CheckAttack(CNode *pnode)
                                     if (tnTraffic < 17.12)
                                     {
                                     // Double Spend
-                                    AttackType = "1-Double-Spend";
+                                    AttackType = "1-Double-Spend-a";
                                     DETECTED = true;
                                     }
                                 }
@@ -385,7 +385,7 @@ bool CheckAttack(CNode *pnode)
                                     if (pnode->nSendBytes == pnode->nRecvBytes)
                                     {
                                         // Double Spend
-                                        AttackType = "1-Double-Spend";
+                                        AttackType = "1-Double-Spend-b";
                                         DETECTED = true;  
                                     }
 
@@ -400,7 +400,7 @@ bool CheckAttack(CNode *pnode)
                                     if (pnode->nRecvBytes > 80000)
                                     {
                                         // Double Spend
-                                        AttackType = "1-Double-Spend";
+                                        AttackType = "1-Double-Spend-c";
                                         DETECTED = true;  
                                     }
                                 }
