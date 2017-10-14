@@ -101,7 +101,7 @@ bool CheckAttack(CNode *pnode)
     string AttackType = "";
 
     int NodeHeight;
-    if (pnode->nSyncHeight == 0)
+    if (pnode->nSyncHeight < pnode->nStartingHeight)
     {
         NodeHeight = pnode->nStartingHeight;
     }
@@ -221,6 +221,8 @@ bool CheckAttack(CNode *pnode)
                     AttackType = "";
                     DETECTED = false;
                 }
+
+
             }   
         }
     }
@@ -288,7 +290,7 @@ bool CheckAttack(CNode *pnode)
                 pnode->nSyncHeightOld = pnode->nSyncHeight;
             }
 
-            if (pnode->nSyncHeight < pnode->nSyncHeightOld)
+            if (pnode->nSyncHeight < pnode->nSyncHeightOld - AverageRange)
             {
                 // Trigger Blacklisting
                 DETECTED = true;
@@ -335,7 +337,7 @@ bool CheckAttack(CNode *pnode)
                         DETECTED = false;
                         AttackType = "";
 
-                        if (pnode->nSyncHeight == 0)
+                        if (pnode->nSyncHeight < pnode->nStartingHeight)
                         {
                             NodeHeight = pnode->nStartingHeight;
                         }
