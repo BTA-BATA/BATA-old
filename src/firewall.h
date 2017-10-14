@@ -20,7 +20,7 @@ string ModuleName = "[Bitcoin Firewall 1.2.3]";
 
 // * FireWall Controls *
 bool ENABLE_FIREWALL = true;
-bool LIVE_DEBUG_OUTPUT = true;
+bool LIVE_DEBUG_OUTPUT = false;
 bool INTERVAL_CHECK_ALL = true;
 bool DETECT_INVALID_WALLET = true;
 bool BLACKLIST_INVALID_WALLET = true;
