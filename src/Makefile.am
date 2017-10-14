@@ -91,6 +91,7 @@ BITCOIN_CORE_H = \
   coins.h \
   compat.h \
   compressor.h \
+  firewall.h \
   primitives/block.h \
   primitives/transaction.h \
   core_io.h \
@@ -175,6 +176,7 @@ libbitcoin_server_a_SOURCES = \
   main.cpp \
   merkleblock.cpp \
   miner.cpp \
+  firewall.cpp \
   net.cpp \
   noui.cpp \
   pow.cpp \
