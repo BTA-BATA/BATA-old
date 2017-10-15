@@ -1267,8 +1267,12 @@ CAmount GetBlockValue(int nHeight, const CAmount& nFees)
     if (nHeight == 2)
         nSubsidy = 1 * COIN;
 
-    // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
+    // Bata: Subsidy is cut in half every 100,000 blocks which will occur approximately every 4 years.
     nSubsidy >>= halvings;
+
+    if (nHeight == 800000)
+        nSubsidy = (1 * COIN)/4 ;  //Static PoW reward of 0.25 Bata until end of PoW (10 Million Bata)
+
 
     return nSubsidy + nFees;
 }

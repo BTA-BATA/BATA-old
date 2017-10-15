@@ -6,8 +6,9 @@
 - Time Between Blocks  90
 - Block Reward: 25
 - Block Reward Halving Rate: 100000
+  Block 850000 Reward = 0.25 Bata
 - Premine: No
-- Total Coins: 5,000,000
+- Total Coins: 10,000,000
 - rpc port: 5493
 - net port: 5784
 
