@@ -2341,6 +2341,10 @@ int CMerkleTx::GetBlocksToMaturity() const
 {
     if (!IsCoinBase())
         return 0;
+    if (chainActive.Height() >= 850000) {
+        return max(0, (COINBASE_MATURITY_850k+1) - GetDepthInMainChain());
+        }
+    else
     return max(0, (COINBASE_MATURITY+1) - GetDepthInMainChain());
 }
 
