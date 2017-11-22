@@ -66,25 +66,26 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
 		( 446000, uint256("0x6353453ab70c8f8d7c2a427848b31815b403954b35897fc171cdcb90efdc876c"))
 		( 550000, uint256("0xc3e04a21969b9b7c8b058336a752829de20f60381ab421dc65d8e7dc652fe47e"))
 		( 700000, uint256("0x3dde1aa60ab78ac29e84fa2baf641638dff95514af72e8c1dcf9fec89da84700"))
+		( 750000, uint256("0x16f1891c3c29bbd40fc91608dec9bf8744ec14bd750f32d2f8c01dae6358b213"))
         ;
 
 static const Checkpoints::CCheckpointData data = {
         &mapCheckpoints,
-		1498771810, // * UNIX timestamp of last checkpoint block
-        797741,    // * total number of transactions between genesis and last checkpoint
+		1503636911, // * UNIX timestamp of last checkpoint block
+        856096,    // * total number of transactions between genesis and last checkpoint
                     //   (the tx=... number in the SetBestChain debug.log lines)
-        960.0     // * estimated number of transactions per day after checkpoint
+        960        // * estimated number of transactions per day after checkpoint
     };
 
 static Checkpoints::MapCheckpoints mapCheckpointsTestnet =
         boost::assign::map_list_of
-        ( 546, uint256("0xa0fea99a6897f531600c8ae53367b126824fd6a847b2b2b73817a95b8e27e602"))
+        ( 1, uint256("0xc1976360739525c4ea0949fc4a1b0086284614198a0f133b1513d79c55b5466b"))
         ;
 static const Checkpoints::CCheckpointData dataTestnet = {
         &mapCheckpointsTestnet,
-        1365458829,
-        547,
-        576
+		1503885814,
+        2,
+        960
     };
 
 static Checkpoints::MapCheckpoints mapCheckpointsRegtest =
@@ -209,10 +210,11 @@ public:
         nMaxTipAge = 0x7fffffff;
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
-        genesis.nTime = 1388880557;
-        genesis.nNonce = 387006691;
+        genesis.nTime = 1503885814;
+        genesis.nNonce = 698199;
+
         hashGenesisBlock = genesis.GetHash();
-//        assert(hashGenesisBlock == uint256("0xb78197f0e175697646db1f738edc1ffdcb30588ebe70e7e16026489076577061"));
+        assert(hashGenesisBlock == uint256("0x00000a6800e5e2b43515cd12da56861eb482ebcdfa6ee92c1a8d7836ff654500"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -234,6 +236,7 @@ public:
         fDefaultConsistencyChecks = false;
         fRequireStandard = false;
         fMineBlocksOnDemand = false;
+        fSkipProofOfWorkCheck = true;
         fTestnetToBeDeprecatedFieldRPC = true;
 
         // Bata: v2 enforced using Bitcoin's supermajority rule
