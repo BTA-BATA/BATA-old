@@ -6,8 +6,9 @@
 - Time Between Blocks  90
 - Block Reward: 25
 - Block Reward Halving Rate: 100000
+  Block 850000 Reward = 0.25 Bata
 - Premine: No
-- Total Coins: 5,000,000
+- Total Coins: 10,000,000
 - rpc port: 5493
 - net port: 5784
 
@@ -28,11 +29,13 @@ BTA is traded on multiple cryptocurrency exchanges right across the globe.
 https://bata.io
 
 ### For Developments info: 
+
 https://bata.io/development
 
 ### Bootstrap: 
 
-http://crypt.midnightminer.net/bootstraps/bata/bootstrap.zip
+Main: https://bata.money/downloads/bootstrap.zip
+Mirror: http://crypt.midnightminer.net/bootstraps/bata/bootstrap.zip
 
 Unzip the file into the same directory as the bata-qt.exe
 
@@ -40,63 +43,37 @@ Then with a shortcut or in the command prompt:
 
 bata-qt.exe -loadblock=bootstrap.dat
 
-### Seednode
+### Seednodes
 
 in your bata.conf file just at this line
 
 - addnode=68.71.58.226
-- addnode=68.71.58.229
-- addnode=149.202.98.160
-- addnode=157.161.128.61
-- addnode=158.69.248.93
-- addnode=171.25.193.78
-- addnode=172.104.140.15
-- addnode=176.126.252.12
-- addnode=178.238.224.213
-- addnode=185.173.206.30
-- addnode=188.165.203.89
+- addnode=91.134.137.252
+- addnode=136.243.45.140
+- addnode=167.88.15.89
+- addnode=184.164.129.202
+- addnode=185.170.42.18
+- addnode=188.134.72.213
 - addnode=188.165.235.208
-- addnode=197.231.221.211
-- addnode=198.27.81.114
-- addnode=36.81.211.3
+- addnode=188.241.58.126
+- addnode=190.107.226.252
+- addnode=198.23.219.66
+- addnode=27.50.93.254
+- addnode=35.158.7.235
+- addnode=35.199.154.30
+- addnode=45.76.39.46
 - addnode=46.4.85.241
+- addnode=5.9.30.28
 - addnode=52.14.92.197
 - addnode=54.149.206.22
-- addnode=73.76.129.232
-- addnode=77.247.181.163
-- addnode=85.236.188.28
-- addnode=88.99.68.228
+- addnode=62.14.46.140
+- addnode=70.182.184.78
+- addnode=76.169.57.92
+- addnode=80.217.220.213
+- addnode=81.89.56.170
+- addnode=82.121.73.25
 - addnode=95.211.110.151
-- addnode=149.202.98.160
-- addnode=157.161.128.61
-- addnode=158.69.248.93
-- addnode=171.25.193.78
-- addnode=172.104.140.15
-- addnode=176.126.252.12
-- addnode=178.238.224.213
-- addnode=185.173.206.30
-- addnode=188.165.203.89
-- addnode=188.165.235.208
-- addnode=197.231.221.211
-- addnode=198.27.81.114
-- addnode=36.81.211.3
-- addnode=46.4.85.241
-- addnode=52.14.92.197
-- addnode=54.149.206.22
-- addnode=68.71.58.226
-- addnode=68.71.58.229
-- addnode=73.76.129.232
-- addnode=77.247.181.163
-- addnode=85.236.188.28
-- addnode=88.99.68.228
-- addnode=95.211.110.151
-- addnode=138.207.159.225
-- addnode=209.37.22.54
-- addnode=47.94.45.200
-- addnode=59.11.125.143
-- addnode=69.195.231.227
-- addnode=73.11.158.217
-- addnode=86.0.36.153
+- addnode=98.201.202.45
 
 
 (Create in AppData\Roaming\bata)
@@ -137,7 +114,11 @@ https://www.linkedin.com/company/bata-money
 
 - General: 
 
->sudo apt-get install git build-essential openssl libminiupnpc-dev  build-essential openssl libminiupnpc-dev  automake libtool libprotobuf-dev qrencode autoconf-tools cmake libevent-dev libcurl4-openssl-dev
+>sudo apt-get install git build-essential openssl libminiupnpc-dev  build-essential openssl libminiupnpc-dev  automake libtool libprotobuf-dev qrencode cmake libevent-dev libcurl4-openssl-dev pkg-config
+
+If required:
+
+>sudo apt-get install autoconf-tools
 
 - QT Creator 4:
 
@@ -148,6 +129,24 @@ https://www.linkedin.com/company/bata-money
 >sudo apt-get install libqt5-dev qt5-dev-tools qttools5-dev-tools qt5-default  libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools 
 
 - LibBoost 4.8:
+
+From Source: (Recommended)
+
+>wget http://download.oracle.com/berkeley-db/db-4.8.30.NC.tar.gz
+>tar -xzvf db-4.8.30.NC.tar.gz
+>cd db-4.8.30.NC/build_unix
+>../dist/configure --enable-cxx --disable-shared
+>make
+
+>And build commands:
+
+>./autogen.sh
+>CPPFLAGS="-I/your path to /db-4.8.30.NC/build_unix  \
+>LDFLAGS="-L/your path to /db-4.8.30.NC/build_unix  \
+>./configure 
+>make
+
+From PPA (Not recommended)
 
 >sudo apt-get install software-properties-common
 
@@ -161,6 +160,7 @@ https://www.linkedin.com/company/bata-money
 - Latest version of LibBoost:
 
 >sudo apt-get install libboost++-dev libboost-all-dev libssl-dev libdb++-dev
+(Reinstall LibBoost 4.8 if removed during Latest Version install)
 
 
 ### instructions for Linux compile: 

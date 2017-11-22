@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2017 BATA Developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -159,7 +160,7 @@ namespace {
 
 // These functions dispatch to one or all registered wallets
 
-namespace {
+//namespace {
 
 struct CMainSignals {
     /** Notifies listeners of updated transaction data (transaction, and optionally the block it is found in. */
@@ -178,7 +179,7 @@ struct CMainSignals {
     boost::signals2::signal<void (const CBlock&, const CValidationState&)> BlockChecked;
 } g_signals;
 
-} // anon namespace
+//} // anon namespace
 
 void RegisterValidationInterface(CValidationInterface* pwalletIn) {
     g_signals.SyncTransaction.connect(boost::bind(&CValidationInterface::SyncTransaction, pwalletIn, _1, _2));
@@ -445,6 +446,16 @@ void FindNextBlocksToDownload(NodeId nodeid, unsigned int count, std::vector<CBl
     // download that next block if the window were 1 larger.
     int nWindowEnd = state->pindexLastCommonBlock->nHeight + BLOCK_DOWNLOAD_WINDOW;
     int nMaxHeight = std::min<int>(state->pindexBestKnownBlock->nHeight, nWindowEnd + 1);
+
+    LOCK(cs_vNodes);
+    BOOST_FOREACH(CNode* pnode, vNodes)
+    {
+        if (pnode->id == nodeid)
+        {
+            pnode->nSyncHeight = state->pindexBestKnownBlock->nHeight;
+        }
+    }
+
     NodeId waitingfor = -1;
     while (pindexWalk->nHeight < nMaxHeight) {
         // Read up to 128 (or more, if more blocks than that are needed) successors of pindexWalk (towards
@@ -1256,8 +1267,12 @@ CAmount GetBlockValue(int nHeight, const CAmount& nFees)
     if (nHeight == 2)
         nSubsidy = 1 * COIN;
 
-    // Subsidy is cut in half every 210,000 blocks which will occur approximately every 4 years.
+    // Bata: Subsidy is cut in half every 100,000 blocks which will occur approximately every 4 years.
     nSubsidy >>= halvings;
+
+    if (nHeight == 850000)
+        nSubsidy = (1 * COIN)/4 ;  //Static PoW reward of 0.25 Bata until end of PoW (10 Million Bata)
+
 
     return nSubsidy + nFees;
 }
@@ -1460,10 +1475,17 @@ bool CheckInputs(const CTransaction& tx, CValidationState &state, const CCoinsVi
 
             // If prev is coinbase, check that it's matured
             if (coins->IsCoinBase()) {
-                if (nSpendHeight - coins->nHeight < COINBASE_MATURITY)
-                    return state.Invalid(
-                        error("CheckInputs() : tried to spend coinbase at depth %d", nSpendHeight - coins->nHeight),
-                        REJECT_INVALID, "bad-txns-premature-spend-of-coinbase");
+                if (pindexPrev->nHeight >= 850000) {
+                    if (nSpendHeight - coins->nHeight < COINBASE_MATURITY_850k)
+                        return state.Invalid(
+                            error("CheckInputs() : tried to spend coinbase at depth %d", nSpendHeight - coins->nHeight),
+                            REJECT_INVALID, "bad-txns-premature-spend-of-coinbase");
+                }
+                else
+                    if (nSpendHeight - coins->nHeight < COINBASE_MATURITY)
+                        return state.Invalid(
+                            error("CheckInputs() : tried to spend coinbase at depth %d", nSpendHeight - coins->nHeight),
+                            REJECT_INVALID, "bad-txns-premature-spend-of-coinbase");
             }
 
             // Check for negative or overflow input values
@@ -2204,14 +2226,20 @@ bool ActivateBestChain(CValidationState &state, CBlock *pblock) {
 
         // Notifications/callbacks that can run without cs_main
         if (!fInitialDownload) {
+
             uint256 hashNewTip = pindexNewTip->GetBlockHash();
             // Relay inventory, but don't relay old inventory during initial block download.
             int nBlockEstimate = Checkpoints::GetTotalBlocksEstimate();
             {
                 LOCK(cs_vNodes);
                 BOOST_FOREACH(CNode* pnode, vNodes)
+                {
                     if (chainActive.Height() > (pnode->nStartingHeight != -1 ? pnode->nStartingHeight - 2000 : nBlockEstimate))
+                    {
                         pnode->PushInventory(CInv(MSG_BLOCK, hashNewTip));
+                    }
+                }
+
             }
             // Notify external listeners about the new tip.
             uiInterface.NotifyBlockTip(hashNewTip);
@@ -2707,6 +2735,8 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
     }
 
     int nHeight = pindex->nHeight;
+
+
 
     // Write block to history file
     try {
