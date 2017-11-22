@@ -109,7 +109,7 @@ https://www.linkedin.com/company/bata-money
 
 ### Group Chat:
 
-- Discord:  https://discord.gg/tkxcje
+- Discord:  https://discord.gg/SM8jQTQ
 - Telegram: https://t.me/batacurrency
 
 
