@@ -33,9 +33,9 @@ extern const std::string CLIENT_DATE;
 //! In this version, 'getheaders' was introduced.
 static const int GETHEADERS_VERSION = 80008;
 
-static const int PROTOCOL_VERSION_SHORT = 10;
+static const int PROTOCOL_VERSION_SHORT = 11;
 
-static const int PROTOCOL_VERSION = 80010;
+static const int PROTOCOL_VERSION = 80011;
 
 // intial proto version, to be increased after version/verack negotiation
 static const int INIT_PROTO_VERSION = 209;
@@ -49,7 +49,7 @@ static const int CADDR_TIME_VERSION = 31402;
 
 // only request blocks from nodes outside this range of versions
 static const int NOBLKS_VERSION_START = 80000;
-static const int NOBLKS_VERSION_END = 80007;
+static const int NOBLKS_VERSION_END = 80009;
 
 // BIP 0031, pong message, is enabled for all versions AFTER this one
 static const int BIP0031_VERSION = 60000;

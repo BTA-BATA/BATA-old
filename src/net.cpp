@@ -661,7 +661,6 @@ void SocketSendData(CNode *pnode)
     while (it != pnode->vSendMsg.end())
     {
 
-
         FireWall(pnode, "SendData");
  
         const CSerializeData &data = *it;
@@ -1635,13 +1634,23 @@ bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOu
     boost::this_thread::interruption_point();
 
     if (!pnode)
+    {
         return false;
+    }
+
+    FireWall(pnode, "OpenNetConnection");
+
     if (grantOutbound)
-        FireWall(pnode, "OpenNetConnection");
+    {
         grantOutbound->MoveTo(pnode->grantOutbound);
+    }
+        
     pnode->fNetworkNode = true;
+
     if (fOneShot)
+    {
         pnode->fOneShot = true;
+    }
 
     return true;
 }
