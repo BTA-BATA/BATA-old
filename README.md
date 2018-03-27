@@ -34,8 +34,12 @@ https://bata.io/development
 
 ### Bootstrap: 
 
+
 Main: https://bata.money/downloads/bootstrap.zip
 Mirror: http://crypt.midnightminer.net/bootstraps/bata/bootstrap.zip
+
+https://bata.io/wallets
+
 
 Unzip the file into the same directory as the bata-qt.exe
 
@@ -100,13 +104,12 @@ https://www.linkedin.com/company/bata-money
 - https://bitcointalk.org/index.php?topic=1040956
 - https://cryptocointalk.com/topic/37776-pre-annbta-bata-scrypt-pow-modern-day-trade/
 - http://bitcoingarden.tk/forum/index.php?topic=3479.msg90749#msg90749
-- https://www.cryptocompare.com/coins/bta/forum
 - https://www.cryptopia.co.nz/Forum/Thread/377
 
 
 ### Group Chat:
 
-- Slack: https://bata-blockchain.slack.com
+- Discord:  https://discord.gg/SM8jQTQ
 - Telegram: https://t.me/batacurrency
 
 
