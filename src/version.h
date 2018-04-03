@@ -33,9 +33,9 @@ extern const std::string CLIENT_DATE;
 //! In this version, 'getheaders' was introduced.
 static const int GETHEADERS_VERSION = 80008;
 
-static const int PROTOCOL_VERSION_SHORT = 11;
+static const int PROTOCOL_VERSION_SHORT = 10;
 
-static const int PROTOCOL_VERSION = 80011;
+static const int PROTOCOL_VERSION = 80010;
 
 // intial proto version, to be increased after version/verack negotiation
 static const int INIT_PROTO_VERSION = 209;

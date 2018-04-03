@@ -1,5 +1,5 @@
 // [Bitcoin Firewall 1.2.4
-// March 21, 2018 - Biznatch Enterprises & Profit Hunters Coin (PHC)
+// March 30, 2018 - Biznatch Enterprises & BATA Development
 // https://github.com/BiznatchEnterprises/BitcoinFirewall
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -132,7 +132,7 @@ int FIREWALL_FORKED_NODEHEIGHT[256] =
 };
 
 // * Firewall Settings (Flooding Wallet)
-int FIREWALL_BANTIME_FLOODINGWALLET = 0; // 24 hours
+int FIREWALL_BANTIME_FLOODINGWALLET = 88888; // 24 hours
 int FIREWALL_FLOODINGWALLET_MINBYTES = 1000000;
 int FIREWALL_FLOODINGWALLET_MAXBYTES = 1000000;
 // Flooding Patterns (WARNINGS)
@@ -356,7 +356,7 @@ return false;
 // * Function: AddToBanList *
 bool AddToBanList(CNode *pnode, BanReason BAN_REASON, int BAN_TIME)
 {
-    CNode::Ban(pnode->addr, BAN_REASON, BAN_TIME, false);
+    CNode::Ban(pnode->addr);
     //DumpBanlist();
 
     LogPrint("net", "%s Banned: %s\n", ModuleName.c_str(), pnode->addrName);
@@ -378,13 +378,14 @@ return true;
 bool CheckAttack(CNode *pnode, string FromFunction)
 {
     bool DETECTED_ATTACK = false;
+    BanReason BAN_REASON;
     
     bool BLACKLIST_ATTACK = false;
 
     int BAN_TIME = 0; // Default 24 hours
     bool BAN_ATTACK = false;
 
-    BanReason BAN_REASON;
+    //BanReason BAN_REASON;
 
     string ATTACK_CHECK_NAME;
     string ATTACK_CHECK_LOG;
@@ -477,7 +478,7 @@ bool CheckAttack(CNode *pnode, string FromFunction)
             {
                 BAN_ATTACK = true;
                 BAN_TIME = FIREWALL_BANTIME_BANDWIDTHABUSE;
-                BAN_REASON = BanReasonBandwidthAbuse;
+                //BAN_REASON = BanReasonBandwidthAbuse;
             }
 
         }
@@ -635,7 +636,7 @@ bool CheckAttack(CNode *pnode, string FromFunction)
             {
                 BAN_ATTACK = true;
                 BAN_TIME = FIREWALL_BANTIME_INVALIDWALLET;
-                BAN_REASON = BanReasonInvalidWallet;
+                //BAN_REASON = BanReasonInvalidWallet;
             }
         }
         // ##########################
@@ -695,7 +696,7 @@ bool CheckAttack(CNode *pnode, string FromFunction)
                 BAN_ATTACK = true;
 
                 BAN_TIME = FIREWALL_BANTIME_FORKEDWALLET;
-                BAN_REASON = BanReasonForkedWallet;
+                //BAN_REASON = BanReasonForkedWallet;
             }
         }
         // #######################
@@ -910,7 +911,7 @@ bool CheckAttack(CNode *pnode, string FromFunction)
             {
                 BAN_ATTACK = true;
                 BAN_TIME = FIREWALL_BANTIME_FLOODINGWALLET;
-                BAN_REASON = BanReasonFloodingWallet;
+                //BAN_REASON = BanReasonFloodingWallet;
             }
 
         }
@@ -1145,5 +1146,3 @@ return true;
 // Peer/Node Safe    
 return false;
 }
-
-// |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||

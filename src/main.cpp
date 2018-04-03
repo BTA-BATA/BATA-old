@@ -4700,7 +4700,7 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
                     LogPrintf("Warning: not banning local peer %s!\n", pto->addr.ToString());
                 else
                 {
-                    CNode::Ban(pto->addr, BanReasonNodeMisbehaving, 0, false);
+                    CNode::Ban(pto->addr);
                 }
             }
             state.fShouldBan = false;

@@ -249,9 +249,6 @@ public:
     std::string addrLocal;
 };
 
-
-
-
 class CNetMessage {
 public:
     bool in_data;                   // parsing header (false) or data (true)
@@ -290,7 +287,6 @@ public:
     int readData(const char *pch, unsigned int nBytes);
 };
 
-
 typedef enum BanReason
 {
     BanReasonUnknown          = 0,
@@ -302,9 +298,6 @@ typedef enum BanReason
     BanReasonFloodingWallet   = 6
 
 } BanReason;
-
-
-
 
 
 /** Information about a peer */
@@ -691,27 +684,9 @@ public:
     static void ClearBanned(); // needed for unit testing
     static bool IsBanned(CNetAddr ip);
     static bool IsBanned(CSubNet subnet);
-    static void Ban(const CNetAddr &ip, const BanReason &banReason, int64_t bantimeoffset = 0, bool sinceUnixEpoch = false);
-    static void Ban(const CSubNet &subNet, const BanReason &banReason, int64_t bantimeoffset = 0, bool sinceUnixEpoch = false);
+    static bool Ban(const CNetAddr &ip);
     static bool Unban(const CNetAddr &ip);
     static bool Unban(const CSubNet &ip);
-    //static void GetBanned(banmap_t &banmap);
-    //static void SetBanned(const banmap_t &banmap);
-
-    //!check is the banlist has unwritten changes
-    //static bool BannedSetIsDirty();
-    //!set the "dirty" flag for the banlist
-    //static void SetBannedSetDirty(bool dirty=true);
-    //!clean unused entires (if bantime has expired)
-    //static void SweepBanned();
-
-
-    //!check is the banlist has unwritten changes
-    //static bool BannedSetIsDirty();
-    //!set the "dirty" flag for the banlist
-    //static void SetBannedSetDirty(bool dirty=true);
-    //!clean unused entires (if bantime has expired)
-    //static void SweepBanned();
 
     void copyStats(CNodeStats &stats);
 

@@ -335,6 +335,24 @@ Value getaddednodeinfo(const Array& params, bool fHelp)
     return ret;
 }
 
+Value clearbanned(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+                            "clearbanned\n"
+                            "\nClear all banned IPs.\n"
+                            "\nExamples:\n"
+                            + HelpExampleCli("clearbanned", "")
+                            + HelpExampleRpc("clearbanned", "")
+                            );
+
+    CNode::ClearBanned();
+    //DumpBanlist(); //store banlist to disk
+    //uiInterface.BannedListChanged();
+
+    return Value::null;
+}
+
 Value getnettotals(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() > 0)

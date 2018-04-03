@@ -1,5 +1,5 @@
 // [Bitcoin Firewall 1.2.4
-// March 21, 2018 - Biznatch Enterprises & Profit Hunters Coin (PHC)
+// March 30, 2018 - Biznatch Enterprises & BATA Development
 // https://github.com/BiznatchEnterprises/BitcoinFirewall
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.

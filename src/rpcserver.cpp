@@ -255,8 +255,9 @@ static const CRPCCommand vRPCCommands[] =
     { "network",            "getnettotals",           &getnettotals,           true,      true,       false },
     { "network",            "getpeerinfo",            &getpeerinfo,            true,      false,      false },
     { "network",            "ping",                   &ping,                   true,      false,      false },
+    { "network",            "clearbanned",            &clearbanned,            true,      false,      false },
 
-        /* Firewall General Session Settings */
+    /* Firewall General Session Settings */
     { "network",            "firewallstatus",                                &firewallstatus,                             false,      false,    false },
     { "network",            "firewallenabled",                               &firewallenabled,                             false,      false,    false },
     { "network",            "firewallclearblacklist",                        &firewallclearblacklist,                      false,      false,    false },
