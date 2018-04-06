@@ -1,3 +1,2 @@
-# 10.5.2 Change Log:
-- Firewall false positives fixed
-- Firewall stability increased
+# 10.5.3 Change Log:
+- Firewall upgraded to 1.2.4

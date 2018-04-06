@@ -255,6 +255,67 @@ static const CRPCCommand vRPCCommands[] =
     { "network",            "getnettotals",           &getnettotals,           true,      true,       false },
     { "network",            "getpeerinfo",            &getpeerinfo,            true,      false,      false },
     { "network",            "ping",                   &ping,                   true,      false,      false },
+    { "network",            "clearbanned",            &clearbanned,            true,      false,      false },
+
+    /* Firewall General Session Settings */
+    { "network",            "firewallstatus",                                &firewallstatus,                             false,      false,    false },
+    { "network",            "firewallenabled",                               &firewallenabled,                             false,      false,    false },
+    { "network",            "firewallclearblacklist",                        &firewallclearblacklist,                      false,      false,    false },
+    { "network",            "firewallclearbanlist",                          &firewallclearbanlist,                        false,      false,    false },
+    { "network",            "firewalltraffictolerance",                      &firewalltraffictolerance,                    false,      false,    false },
+    { "network",            "firewalltrafficzone",                           &firewalltrafficzone,                         false,      false,    false },
+    { "network",            "firewalladdtowhitelist",                        &firewalladdtowhitelist,                      false,      false,    false },
+    { "network",            "firewalladdtoblacklist",                        &firewalladdtoblacklist,                      false,      false,    false },
+
+    /* Firewall Firewall Debug (Live Output) */
+    { "network",            "firewalldebug",                                 &firewalldebug,                               false,      false,    false },
+    { "network",            "firewalldebugexam",                             &firewalldebugexam,                           false,      false,    false },
+    { "network",            "firewalldebugbans",                             &firewallclearbanlist,                        false,      false,    false },
+    { "network",            "firewalldebugblacklist",                        &firewalldebugblacklist,                      false,      false,    false },
+    { "network",            "firewalldebugdisconnect",                       &firewalldebugdisconnect,                     false,      false,    false },
+    { "network",            "firewalldebugbandwidthabuse",                   &firewalldebugbandwidthabuse,                 false,      false,    false },
+    { "network",            "firewalldebugnofalsepositivebandwidthabuse",    &firewalldebugnofalsepositivebandwidthabuse,  false,      false,    false },
+    { "network",            "firewalldebuginvalidwallet",                    &firewalldebuginvalidwallet,                  false,      false,    false },
+    { "network",            "firewalldebugforkedwallet",                     &firewalldebugforkedwallet,                   false,      false,    false },
+    { "network",            "firewalldebugfloodingwallet",                   &firewalldebugfloodingwallet,                 false,      false,    false },
+
+    /* Firewall BandwidthAbuse Session Settings */
+    { "network",            "firewalldetectbandwidthabuse",                  &firewalldetectbandwidthabuse,                false,      false,    false },
+    { "network",            "firewallblacklistbandwidthabuse",               &firewallblacklistbandwidthabuse,             false,      false,    false },
+    { "network",            "firewallbanbandwidthabuse",                     &firewallbanbandwidthabuse,                   false,      false,    false },
+    { "network",            "firewallnofalsepositivebandwidthabuse",         &firewallnofalsepositivebandwidthabuse,       false,      false,    false },
+    { "network",            "firewallbantimebandwidthabuse",                 &firewallbantimebandwidthabuse,               false,      false,    false },
+    { "network",            "firewallbandwidthabusemaxcheck",                &firewallbandwidthabusemaxcheck,              false,      false,    false },
+    { "network",            "firewallbandwidthabuseminattack",               &firewallbandwidthabuseminattack,             false,      false,    false },
+    { "network",            "firewallbandwidthabuseminattack",               &firewallbandwidthabuseminattack,             false,      false,    false },
+
+    /* Firewall Invalid Wallet Session Settings */
+    { "network",            "firewalldetectinvalidwallet",                   &firewalldetectinvalidwallet,                 false,      false,    false },
+    { "network",            "firewallblacklistinvalidwallet",                &firewallblacklistinvalidwallet,              false,      false,    false },
+    { "network",            "firewallbaninvalidwallet",                      &firewallbaninvalidwallet,                    false,      false,    false },
+    { "network",            "firewallbantimeinvalidwallet",                  &firewallbantimeinvalidwallet,                false,      false,    false },
+    { "network",            "firewallinvalidwalletminprotocol",              &firewallinvalidwalletminprotocol,            false,      false,    false },
+    { "network",            "firewallinvalidwalletmaxcheck",                 &firewallinvalidwalletmaxcheck,               false,      false,    false },
+
+    /* Firewall Forked Wallet Session Settings */
+    { "network",            "firewalldetectforkedwallet",                    &firewalldetectforkedwallet,                  false,      false,    false },
+    { "network",            "firewallblacklistforkedwallet",                 &firewallblacklistforkedwallet,               false,      false,    false },
+    { "network",            "firewallbanforkedwallet",                       &firewallbanforkedwallet,                     false,      false,    false },
+    { "network",            "firewallbantimeforkedwallet",                   &firewallbantimeforkedwallet,                 false,      false,    false },
+    { "network",            "firewallforkedwalletnodeheight",                &firewallforkedwalletnodeheight,              false,      false,    false },
+
+    /* Firewall Flooding Wallet Session Settings */
+    { "network",            "firewalldetectfloodingwallet",                  &firewalldetectfloodingwallet,                false,      false,    false },
+    { "network",            "firewallblacklistfloodingwallet",               &firewallblacklistfloodingwallet,             false,      false,    false },
+    { "network",            "firewallbanfloodingwallet",                     &firewallbanfloodingwallet,                   false,      false,    false },
+    { "network",            "firewallbantimefloodingwallet",                 &firewallbantimefloodingwallet,               false,      false,    false },
+    { "network",            "firewallfloodingwalletminbytes",                &firewallfloodingwalletminbytes,              false,      false,    false },
+    { "network",            "firewallfloodingwalletmaxbytes",                &firewallfloodingwalletmaxbytes,              false,      false,    false },
+    { "network",            "firewallfloodingwalletattackpattern",           &firewallfloodingwalletattackpattern,         false,      false,    false },
+    { "network",            "firewallfloodingwalletmintrafficavg",           &firewallfloodingwalletmintrafficavg,         false,      false,    false },
+    { "network",            "firewallfloodingwalletmaxtrafficavg",           &firewallfloodingwalletmaxtrafficavg,         false,      false,    false },
+    { "network",            "firewallfloodingwalletmincheck",                &firewallfloodingwalletmincheck,              false,      false,    false },
+    { "network",            "firewallfloodingwalletmaxcheck",                &firewallfloodingwalletmaxcheck,              false,      false,    false },
 
     /* Block chain and UTXO */
     { "blockchain",         "getblockchaininfo",      &getblockchaininfo,      true,      false,      false },
