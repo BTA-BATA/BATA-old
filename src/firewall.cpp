@@ -1108,6 +1108,9 @@ bool FireWall(CNode *pnode, string FromFunction)
         if (FIREWALL_CLEARBANS_MINNODES <= vNodes.size())
         {
             pnode->ClearBanned();
+            int TmpBlackListCount;
+            TmpBlackListCount = CountStringArray(FIREWALL_BLACKLIST);
+            std::fill_n(FIREWALL_BLACKLIST, TmpBlackListCount, 0);
             LogPrint("net", "%s Cleared ban: %s\n", ModuleName.c_str(), pnode->addrName.c_str());
         }
     }
