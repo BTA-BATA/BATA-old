@@ -68,7 +68,8 @@ string ModuleName = "[Bitcoin Firewall 1.2.4]";
 // *** Firewall Controls (General) ***
 bool FIREWALL_ENABLED = false;
 bool FIREWALL_CLEAR_BLACKLIST = false;
-bool FIREWALL_CLEAR_BANS = false;
+bool FIREWALL_CLEAR_BANS = true;
+int FIREWALL_CLEARBANS_MINNODES = 5;
 double FIREWALL_TRAFFIC_TOLERANCE = 0.0001; // Reduce for minimal fluctuation
 double FIREWALL_TRAFFIC_ZONE = 4; // + or - Traffic Range 
 
@@ -132,7 +133,7 @@ int FIREWALL_FORKED_NODEHEIGHT[256] =
 };
 
 // * Firewall Settings (Flooding Wallet)
-int FIREWALL_BANTIME_FLOODINGWALLET = 88888; // 24 hours
+int FIREWALL_BANTIME_FLOODINGWALLET = 60*60; // 1 hour
 int FIREWALL_FLOODINGWALLET_MINBYTES = 1000000;
 int FIREWALL_FLOODINGWALLET_MAXBYTES = 1000000;
 // Flooding Patterns (WARNINGS)
@@ -1091,30 +1092,28 @@ bool FireWall(CNode *pnode, string FromFunction)
             // Check for Static Whitelisted Seed Node
             if (pnode->addrName == FIREWALL_WHITELIST[i])
             {
-               return false;
+                return false;
             }
         }
     }
 
     // Check for Node Whitelisted status
-    //if (pnode->fWhitelisted == true)
-    //{
-    //    return false;
-    //}
-
-    //cout<<"Firewall called: "<<FromFunction<<endl;
+    if (pnode->fWhitelisted == true)
+    {
+        return false;
+    }
 
     if (FIREWALL_CLEAR_BANS == true)
     {
-        pnode->ClearBanned();
-        LogPrint("net", "%s Cleared ban: %s\n", ModuleName.c_str(), pnode->addrName.c_str());
+        if (FIREWALL_CLEARBANS_MINNODES <= vNodes.size())
+        {
+            pnode->ClearBanned();
+            int TmpBlackListCount;
+            TmpBlackListCount = CountStringArray(FIREWALL_BLACKLIST);
+            std::fill_n(FIREWALL_BLACKLIST, TmpBlackListCount, 0);
+            LogPrint("net", "%s Cleared ban: %s\n", ModuleName.c_str(), pnode->addrName.c_str());
+        }
     }
-
-    // Check for 0 peer count (auto-unban)
-    //if (vNodes.size() < 2){
-    //    pnode->ClearBanned();
-    //}
-
 
     if (CheckBlackList(pnode) == true)
     {
@@ -1122,9 +1121,9 @@ bool FireWall(CNode *pnode, string FromFunction)
 
         LogPrint("net", "%s Disconnected Blacklisted IP: %s\n", ModuleName.c_str(), pnode->addrName.c_str());
 
-// Peer/Node Panic Disconnect
-ForceDisconnectNode(pnode, FromFunction);
-return true;
+        // Peer/Node Panic Disconnect
+        ForceDisconnectNode(pnode, FromFunction);
+        return true;
 
     }
 
@@ -1134,9 +1133,9 @@ return true;
 
         LogPrint("net", "%s Disconnected Banned IP: %s\n", ModuleName.c_str(), pnode->addrName.c_str());
 
-// Peer/Node Panic Disconnect
-ForceDisconnectNode(pnode, FromFunction);
-return true;
+        // Peer/Node Panic Disconnect
+        ForceDisconnectNode(pnode, FromFunction);
+        return true;
 
     }
 
