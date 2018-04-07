@@ -818,7 +818,7 @@ return;
 
             LogPrintf("%d addresses found from DNS seeds\n", found);
 
-            //DumpAddresses();
+            DumpAddresses();
 
             CSemaphoreGrant grant(*semOutbound);
             boost::this_thread::interruption_point();
