@@ -1951,27 +1951,27 @@ return result;
 }
 
 
-Value firewallfloodingwalletattackpattern(const Array& params, bool fHelp)
+Value firewallfloodingwalletattackpatternadd(const Array& params, bool fHelp)
 {
     string MSG;
 
     if (fHelp || params.size() == 0)
         throw runtime_error(
-                            "firewallfloodingwalletattackpattern \"warnings\"\n"
+                            "firewallfloodingwalletattackpatternadd \"warnings\"\n"
                             "\nBitcoin Firewall Adds Attack Pattern Flooding Wallet Rule #4\n"
                             "\nArguments:\n"
                             "Value: \"warnings\" (string, required)\n"
                             "\nExamples:\n"
                             "\n0 = default - \n"
-                            + HelpExampleCli("firewallfloodingwalletattackpattern", "0")
-                            + HelpExampleCli("firewallfloodingwalletattackpattern", "10000000")
+                            + HelpExampleCli("firewallfloodingwalletattackpatternadd", "0")
+                            + HelpExampleCli("firewallfloodingwalletattackpatternadd", "10000000")
                             );
 
     if (params.size() == 1)
     {
         if (CountStringArray(FIREWALL_FLOODPATTERNS) < 256)
         {
-            FIREWALL_FLOODPATTERNS[CountStringArray(FIREWALL_FLOODPATTERNS)] = (int)strtod(params[0].get_str().c_str(), NULL);
+            FIREWALL_FLOODPATTERNS[CountStringArray(FIREWALL_FLOODPATTERNS)] = params[0].get_str().c_str();
             MSG = CountStringArray(FIREWALL_FLOODPATTERNS);
         }
         else
@@ -1986,6 +1986,50 @@ Value firewallfloodingwalletattackpattern(const Array& params, bool fHelp)
 return result;
 }
 
+
+Value firewallfloodingwalletattackpatternremove(const Array& params, bool fHelp)
+{
+    string MSG;
+    int i;
+
+    if (fHelp || params.size() == 0)
+        throw runtime_error(
+                            "firewallfloodingwalletattackpatternremove \"warnings\"\n"
+                            "\nBitcoin Firewall Remove Attack Pattern Flooding Wallet Rule #4\n"
+                            "\nArguments:\n"
+                            "Value: \"warnings\" (string, required)\n"
+                            "\nExamples:\n"
+                            "\n0 = default - \n"
+                            + HelpExampleCli("firewallfloodingwalletattackpatternremove", "0")
+                            + HelpExampleCli("firewallfloodingwalletattackpatternremove", "10000000")
+                            );
+
+    if (params.size() == 1)
+    {
+        string WARNING;
+        int TmpFloodPatternsCount;
+        WARNING = params[0].get_str().c_str();
+        TmpFloodPatternsCount = CountStringArray(FIREWALL_FLOODPATTERNS);
+
+        MSG = "Not Found";
+
+        for (i = 0; i < TmpFloodPatternsCount; i++)
+        {  
+            if (WARNING == FIREWALL_FLOODPATTERNS[i])
+            {
+                MSG = FIREWALL_FLOODPATTERNS[i];
+                FIREWALL_FLOODPATTERNS[i] = "";
+            }
+
+        }
+    }
+
+
+    Object result;
+    result.push_back(Pair("attackpattern-floodingwallet-attackpattern-remove", MSG));
+
+return result;
+}
 
 
 Value firewallfloodingwalletmintrafficavg(const Array& params, bool fHelp)
