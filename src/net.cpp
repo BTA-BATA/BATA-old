@@ -501,8 +501,9 @@ bool CNode::IsBanned(CNetAddr ip)
     return fResult;
 }
 
-bool CNode::Ban(const CNetAddr &addr) {
-    int64_t banTime = GetTime()+GetArg("-bantime", 60*60*24);  // Default 24-hour ban
+bool CNode::Ban(const CNetAddr &addr)
+{
+    int64_t banTime = GetTime()+GetArg("-bantime", 60*60*24);   // Default 24-hour ban
     {
         LOCK(cs_setBanned);
         if (setBanned[addr] < banTime)
@@ -510,6 +511,7 @@ bool CNode::Ban(const CNetAddr &addr) {
     }
     return true;
 }
+
 
 std::vector<CSubNet> CNode::vWhitelistedRange;
 CCriticalSection CNode::cs_vWhitelistedRange;
@@ -660,7 +662,6 @@ void SocketSendData(CNode *pnode)
 
     while (it != pnode->vSendMsg.end())
     {
-
 
         FireWall(pnode, "SendData");
  
@@ -1635,13 +1636,23 @@ bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOu
     boost::this_thread::interruption_point();
 
     if (!pnode)
+    {
         return false;
+    }
+
+    FireWall(pnode, "OpenNetConnection");
+
     if (grantOutbound)
-        FireWall(pnode, "OpenNetConnection");
+    {
         grantOutbound->MoveTo(pnode->grantOutbound);
+    }
+        
     pnode->fNetworkNode = true;
+
     if (fOneShot)
+    {
         pnode->fOneShot = true;
+    }
 
     return true;
 }
