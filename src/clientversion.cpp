@@ -18,7 +18,7 @@ const std::string CLIENT_NAME("Bata-oshi");
 /**
  * Client version number
  */
-#define CLIENT_VERSION_SUFFIX "TEST"
+#define CLIENT_VERSION_SUFFIX ""
 
 
 /**
